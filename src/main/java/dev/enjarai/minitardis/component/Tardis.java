@@ -94,6 +94,7 @@ public class Tardis {
                 .setSeed(1234L);
         interiorWorld = holder.getFantasy().getOrOpenPersistentWorld(MiniTardis.id("tardis/" + uuid.toString()), config);
         interiorWorld.setTickWhenEmpty(false);
+        interiorWorld.asWorld().getComponent(ModComponents.TARDIS_REFERENCE).tardis = this;
 
         if (!interiorPlaced) {
             buildInterior();

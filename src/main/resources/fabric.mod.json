@@ -37,7 +37,8 @@
 
 	"custom": {
 		"cardinal-components": [
-			"mini_tardis:tardis_holder"
+			"mini_tardis:tardis_holder",
+			"mini_tardis:tardis_reference"
 		]
 	}
 }

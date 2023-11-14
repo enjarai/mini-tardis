@@ -1,0 +1,43 @@
+{
+	"schemaVersion": 1,
+	"id": "mini_tardis",
+	"version": "${version}",
+	"name": "Mini Tardis",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/mini_tardis/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.enjarai.minitardis.MiniTardis"
+		],
+		"fabric-datagen": [
+			"dev.enjarai.minitardis.MiniTardisDataGenerator"
+		],
+		"cardinal-components": [
+			"dev.enjarai.minitardis.component.ModComponents"
+		]
+	},
+	"mixins": [
+		"mini_tardis.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.24",
+		"minecraft": "~1.20.2",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+
+	"custom": {
+		"cardinal-components": [
+			"mini_tardis:tardis_holder"
+		]
+	}
+}

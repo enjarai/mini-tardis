@@ -5,6 +5,8 @@ import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.util.Identifier;
 
+import java.util.Optional;
+
 public class TakingOffState extends TransitionalFlightState {
     public static final Codec<TakingOffState> CODEC = Codec.INT
             .xmap(TakingOffState::new, s -> s.ticksPassed).fieldOf("ticksPassed").codec();
@@ -16,6 +18,11 @@ public class TakingOffState extends TransitionalFlightState {
 
     public TakingOffState() {
         this(0);
+    }
+
+    @Override
+    public void complete(Tardis tardis) {
+        tardis.setCurrentLocation(Optional.empty());
     }
 
     @Override

@@ -19,6 +19,12 @@ public class LandingState extends TransitionalFlightState {
     }
 
     @Override
+    public void init(Tardis tardis) {
+        tardis.setCurrentLocation(tardis.getDestination());
+        tardis.buildExterior();
+    }
+
+    @Override
     public boolean suggestTransition(Tardis tardis, FlightState newState) {
         return false;
     }

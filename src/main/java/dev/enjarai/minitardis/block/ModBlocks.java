@@ -1,11 +1,10 @@
 package dev.enjarai.minitardis.block;
 
 import dev.enjarai.minitardis.MiniTardis;
+import dev.enjarai.minitardis.block.console.ConsoleButtonBlock;
 import dev.enjarai.minitardis.block.console.ConsoleLeverBlock;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlock;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.component.TardisControl;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
 import eu.pb4.polymer.core.api.block.SimplePolymerBlock;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -32,18 +31,25 @@ public class ModBlocks {
             register("handbrake", new ConsoleLeverBlock(FabricBlockSettings.create(), TardisControl::handbrake));
     public static final ConsoleScreenBlock CONSOLE_SCREEN =
             register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create()));
+    public static final ConsoleButtonBlock RESET_DESTINATION_BUTTON =
+            register("reset_destination_button", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.BIRCH_BUTTON, (controls, facing) -> controls.resetDestination()));
+    public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_1 =
+            register("nudge_destination_button_1", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.OAK_BUTTON, TardisControl::nudgeDestination));
+    public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_2 =
+            register("nudge_destination_button_2", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.SPRUCE_BUTTON, TardisControl::nudgeDestination));
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);
-    public static final BlockEntityType<ConsoleScreenBlockEntity> CONSOLE_SCREEN_ENTITY =
-            registerEntity("console_screen", ConsoleScreenBlockEntity::new, CONSOLE_SCREEN);
 
     public static final PointOfInterestType TARDIS_EXTERIOR_POI =
             PointOfInterestHelper.register(MiniTardis.id("tardis_exterior"), 0, 1, TARDIS_EXTERIOR);
     public static final PointOfInterestType INTERIOR_DOOR_POI =
             PointOfInterestHelper.register(MiniTardis.id("interior_door"), 0, 1, INTERIOR_DOOR);
 
-    public static final List<? extends Block> ITEM_BLOCKS = List.of(TARDIS_PLATING, INTERIOR_DOOR, HANDBRAKE);
+    public static final List<? extends Block> ITEM_BLOCKS = List.of(
+            TARDIS_PLATING, INTERIOR_DOOR, HANDBRAKE, CONSOLE_SCREEN,
+            RESET_DESTINATION_BUTTON, NUDGE_DESTINATION_BUTTON_1, NUDGE_DESTINATION_BUTTON_2
+    );
 
 
     public static void load() {

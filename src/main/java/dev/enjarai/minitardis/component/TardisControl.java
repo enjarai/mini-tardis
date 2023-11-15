@@ -6,8 +6,6 @@ import dev.enjarai.minitardis.component.flight.LandingState;
 import dev.enjarai.minitardis.component.flight.TakingOffState;
 import net.minecraft.util.math.Direction;
 
-import java.util.Optional;
-
 /**
  * Takes in button presses and other inputs from the Tardis console and translates them into actions performed on it.
  */
@@ -22,6 +20,11 @@ public class TardisControl {
 
     private TardisControl(int coordinateScale) {
         this.coordinateScale = coordinateScale;
+    }
+
+    @SuppressWarnings("CopyConstructorMissesField")
+    public TardisControl(TardisControl copyFrom) {
+        this(copyFrom.coordinateScale);
     }
 
     public TardisControl() {

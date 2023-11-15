@@ -1,0 +1,11 @@
+{
+  "block.mini_tardis.tardis_plating": "Tardis Plating",
+  "block.mini_tardis.interior_door": "Interior Door",
+  "block.mini_tardis.handbrake": "Handbrake",
+  "block.mini_tardis.console_screen": "Console Screen",
+
+  "mini_tardis.state.mini_tardis.landed": "Landed",
+  "mini_tardis.state.mini_tardis.taking_off": "Taking Off...",
+  "mini_tardis.state.mini_tardis.flying": "In Flight",
+  "mini_tardis.state.mini_tardis.landing": "Landing..."
+}

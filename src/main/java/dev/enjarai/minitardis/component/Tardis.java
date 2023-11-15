@@ -69,7 +69,7 @@ public class Tardis {
         this.currentLocation = currentLocation;
         this.destination = destination;
         this.interiorDoorPosition = interiorDoorPosition;
-        this.controls = controls;
+        this.controls = new TardisControl(controls);
         this.state = state;
 
         this.controls.tardis = this;

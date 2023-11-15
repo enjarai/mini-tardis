@@ -30,14 +30,6 @@ public class MiniTardis implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
-
-		LOGGER.info("Hello Fabric world!");
-
-		// TODO point of interest storage on world
-
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> TardisCommand.register(dispatcher));
 
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> MiniTardis.server = server);

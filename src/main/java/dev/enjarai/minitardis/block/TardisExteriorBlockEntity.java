@@ -3,6 +3,7 @@ package dev.enjarai.minitardis.block;
 import dev.enjarai.minitardis.component.ModComponents;
 import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
@@ -26,7 +27,14 @@ public class TardisExteriorBlockEntity extends BlockEntity {
             world.getLevelProperties()
                     .getComponent(ModComponents.TARDIS_HOLDER)
                     .getTardis(tardisUuid)
-                    .ifPresent(t -> tardis = t);
+                    .ifPresentOrElse(t -> tardis = t, () -> world.setBlockState(pos, Blocks.AIR.getDefaultState()));
+        } else {
+            // If the tardis isn't present at this location, we should remove this exterior block.
+            if (!tardis.getCurrentLocation()
+                    .map(l -> l.worldKey().equals(world.getRegistryKey()) && l.pos().equals(pos))
+                    .orElse(false)) {
+                world.setBlockState(pos, Blocks.AIR.getDefaultState());
+            }
         }
     }
 

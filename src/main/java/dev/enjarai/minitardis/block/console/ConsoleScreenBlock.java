@@ -1,24 +1,27 @@
 package dev.enjarai.minitardis.block.console;
 
-import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.elements.TextDisplayElement;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.HorizontalFacingBlock;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock, TardisAware, BlockWithElementHolder {
+public class ConsoleScreenBlock extends Block implements PolymerBlock, TardisAware, BlockWithElementHolder {
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
 
     public ConsoleScreenBlock(Settings settings) {
@@ -26,21 +29,30 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
         setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH));
     }
 
-    @Nullable
-    @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-        return new ConsoleScreenBlockEntity(pos, state);
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return validateTicker(type, ModBlocks.CONSOLE_SCREEN_ENTITY, (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1));
-    }
-
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING);
+    }
+
+    @Nullable
+    @Override
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        BlockState blockState = this.getDefaultState();
+        WorldView worldView = ctx.getWorld();
+        BlockPos blockPos = ctx.getBlockPos();
+        Direction[] directions = ctx.getPlacementDirections();
+
+        for(Direction direction : directions) {
+            if (direction.getAxis().isHorizontal()) {
+                Direction direction2 = direction.getOpposite();
+                blockState = blockState.with(FACING, direction2);
+                if (blockState.canPlaceAt(worldView, blockPos)) {
+                    return blockState;
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -63,20 +75,32 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
         var tardisOptional = getTardis(world);
         if (tardisOptional.isPresent()) {
             var tardis = tardisOptional.get();
-            var textDisplay = new TextDisplayElement();
+            var rotation = RotationAxis.NEGATIVE_Y.rotationDegrees(initialBlockState.get(FACING).asRotation());
+
+            var stateText = new TextDisplayElement();
+            var destinationText = new TextDisplayElement();
+
+            stateText.setRightRotation(rotation);
+            destinationText.setRightRotation(rotation);
+            destinationText.setOffset(new Vec3d(0, -0.5, 0));
 
             return new ElementHolder() {
                 {
-                    addElement(textDisplay);
+                    addElement(stateText);
+                    addElement(destinationText);
+                    update();
                 }
 
                 @Override
                 protected void onTick() {
-
+                    update();
                 }
 
                 private void update() {
-                    textDisplay.setText(tardis.getState().getName());
+                    stateText.setText(tardis.getState().getName());
+                    destinationText.setText(Text.literal(tardis.getDestination()
+                            .map(l -> l.pos().getX() + " " + l.pos().getY() + " " +l.pos().getZ())
+                            .orElse("Unknown"))); // TODO dimension
                 }
             };
         }

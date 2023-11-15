@@ -12,7 +12,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 @SuppressWarnings("deprecation")
-public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, TardisAwareBlock {
+public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, TardisAware {
     protected InteriorDoorBlock(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH));

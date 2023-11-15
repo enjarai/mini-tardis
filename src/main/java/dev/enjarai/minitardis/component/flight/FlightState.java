@@ -2,6 +2,7 @@ package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.component.Tardis;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
@@ -52,4 +53,8 @@ public interface FlightState {
      * A unique id for serialization
      */
     Identifier id();
+
+    default Text getName() {
+        return Text.translatable("mini_tardis.state." + id().getNamespace() + "." + id().getPath());
+    }
 }

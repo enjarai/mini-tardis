@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 
 import java.util.Optional;
 
-public interface TardisAwareBlock {
+public interface TardisAware {
     default Optional<Tardis> getTardis(World world) {
         return world.getComponent(ModComponents.TARDIS_REFERENCE).getTardis();
     }

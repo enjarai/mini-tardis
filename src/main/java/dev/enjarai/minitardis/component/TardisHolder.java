@@ -46,8 +46,8 @@ public class TardisHolder implements ServerTickingComponent {
         tardii.put(tardis.uuid(), tardis);
     }
 
-    public Tardis getTardis(UUID uuid) {
-        return tardii.get(uuid);
+    public Optional<Tardis> getTardis(UUID uuid) {
+        return Optional.ofNullable(tardii.get(uuid));
     }
 
     public Set<Tardis> getAllTardii() {

@@ -23,9 +23,10 @@ public class TardisExteriorBlockEntity extends BlockEntity {
 
     public void tick(World world, BlockPos pos, BlockState state) {
         if (tardis == null) {
-            tardis = world.getLevelProperties()
-                .getComponent(ModComponents.TARDIS_HOLDER)
-                .getTardis(tardisUuid);
+            world.getLevelProperties()
+                    .getComponent(ModComponents.TARDIS_HOLDER)
+                    .getTardis(tardisUuid)
+                    .ifPresent(t -> tardis = t);
         }
     }
 

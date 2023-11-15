@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis;
 
 import dev.enjarai.minitardis.block.ModBlocks;
+import dev.enjarai.minitardis.command.TardisCommand;
 import dev.enjarai.minitardis.component.ModComponents;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.data.TardisInteriorManager;

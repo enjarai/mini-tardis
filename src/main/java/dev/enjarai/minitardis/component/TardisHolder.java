@@ -3,6 +3,7 @@ package dev.enjarai.minitardis.component;
 import com.google.common.collect.ImmutableSet;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.onyxstudios.cca.api.v3.component.Component;
+import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -13,7 +14,7 @@ import xyz.nucleoid.fantasy.Fantasy;
 
 import java.util.*;
 
-public class TardisHolder implements Component {
+public class TardisHolder implements ServerTickingComponent {
     private MinecraftServer server;
     private Fantasy fantasy;
     private Map<UUID, Tardis> tardii = new HashMap<>();
@@ -40,17 +41,22 @@ public class TardisHolder implements Component {
         return fantasy;
     }
 
-    public void add(Tardis tardis) {
+    public void addTardis(Tardis tardis) {
         tardis.holder = this;
         tardii.put(tardis.uuid(), tardis);
     }
 
-    public Tardis get(UUID uuid) {
+    public Tardis getTardis(UUID uuid) {
         return tardii.get(uuid);
     }
 
-    public Set<Tardis> getAll() {
+    public Set<Tardis> getAllTardii() {
         return ImmutableSet.copyOf(tardii.values());
+    }
+
+    @Override
+    public void serverTick() {
+        tardii.values().forEach(Tardis::tick);
     }
 
     @Override
@@ -62,7 +68,7 @@ public class TardisHolder implements Component {
                             throw new IllegalArgumentException(s);
                         }).getFirst()
                 )
-                .forEach(this::add);
+                .forEach(this::addTardis);
     }
 
     @Override

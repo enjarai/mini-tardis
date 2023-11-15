@@ -4,12 +4,9 @@ import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.component.ModComponents;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.data.TardisInteriorManager;
-import dev.onyxstudios.cca.api.v3.level.LevelComponentFactoryRegistry;
-import dev.onyxstudios.cca.api.v3.level.LevelComponentInitializer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.server.MinecraftServer;
@@ -43,7 +40,7 @@ public class MiniTardis implements ModInitializer {
 
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> MiniTardis.server = server);
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			ModComponents.TARDIS_HOLDER.get(server.getSaveProperties()).getAll().forEach(Tardis::getInteriorWorld);
+			ModComponents.TARDIS_HOLDER.get(server.getSaveProperties()).getAllTardii().forEach(Tardis::getInteriorWorld);
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> MiniTardis.server = null);
 

@@ -25,7 +25,7 @@ public class TardisExteriorBlockEntity extends BlockEntity {
         if (tardis == null) {
             tardis = world.getLevelProperties()
                 .getComponent(ModComponents.TARDIS_HOLDER)
-                .get(tardisUuid);
+                .getTardis(tardisUuid);
         }
     }
 

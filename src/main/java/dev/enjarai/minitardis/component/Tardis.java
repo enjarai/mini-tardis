@@ -10,13 +10,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.chunk.FlatChunkGenerator;
@@ -25,7 +24,6 @@ import net.minecraft.world.gen.chunk.FlatChunkGeneratorLayer;
 import net.minecraft.world.poi.PointOfInterest;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 import xyz.nucleoid.fantasy.RuntimeWorldConfig;
 import xyz.nucleoid.fantasy.RuntimeWorldHandle;
 
@@ -37,6 +35,8 @@ import java.util.UUID;
 public class Tardis {
     public static final Identifier DEFAULT_INTERIOR = MiniTardis.id("debug");
     public static final BlockPos INTERIOR_CENTER = new BlockPos(0, 64, 0);
+    public static final ChunkTicketType<BlockPos> INTERIOR_TICKET_TYPE =
+            ChunkTicketType.create("tardis_interior", Vec3i::compareTo, 20);
     public static final Codec<Tardis> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Uuids.CODEC.fieldOf("uuid").forGetter(t -> t.uuid),
             Codec.BOOL.optionalFieldOf("interior_placed", false).forGetter(t -> t.interiorPlaced),
@@ -68,12 +68,19 @@ public class Tardis {
     public Tardis(TardisHolder holder, @Nullable GlobalLocation location) {
         this(UUID.randomUUID(), false, DEFAULT_INTERIOR, Optional.ofNullable(location), Optional.empty(), BlockPos.ORIGIN);
 
-        holder.add(this);
+        holder.addTardis(this);
 
         buildExterior();
         getInteriorWorld();
     }
 
+
+    public void tick() {
+        var world = getInteriorWorld();
+        if (world.getTime() % 20 == 0) {
+            world.getChunkManager().addTicket(INTERIOR_TICKET_TYPE, new ChunkPos(interiorDoorPosition), 1, interiorDoorPosition);
+        }
+    }
 
     public ServerWorld getInteriorWorld() {
         if (interiorWorld == null) {

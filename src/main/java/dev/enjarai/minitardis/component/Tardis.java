@@ -5,6 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisExteriorBlockEntity;
+import dev.enjarai.minitardis.component.flight.FlightState;
+import dev.enjarai.minitardis.component.flight.LandedState;
 import net.minecraft.block.FacingBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
@@ -43,7 +45,9 @@ public class Tardis {
             Identifier.CODEC.optionalFieldOf("interior", DEFAULT_INTERIOR).forGetter(t -> t.interior),
             GlobalLocation.CODEC.optionalFieldOf("current_location").forGetter(t -> t.currentLocation),
             GlobalLocation.CODEC.optionalFieldOf("destination").forGetter(t -> t.destination),
-            BlockPos.CODEC.optionalFieldOf("interior_door_position", BlockPos.ORIGIN).forGetter(t -> t.interiorDoorPosition)
+            BlockPos.CODEC.optionalFieldOf("interior_door_position", BlockPos.ORIGIN).forGetter(t -> t.interiorDoorPosition),
+            TardisControl.CODEC.optionalFieldOf("controls", new TardisControl()).forGetter(t -> t.controls),
+            FlightState.CODEC.optionalFieldOf("flight_state", new LandedState()).forGetter(t -> t.state)
     ).apply(instance, Tardis::new));
 
     TardisHolder holder;
@@ -55,18 +59,24 @@ public class Tardis {
     private Optional<GlobalLocation> currentLocation;
     private Optional<GlobalLocation> destination;
     private BlockPos interiorDoorPosition;
+    private final TardisControl controls;
+    private FlightState state;
 
-    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Optional<GlobalLocation> currentLocation, Optional<GlobalLocation> destination, BlockPos interiorDoorPosition) {
+    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Optional<GlobalLocation> currentLocation, Optional<GlobalLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state) {
         this.uuid = uuid;
         this.interiorPlaced = interiorPlaced;
         this.interior = interior;
         this.currentLocation = currentLocation;
         this.destination = destination;
         this.interiorDoorPosition = interiorDoorPosition;
+        this.controls = controls;
+        this.state = state;
+
+        this.controls.tardis = this;
     }
 
     public Tardis(TardisHolder holder, @Nullable GlobalLocation location) {
-        this(UUID.randomUUID(), false, DEFAULT_INTERIOR, Optional.ofNullable(location), Optional.empty(), BlockPos.ORIGIN);
+        this(UUID.randomUUID(), false, DEFAULT_INTERIOR, Optional.ofNullable(location), Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(), new LandedState());
 
         holder.addTardis(this);
 
@@ -79,6 +89,13 @@ public class Tardis {
         var world = getInteriorWorld();
         if (world.getTime() % 20 == 0) {
             world.getChunkManager().addTicket(INTERIOR_TICKET_TYPE, new ChunkPos(interiorDoorPosition), 1, interiorDoorPosition);
+        }
+
+        var newState = state.tick(this);
+        if (newState != state) {
+            state.complete(this);
+            state = newState;
+            newState.init(this);
         }
     }
 
@@ -139,54 +156,58 @@ public class Tardis {
     }
 
     public void teleportEntityIn(Entity entity) {
-        var world = getInteriorWorld();
-        // Try to put the entering entity at the interior door. If not, put them in the center as a fallback.
-        var targetPos = interiorDoorPosition;
-        var interiorDoorState = world.getBlockState(targetPos); // TODO this lags?
-        float yaw = -90;
+        if (state.isSolid(this)) {
+            var world = getInteriorWorld();
+            // Try to put the entering entity at the interior door. If not, put them in the center as a fallback.
+            var targetPos = interiorDoorPosition;
+            var interiorDoorState = world.getBlockState(targetPos);
+            float yaw = -90;
 
-        do {
-            if (interiorDoorState.isOf(ModBlocks.INTERIOR_DOOR)) {
-                var facing = interiorDoorState.get(FacingBlock.FACING);
-                interiorDoorPosition = targetPos;
+            do {
+                if (interiorDoorState.isOf(ModBlocks.INTERIOR_DOOR)) {
+                    var facing = interiorDoorState.get(FacingBlock.FACING);
+                    interiorDoorPosition = targetPos;
 
-                targetPos = targetPos.add(facing.getVector());
-                yaw = facing.asRotation();
+                    targetPos = targetPos.add(facing.getVector());
+                    yaw = facing.asRotation();
 
-                break;
-            } else {
-                targetPos = world.getPointOfInterestStorage().getInSquare(
-                        poi -> poi.value().equals(ModBlocks.INTERIOR_DOOR_POI), INTERIOR_CENTER,
-                        64, PointOfInterestStorage.OccupationStatus.ANY
-                ).findAny().map(PointOfInterest::getPos).orElse(INTERIOR_CENTER);
-                interiorDoorState = world.getBlockState(targetPos);
-            }
-        } while (interiorDoorState.isOf(ModBlocks.INTERIOR_DOOR));
+                    break;
+                } else {
+                    targetPos = world.getPointOfInterestStorage().getInSquare(
+                            poi -> poi.value().equals(ModBlocks.INTERIOR_DOOR_POI), INTERIOR_CENTER,
+                            64, PointOfInterestStorage.OccupationStatus.ANY
+                    ).findAny().map(PointOfInterest::getPos).orElse(INTERIOR_CENTER);
+                    interiorDoorState = world.getBlockState(targetPos);
+                }
+            } while (interiorDoorState.isOf(ModBlocks.INTERIOR_DOOR));
 
-        var entityPos = Vec3d.ofBottomCenter(targetPos);
-        entity.teleport(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), PositionFlag.VALUES, yaw, 0);
+            var entityPos = Vec3d.ofBottomCenter(targetPos);
+            entity.teleport(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), PositionFlag.VALUES, yaw, 0);
+        }
     }
 
     public void teleportEntityOut(Entity entity) {
-        currentLocation.ifPresent(location -> {
-            var world = location.getWorld(holder.getServer());
-            var pos = location.pos();
-            var blockEntity = world.getBlockEntity(pos);
+        if (state.isSolid(this)) {
+            currentLocation.ifPresent(location -> {
+                var world = location.getWorld(holder.getServer());
+                var pos = location.pos();
+                var blockEntity = world.getBlockEntity(pos);
 
-            // Potentially rebuild the exterior if it doesn't exist yet
-            if (!(blockEntity instanceof TardisExteriorBlockEntity)) {
-                buildExterior();
-                blockEntity = world.getBlockEntity(pos);
-            }
+                // Potentially rebuild the exterior if it doesn't exist yet
+                if (!(blockEntity instanceof TardisExteriorBlockEntity)) {
+                    buildExterior();
+                    blockEntity = world.getBlockEntity(pos);
+                }
 
-            if (blockEntity instanceof TardisExteriorBlockEntity exteriorEntity && this.equals(exteriorEntity.getLinkedTardis())) {
-                var facing = Direction.NORTH; // exteriorEntity.getCachedState() TODO
-                var exitPos = pos.add(facing.getVector());
+                if (blockEntity instanceof TardisExteriorBlockEntity exteriorEntity && this.equals(exteriorEntity.getLinkedTardis())) {
+                    var facing = Direction.NORTH; // exteriorEntity.getCachedState() TODO
+                    var exitPos = pos.add(facing.getVector());
 
-                var entityPos = Vec3d.ofBottomCenter(exitPos);
-                entity.teleport(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), PositionFlag.VALUES, facing.asRotation(), 0);
-            }
-        });
+                    var entityPos = Vec3d.ofBottomCenter(exitPos);
+                    entity.teleport(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), PositionFlag.VALUES, facing.asRotation(), 0);
+                }
+            });
+        }
     }
 
 
@@ -208,6 +229,32 @@ public class Tardis {
 
     public Optional<GlobalLocation> getCurrentLocation() {
         return currentLocation;
+    }
+
+    public void setDestination(@Nullable GlobalLocation destination) {
+        setDestination(Optional.ofNullable(destination));
+    }
+
+    public void setDestination(Optional<GlobalLocation> destination) {
+        this.destination = destination;
+    }
+
+    public Optional<GlobalLocation> getDestination() {
+        return destination;
+    }
+
+    public TardisControl getControls() {
+        return controls;
+    }
+
+    public boolean suggestStateTransition(FlightState newState) {
+        var accepted = state.suggestTransition(this, newState);
+        if (accepted) {
+            state.complete(this);
+            state = newState;
+            newState.init(this);
+        }
+        return accepted;
     }
 
     @Override

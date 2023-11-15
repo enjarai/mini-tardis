@@ -24,6 +24,14 @@ public record GlobalLocation(RegistryKey<World> worldKey, BlockPos pos) {
         return server.getWorld(worldKey);
     }
 
+    public GlobalLocation with(RegistryKey<World> worldKey) {
+        return new GlobalLocation(worldKey, pos());
+    }
+
+    public GlobalLocation with(BlockPos pos) {
+        return new GlobalLocation(worldKey(), pos);
+    }
+
     public static Optional<GlobalLocation> decode(@Nullable NbtElement element) {
         return element != null ?
                 CODEC.decode(NbtOps.INSTANCE, element).result().map(Pair::getFirst) :

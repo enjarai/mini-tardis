@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.ModBlocks;
-import dev.enjarai.minitardis.block.TardisExteriorBlock;
 import dev.enjarai.minitardis.block.TardisExteriorBlockEntity;
+import net.minecraft.block.FacingBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.registry.RegistryKey;
@@ -15,7 +15,8 @@ import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.chunk.FlatChunkGenerator;
@@ -24,6 +25,7 @@ import net.minecraft.world.gen.chunk.FlatChunkGeneratorLayer;
 import net.minecraft.world.poi.PointOfInterest;
 import net.minecraft.world.poi.PointOfInterestStorage;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import xyz.nucleoid.fantasy.RuntimeWorldConfig;
 import xyz.nucleoid.fantasy.RuntimeWorldHandle;
 
@@ -40,7 +42,8 @@ public class Tardis {
             Codec.BOOL.optionalFieldOf("interior_placed", false).forGetter(t -> t.interiorPlaced),
             Identifier.CODEC.optionalFieldOf("interior", DEFAULT_INTERIOR).forGetter(t -> t.interior),
             GlobalLocation.CODEC.optionalFieldOf("current_location").forGetter(t -> t.currentLocation),
-            GlobalLocation.CODEC.optionalFieldOf("destination").forGetter(t -> t.destination)
+            GlobalLocation.CODEC.optionalFieldOf("destination").forGetter(t -> t.destination),
+            BlockPos.CODEC.optionalFieldOf("interior_door_position", BlockPos.ORIGIN).forGetter(t -> t.interiorDoorPosition)
     ).apply(instance, Tardis::new));
 
     TardisHolder holder;
@@ -51,17 +54,19 @@ public class Tardis {
     private Identifier interior;
     private Optional<GlobalLocation> currentLocation;
     private Optional<GlobalLocation> destination;
+    private BlockPos interiorDoorPosition;
 
-    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Optional<GlobalLocation> currentLocation, Optional<GlobalLocation> destination) {
+    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Optional<GlobalLocation> currentLocation, Optional<GlobalLocation> destination, BlockPos interiorDoorPosition) {
         this.uuid = uuid;
         this.interiorPlaced = interiorPlaced;
         this.interior = interior;
         this.currentLocation = currentLocation;
         this.destination = destination;
+        this.interiorDoorPosition = interiorDoorPosition;
     }
 
     public Tardis(TardisHolder holder, @Nullable GlobalLocation location) {
-        this(UUID.randomUUID(), false, DEFAULT_INTERIOR, Optional.ofNullable(location), Optional.empty());
+        this(UUID.randomUUID(), false, DEFAULT_INTERIOR, Optional.ofNullable(location), Optional.empty(), BlockPos.ORIGIN);
 
         holder.add(this);
 
@@ -127,12 +132,54 @@ public class Tardis {
     }
 
     public void teleportEntityIn(Entity entity) {
-        var targetPos = getInteriorWorld().getPointOfInterestStorage().getInSquare(
-                poi -> poi.value().equals(ModBlocks.INTERIOR_DOOR_POI), INTERIOR_CENTER,
-                64, PointOfInterestStorage.OccupationStatus.ANY
-        ).findAny().map(PointOfInterest::getPos).orElse(INTERIOR_CENTER);
+        var world = getInteriorWorld();
+        // Try to put the entering entity at the interior door. If not, put them in the center as a fallback.
+        var targetPos = interiorDoorPosition;
+        var interiorDoorState = world.getBlockState(targetPos); // TODO this lags?
+        float yaw = -90;
 
-        entity.teleport(getInteriorWorld(), targetPos.getX(), targetPos.getY(), targetPos.getZ(), PositionFlag.VALUES, -90, 0);
+        do {
+            if (interiorDoorState.isOf(ModBlocks.INTERIOR_DOOR)) {
+                var facing = interiorDoorState.get(FacingBlock.FACING);
+                interiorDoorPosition = targetPos;
+
+                targetPos = targetPos.add(facing.getVector());
+                yaw = facing.asRotation();
+
+                break;
+            } else {
+                targetPos = world.getPointOfInterestStorage().getInSquare(
+                        poi -> poi.value().equals(ModBlocks.INTERIOR_DOOR_POI), INTERIOR_CENTER,
+                        64, PointOfInterestStorage.OccupationStatus.ANY
+                ).findAny().map(PointOfInterest::getPos).orElse(INTERIOR_CENTER);
+                interiorDoorState = world.getBlockState(targetPos);
+            }
+        } while (interiorDoorState.isOf(ModBlocks.INTERIOR_DOOR));
+
+        var entityPos = Vec3d.ofBottomCenter(targetPos);
+        entity.teleport(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), PositionFlag.VALUES, yaw, 0);
+    }
+
+    public void teleportEntityOut(Entity entity) {
+        currentLocation.ifPresent(location -> {
+            var world = location.getWorld(holder.getServer());
+            var pos = location.pos();
+            var blockEntity = world.getBlockEntity(pos);
+
+            // Potentially rebuild the exterior if it doesn't exist yet
+            if (!(blockEntity instanceof TardisExteriorBlockEntity)) {
+                buildExterior();
+                blockEntity = world.getBlockEntity(pos);
+            }
+
+            if (blockEntity instanceof TardisExteriorBlockEntity exteriorEntity && this.equals(exteriorEntity.getLinkedTardis())) {
+                var facing = Direction.NORTH; // exteriorEntity.getCachedState() TODO
+                var exitPos = pos.add(facing.getVector());
+
+                var entityPos = Vec3d.ofBottomCenter(exitPos);
+                entity.teleport(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), PositionFlag.VALUES, facing.asRotation(), 0);
+            }
+        });
     }
 
 

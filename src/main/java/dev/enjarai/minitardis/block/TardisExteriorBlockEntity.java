@@ -39,6 +39,10 @@ public class TardisExteriorBlockEntity extends BlockEntity {
         this.tardis = tardis;
     }
 
+    public Tardis getLinkedTardis() {
+        return tardis;
+    }
+
     @Override
     public void readNbt(NbtCompound nbt) {
         tardisUuid = nbt.getUuid("tardis");

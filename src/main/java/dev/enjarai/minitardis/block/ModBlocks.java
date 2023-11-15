@@ -19,8 +19,8 @@ public class ModBlocks {
             register("tardis_exterior", new TardisExteriorBlock(FabricBlockSettings.create()));
     public static final SimplePolymerBlock TARDIS_PLATING =
             register("tardis_plating", new SimplePolymerBlock(FabricBlockSettings.create(), Blocks.DEAD_BRAIN_CORAL_BLOCK));
-    public static final SimplePolymerBlock INTERIOR_DOOR =
-            register("interior_door", new SimplePolymerBlock(FabricBlockSettings.create(), Blocks.RED_TERRACOTTA));
+    public static final InteriorDoorBlock INTERIOR_DOOR =
+            register("interior_door", new InteriorDoorBlock(FabricBlockSettings.create()));
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);

@@ -40,7 +40,7 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
         if (!world.isClient() && world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity) {
             blockEntity.teleportEntityIn(player);
         }
-        return ActionResult.CONSUME;
+        return ActionResult.SUCCESS;
     }
 
     @Nullable

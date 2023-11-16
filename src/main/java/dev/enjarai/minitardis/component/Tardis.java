@@ -3,11 +3,13 @@ package dev.enjarai.minitardis.component;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
+import dev.enjarai.minitardis.block.InteriorDoorBlock;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisExteriorBlockEntity;
 import dev.enjarai.minitardis.component.flight.FlightState;
 import dev.enjarai.minitardis.component.flight.LandedState;
 import net.minecraft.block.FacingBlock;
+import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.registry.RegistryKey;
@@ -31,6 +33,7 @@ import xyz.nucleoid.fantasy.RuntimeWorldHandle;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -164,7 +167,7 @@ public class Tardis {
             float yaw = -90;
 
             do {
-                if (interiorDoorState.isOf(ModBlocks.INTERIOR_DOOR)) {
+                if (interiorDoorState.isOf(ModBlocks.INTERIOR_DOOR) && interiorDoorState.get(InteriorDoorBlock.HALF) == DoubleBlockHalf.LOWER) {
                     var facing = interiorDoorState.get(FacingBlock.FACING);
                     interiorDoorPosition = targetPos;
 
@@ -182,7 +185,7 @@ public class Tardis {
             } while (interiorDoorState.isOf(ModBlocks.INTERIOR_DOOR));
 
             var entityPos = Vec3d.ofBottomCenter(targetPos);
-            entity.teleport(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), PositionFlag.VALUES, yaw, 0);
+            entity.teleport(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), Set.of(), yaw, 0);
         }
     }
 
@@ -204,12 +207,16 @@ public class Tardis {
                     var exitPos = pos.add(facing.getVector());
 
                     var entityPos = Vec3d.ofBottomCenter(exitPos);
-                    entity.teleport(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), PositionFlag.VALUES, facing.asRotation(), 0);
+                    entity.teleport(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), Set.of(), facing.asRotation(), 0);
                 }
             });
         }
     }
 
+
+    public BlockPos getInteriorCenter() {
+        return INTERIOR_CENTER;
+    }
 
     public UUID uuid() {
         return uuid;

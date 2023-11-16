@@ -6,6 +6,8 @@ import dev.enjarai.minitardis.component.ModComponents;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.data.TardisInteriorManager;
 import dev.enjarai.minitardis.item.ModItems;
+import dev.enjarai.minitardis.item.PolymerModels;
+import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -42,6 +44,9 @@ public class MiniTardis implements ModInitializer {
 
 		ModBlocks.load();
 		ModItems.load();
+
+		PolymerResourcePackUtils.addModAssets(MOD_ID);
+		PolymerModels.load();
 	}
 
 	@Nullable

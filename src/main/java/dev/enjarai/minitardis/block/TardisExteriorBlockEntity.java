@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class TardisExteriorBlockEntity extends BlockEntity {
-    private UUID tardisUuid;
+    private UUID tardisUuid = UUID.randomUUID();
     @Nullable
     private Tardis tardis;
 

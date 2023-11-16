@@ -12,19 +12,37 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.enums.Instrument;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.poi.PointOfInterestType;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class ModBlocks {
     public static final TardisExteriorBlock TARDIS_EXTERIOR =
-            register("tardis_exterior", new TardisExteriorBlock(FabricBlockSettings.create()));
+            register("tardis_exterior", new TardisExteriorBlock(FabricBlockSettings.create()
+                    .mapColor(MapColor.LAPIS_BLUE)
+                    .strength(-1.0F, 3600000.0F)
+                    .dropsNothing()
+                    .allowsSpawning(Blocks::never)));
+    public static final TardisExteriorExtensionBlock TARDIS_EXTERIOR_EXTENSION =
+            register("tardis_exterior_extension", new TardisExteriorExtensionBlock(FabricBlockSettings.create()
+                    .mapColor(MapColor.LAPIS_BLUE)
+                    .strength(-1.0F, 3600000.0F)
+                    .dropsNothing()
+                    .allowsSpawning(Blocks::never)));
     public static final SimplePolymerBlock TARDIS_PLATING =
-            register("tardis_plating", new SimplePolymerBlock(FabricBlockSettings.create(), Blocks.DEAD_BRAIN_CORAL_BLOCK));
+            register("tardis_plating", new SimplePolymerBlock(FabricBlockSettings.create()
+                    .mapColor(MapColor.BLACK)
+                    .requiresTool()
+                    .strength(50.0F, 1200.0F), Blocks.DEAD_BRAIN_CORAL_BLOCK));
     public static final InteriorDoorBlock INTERIOR_DOOR =
             register("interior_door", new InteriorDoorBlock(FabricBlockSettings.create()));
     public static final ConsoleLeverBlock HANDBRAKE =
@@ -44,7 +62,8 @@ public class ModBlocks {
     public static final PointOfInterestType TARDIS_EXTERIOR_POI =
             PointOfInterestHelper.register(MiniTardis.id("tardis_exterior"), 0, 1, TARDIS_EXTERIOR);
     public static final PointOfInterestType INTERIOR_DOOR_POI =
-            PointOfInterestHelper.register(MiniTardis.id("interior_door"), 0, 1, INTERIOR_DOOR);
+            PointOfInterestHelper.register(MiniTardis.id("interior_door"), 0, 1,
+                    Arrays.stream(Direction.values()).map(d -> INTERIOR_DOOR.getDefaultState().with(InteriorDoorBlock.FACING, d)).toList());
 
     public static final List<? extends Block> ITEM_BLOCKS = List.of(
             TARDIS_PLATING, INTERIOR_DOOR, HANDBRAKE, CONSOLE_SCREEN,

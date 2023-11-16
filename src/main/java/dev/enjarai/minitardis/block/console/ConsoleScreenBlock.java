@@ -99,7 +99,7 @@ public class ConsoleScreenBlock extends Block implements PolymerBlock, TardisAwa
                 private void update() {
                     stateText.setText(tardis.getState().getName());
                     destinationText.setText(Text.literal(tardis.getDestination()
-                            .map(l -> l.pos().getX() + " " + l.pos().getY() + " " +l.pos().getZ())
+                            .map(l -> l.pos().getX() + " " + l.pos().getY() + " " + l.pos().getZ() + " " + l.facing().getName().toUpperCase().charAt(0))
                             .orElse("Unknown"))); // TODO dimension
                 }
             };

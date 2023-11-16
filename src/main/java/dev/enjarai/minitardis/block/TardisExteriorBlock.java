@@ -79,6 +79,11 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
     }
 
     @Override
+    public boolean tickElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
+        return true;
+    }
+
+    @Override
     public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
         var exteriorElement = new ItemDisplayElement();
         exteriorElement.setItem(PolymerModels.getStack(PolymerModels.TARDIS));
@@ -86,8 +91,17 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
         exteriorElement.setBrightness(Brightness.FULL);
         exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(initialBlockState.get(FACING).asRotation()));
 
-        return new ElementHolder() {{
-            addElement(exteriorElement);
-        }};
+        return new ElementHolder() {
+            {
+                addElement(exteriorElement);
+            }
+
+            @Override
+            protected void onTick() {
+                if (world.getTime() + pos.getX() % 20 == 0) {
+                    exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(world.getBlockState(pos).get(FACING).asRotation()));
+                }
+            }
+        };
     }
 }

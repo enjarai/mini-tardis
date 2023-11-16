@@ -14,13 +14,11 @@ import net.minecraft.block.FacingBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
@@ -51,8 +49,8 @@ public class Tardis {
             Uuids.CODEC.fieldOf("uuid").forGetter(t -> t.uuid),
             Codec.BOOL.optionalFieldOf("interior_placed", false).forGetter(t -> t.interiorPlaced),
             Identifier.CODEC.optionalFieldOf("interior", DEFAULT_INTERIOR).forGetter(t -> t.interior),
-            GlobalLocation.CODEC.optionalFieldOf("current_location").forGetter(t -> t.currentLocation),
-            GlobalLocation.CODEC.optionalFieldOf("destination").forGetter(t -> t.destination),
+            TardisLocation.CODEC.optionalFieldOf("current_location").forGetter(t -> t.currentLocation),
+            TardisLocation.CODEC.optionalFieldOf("destination").forGetter(t -> t.destination),
             BlockPos.CODEC.optionalFieldOf("interior_door_position", BlockPos.ORIGIN).forGetter(t -> t.interiorDoorPosition),
             TardisControl.CODEC.optionalFieldOf("controls", new TardisControl()).forGetter(t -> t.controls),
             FlightState.CODEC.optionalFieldOf("flight_state", new LandedState()).forGetter(t -> t.state)
@@ -64,13 +62,13 @@ public class Tardis {
     private final UUID uuid;
     private boolean interiorPlaced;
     private Identifier interior;
-    private Optional<GlobalLocation> currentLocation;
-    private Optional<GlobalLocation> destination;
+    private Optional<TardisLocation> currentLocation;
+    private Optional<TardisLocation> destination;
     private BlockPos interiorDoorPosition;
     private final TardisControl controls;
     private FlightState state;
 
-    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Optional<GlobalLocation> currentLocation, Optional<GlobalLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state) {
+    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Optional<TardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state) {
         this.uuid = uuid;
         this.interiorPlaced = interiorPlaced;
         this.interior = interior;
@@ -83,7 +81,7 @@ public class Tardis {
         this.controls.tardis = this;
     }
 
-    public Tardis(TardisHolder holder, @Nullable GlobalLocation location) {
+    public Tardis(TardisHolder holder, @Nullable TardisLocation location) {
         this(UUID.randomUUID(), false, DEFAULT_INTERIOR, Optional.ofNullable(location), Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(), new LandedState());
 
         holder.addTardis(this);
@@ -165,7 +163,7 @@ public class Tardis {
             var world = location.getWorld(holder.getServer());
             var pos = location.pos();
 
-            world.setBlockState(pos, ModBlocks.TARDIS_EXTERIOR.getDefaultState());
+            world.setBlockState(pos, ModBlocks.TARDIS_EXTERIOR.getDefaultState().with(TardisExteriorBlock.FACING, location.facing()));
             if (world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity tardisExteriorBlockEntity) {
                 tardisExteriorBlockEntity.linkTardis(this);
             }
@@ -245,27 +243,27 @@ public class Tardis {
         return Optional.ofNullable(MiniTardis.getInteriorManager().getInterior(interior));
     }
 
-    public void setCurrentLocation(@Nullable GlobalLocation location) {
+    public void setCurrentLocation(@Nullable TardisLocation location) {
         setCurrentLocation(Optional.ofNullable(location));
     }
 
-    public void setCurrentLocation(Optional<GlobalLocation> location) {
+    public void setCurrentLocation(Optional<TardisLocation> location) {
         currentLocation = location;
     }
 
-    public Optional<GlobalLocation> getCurrentLocation() {
+    public Optional<TardisLocation> getCurrentLocation() {
         return currentLocation;
     }
 
-    public void setDestination(@Nullable GlobalLocation destination) {
+    public void setDestination(@Nullable TardisLocation destination) {
         setDestination(Optional.ofNullable(destination));
     }
 
-    public void setDestination(Optional<GlobalLocation> destination) {
+    public void setDestination(Optional<TardisLocation> destination) {
         this.destination = destination;
     }
 
-    public Optional<GlobalLocation> getDestination() {
+    public Optional<TardisLocation> getDestination() {
         return destination;
     }
 

@@ -59,6 +59,8 @@ public class ModBlocks {
             register("nudge_destination_button_2", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.SPRUCE_BUTTON, TardisControl::nudgeDestination));
     public static final ConsoleRepeaterBlock COORDINATE_SCALE_SELECTOR =
             register("coordinate_scale_selector", new ConsoleRepeaterBlock(FabricBlockSettings.create(), (controls, value) -> controls.updateCoordinateScale((int) Math.pow(10, value) / 10)));
+    public static final ConsoleRepeaterBlock ROTATION_SELECTOR =
+            register("rotation_selector", new ConsoleRepeaterBlock(FabricBlockSettings.create(), (controls, value) -> controls.rotateDestination(Direction.fromHorizontal(value))));
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);
@@ -72,7 +74,7 @@ public class ModBlocks {
     public static final List<? extends Block> ITEM_BLOCKS = List.of(
             TARDIS_PLATING, INTERIOR_DOOR, HANDBRAKE, CONSOLE_SCREEN,
             RESET_DESTINATION_BUTTON, NUDGE_DESTINATION_BUTTON_1, NUDGE_DESTINATION_BUTTON_2,
-            COORDINATE_SCALE_SELECTOR
+            COORDINATE_SCALE_SELECTOR, ROTATION_SELECTOR
     );
 
 

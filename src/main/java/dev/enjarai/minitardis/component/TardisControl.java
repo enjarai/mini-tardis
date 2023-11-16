@@ -48,6 +48,12 @@ public class TardisControl {
         return tardis.getDestination().isPresent();
     }
 
+    public boolean rotateDestination(Direction direction) {
+        tardis.setDestination(tardis.getDestination()
+                .map(d -> d.with(direction)));
+        return tardis.getDestination().isPresent();
+    }
+
     public boolean handbrake(boolean state) {
         return tardis.suggestStateTransition(state ? new TakingOffState() : new LandingState());
     }

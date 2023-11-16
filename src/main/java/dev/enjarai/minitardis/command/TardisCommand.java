@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import dev.enjarai.minitardis.component.GlobalLocation;
+import dev.enjarai.minitardis.component.TardisLocation;
 import dev.enjarai.minitardis.component.ModComponents;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisHolder;
@@ -14,6 +14,7 @@ import net.minecraft.command.argument.UuidArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -41,7 +42,7 @@ public class TardisCommand {
 
         var pos = BlockPos.ofFloored(context.getSource().getPosition());
         var worldKey = context.getSource().getWorld().getRegistryKey();
-        var location = new GlobalLocation(worldKey, pos);
+        var location = new TardisLocation(worldKey, pos, Direction.NORTH);
 
         new Tardis(holder, location);
 

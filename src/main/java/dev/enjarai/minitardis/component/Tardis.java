@@ -3,6 +3,7 @@ package dev.enjarai.minitardis.component;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
+import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.InteriorDoorBlock;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisExteriorBlock;
@@ -12,6 +13,7 @@ import dev.enjarai.minitardis.component.flight.LandedState;
 import net.minecraft.block.FacingBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -105,7 +107,9 @@ public class Tardis {
         }
 
         // Interior hum
-        state.playForInterior(this, SoundEvents.ENTITY_GUARDIAN_AMBIENT, SoundCategory.AMBIENT, 0.3f, 0f);
+        if (world.getTime() % (20 * 12) == 0) {
+            state.playForInterior(this, ModSounds.CORAL_HUM, SoundCategory.AMBIENT, 0.3f, 1);
+        }
     }
 
     public ServerWorld getInteriorWorld() {
@@ -196,6 +200,11 @@ public class Tardis {
 
             var entityPos = Vec3d.ofBottomCenter(targetPos);
             entity.teleport(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), Set.of(), yaw, 0);
+
+            // Play a loop of hum to the player the moment they enter to ensure a seamless experience™
+            if (entity instanceof PlayerEntity player) {
+                world.playSoundFromEntity(null, player, ModSounds.CORAL_HUM, SoundCategory.AMBIENT, 0.3f, 1);
+            }
         }
     }
 

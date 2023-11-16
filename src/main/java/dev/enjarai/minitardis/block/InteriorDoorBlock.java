@@ -1,12 +1,18 @@
 package dev.enjarai.minitardis.block;
 
+import dev.enjarai.minitardis.item.PolymerModels;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
+import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
+import eu.pb4.polymer.virtualentity.api.ElementHolder;
+import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.decoration.Brightness;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
@@ -15,13 +21,15 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
-public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, TardisAware {
+public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, TardisAware, BlockWithElementHolder {
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
 
     protected InteriorDoorBlock(Settings settings) {
@@ -78,11 +86,22 @@ public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, Tard
 
     @Override
     public Block getPolymerBlock(BlockState state) {
-        return Blocks.PISTON;
+        return Blocks.BARRIER;
     }
 
     @Override
-    public BlockState getPolymerBlockState(BlockState state) {
-        return Blocks.PISTON.getDefaultState().with(FACING, state.get(FACING));
+    public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
+        if (initialBlockState.get(HALF) == DoubleBlockHalf.LOWER) {
+            var exteriorElement = new ItemDisplayElement();
+            exteriorElement.setItem(PolymerModels.getStack(PolymerModels.INTERIOR_DOOR));
+            exteriorElement.setOffset(new Vec3d(0, 1, 0));
+            exteriorElement.setBrightness(Brightness.FULL);
+            exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(initialBlockState.get(FACING).asRotation()));
+
+            return new ElementHolder() {{
+                addElement(exteriorElement);
+            }};
+        }
+        return null;
     }
 }

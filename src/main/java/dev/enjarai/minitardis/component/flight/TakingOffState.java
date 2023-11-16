@@ -2,14 +2,16 @@ package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
+import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.component.Tardis;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 
 import java.util.Optional;
 
 public class TakingOffState extends TransitionalFlightState {
     public static final Codec<TakingOffState> CODEC = Codec.INT
-            .xmap(TakingOffState::new, s -> s.ticksPassed).fieldOf("ticksPassed").codec();
+            .xmap(TakingOffState::new, s -> s.ticksPassed).fieldOf("ticks_passed").codec();
     public static final Identifier ID = MiniTardis.id("taking_off");
 
     private TakingOffState(int ticksPassed) {
@@ -21,8 +23,19 @@ public class TakingOffState extends TransitionalFlightState {
     }
 
     @Override
+    public void init(Tardis tardis) {
+        playForInteriorAndExterior(tardis, ModSounds.TARDIS_TAKEOFF, SoundCategory.BLOCKS, 1, 1);
+    }
+
+    @Override
     public void complete(Tardis tardis) {
         tardis.setCurrentLocation(Optional.empty());
+    }
+
+    @Override
+    public FlightState tick(Tardis tardis) {
+        tickScreenShake(tardis, 1);
+        return super.tick(tardis);
     }
 
     @Override
@@ -37,7 +50,7 @@ public class TakingOffState extends TransitionalFlightState {
 
     @Override
     public int getTransitionDuration(Tardis tardis) {
-        return 20 * 8;
+        return 20 * 10;
     }
 
     @Override

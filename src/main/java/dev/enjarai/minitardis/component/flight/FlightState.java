@@ -2,6 +2,9 @@ package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.component.Tardis;
+import net.minecraft.network.packet.s2c.play.PositionFlag;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -56,5 +59,36 @@ public interface FlightState {
 
     default Text getName() {
         return Text.translatable("mini_tardis.state." + id().getNamespace() + "." + id().getPath());
+    }
+
+    default void playForInterior(Tardis tardis, SoundEvent soundEvent, SoundCategory category, float volume, float pitch) {
+        var world = tardis.getInteriorWorld();
+        for (var player : world.getPlayers()) {
+            world.playSoundFromEntity(null, player, soundEvent, category, volume, pitch);
+        }
+    }
+
+    default void playForInteriorAndExterior(Tardis tardis, SoundEvent soundEvent, SoundCategory category, float volume, float pitch) {
+        playForInterior(tardis, soundEvent, category, volume, pitch);
+        tardis.getExteriorWorld().ifPresent(world -> {
+            // We can safely assume currentLocation exists, because we wouldn't have an exterior world if it didn't.
+            //noinspection OptionalGetWithoutIsPresent
+            world.playSound(null, tardis.getCurrentLocation().get().pos(), soundEvent, category, volume, pitch);
+        });
+    }
+
+    default void tickScreenShake(Tardis tardis, float intensity) {
+        var world = tardis.getInteriorWorld();
+        var random = world.getRandom();
+        for (var player : world.getPlayers()) {
+            var amountX = random.nextFloat() * intensity - intensity / 2;
+            var amountY = random.nextFloat() * intensity - intensity / 2;
+
+            player.teleport(
+                    world, player.getX(), player.getY(), player.getZ(),
+                    PositionFlag.VALUES,
+                    player.getYaw() + amountX, player.getPitch() + amountY
+            );
+        }
     }
 }

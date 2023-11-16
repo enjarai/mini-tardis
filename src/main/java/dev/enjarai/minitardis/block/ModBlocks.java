@@ -3,6 +3,7 @@ package dev.enjarai.minitardis.block;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleButtonBlock;
 import dev.enjarai.minitardis.block.console.ConsoleLeverBlock;
+import dev.enjarai.minitardis.block.console.ConsoleRepeaterBlock;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlock;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
@@ -19,6 +20,7 @@ import net.minecraft.block.enums.Instrument;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.poi.PointOfInterestType;
 
 import java.util.Arrays;
@@ -50,11 +52,13 @@ public class ModBlocks {
     public static final ConsoleScreenBlock CONSOLE_SCREEN =
             register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create()));
     public static final ConsoleButtonBlock RESET_DESTINATION_BUTTON =
-            register("reset_destination_button", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.BIRCH_BUTTON, (controls, facing) -> controls.resetDestination()));
+            register("reset_destination_button", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.DARK_OAK_BUTTON, (controls, facing) -> controls.resetDestination()));
     public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_1 =
             register("nudge_destination_button_1", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.OAK_BUTTON, TardisControl::nudgeDestination));
     public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_2 =
             register("nudge_destination_button_2", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.SPRUCE_BUTTON, TardisControl::nudgeDestination));
+    public static final ConsoleRepeaterBlock COORDINATE_SCALE_SELECTOR =
+            register("coordinate_scale_selector", new ConsoleRepeaterBlock(FabricBlockSettings.create(), (controls, value) -> controls.updateCoordinateScale((int) Math.pow(10, value) / 10)));
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);
@@ -67,7 +71,8 @@ public class ModBlocks {
 
     public static final List<? extends Block> ITEM_BLOCKS = List.of(
             TARDIS_PLATING, INTERIOR_DOOR, HANDBRAKE, CONSOLE_SCREEN,
-            RESET_DESTINATION_BUTTON, NUDGE_DESTINATION_BUTTON_1, NUDGE_DESTINATION_BUTTON_2
+            RESET_DESTINATION_BUTTON, NUDGE_DESTINATION_BUTTON_1, NUDGE_DESTINATION_BUTTON_2,
+            COORDINATE_SCALE_SELECTOR
     );
 
 

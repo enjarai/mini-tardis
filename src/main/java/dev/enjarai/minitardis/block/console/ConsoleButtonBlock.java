@@ -7,18 +7,19 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockSetType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ButtonBlock;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
-public class ConsoleButtonBlock extends ButtonBlock implements PolymerBlock, TardisAware {
+public class ConsoleButtonBlock extends ButtonBlock implements PolymerBlock, TardisAware, ConsoleInput {
     private final Block polymerBlock;
-    private final BiConsumer<TardisControl, Direction> controlInput;
+    private final BiFunction<TardisControl, Direction, Boolean> controlInput;
 
-    public ConsoleButtonBlock(Settings settings, Block polymerBlock, BiConsumer<TardisControl, Direction> controlInput) {
+    public ConsoleButtonBlock(Settings settings, Block polymerBlock, BiFunction<TardisControl, Direction, Boolean> controlInput) {
         super(settings, BlockSetType.OAK, 2, true);
         this.polymerBlock = polymerBlock;
         this.controlInput = controlInput;
@@ -27,7 +28,9 @@ public class ConsoleButtonBlock extends ButtonBlock implements PolymerBlock, Tar
     @Override
     public void powerOn(BlockState state, World world, BlockPos pos) {
         super.powerOn(state, world, pos);
-        getTardis(world).ifPresent(tardis -> controlInput.accept(tardis.getControls(), state.get(FACING)));
+        if (!getTardis(world).map(tardis -> controlInput.apply(tardis.getControls(), state.get(FACING))).orElse(false)) {
+            inputFailure(world, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_OPEN, 0);
+        }
     }
 
     @Override

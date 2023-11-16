@@ -7,5 +7,11 @@
   "mini_tardis.state.mini_tardis.landed": "Landed",
   "mini_tardis.state.mini_tardis.taking_off": "Taking Off...",
   "mini_tardis.state.mini_tardis.flying": "In Flight",
-  "mini_tardis.state.mini_tardis.landing": "Landing..."
+  "mini_tardis.state.mini_tardis.landing": "Landing...",
+
+  "sound.mini_tardis.cloister_bell": "Cloister Bell Chimes",
+  "sound.mini_tardis.tardis_landing": "Tardis Landing",
+  "sound.mini_tardis.tardis_takeoff": "Tardis Taking Off",
+  "sound.mini_tardis.tardis_fly_loop": "Tardis Flying",
+  "sound.mini_tardis.coral_hum": "Tardis Breathes"
 }

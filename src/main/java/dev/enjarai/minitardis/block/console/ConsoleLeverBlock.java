@@ -7,17 +7,18 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeverBlock;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
-public class ConsoleLeverBlock extends LeverBlock implements PolymerBlock, TardisAware {
-    private final BiConsumer<TardisControl, Boolean> controlInput;
+public class ConsoleLeverBlock extends LeverBlock implements PolymerBlock, TardisAware, ConsoleInput {
+    private final BiFunction<TardisControl, Boolean, Boolean> controlInput;
 
-    public ConsoleLeverBlock(Settings settings, BiConsumer<TardisControl, Boolean> controlInput) {
+    public ConsoleLeverBlock(Settings settings, BiFunction<TardisControl, Boolean, Boolean> controlInput) {
         super(settings);
         this.controlInput = controlInput;
     }
@@ -25,7 +26,9 @@ public class ConsoleLeverBlock extends LeverBlock implements PolymerBlock, Tardi
     @Override
     public BlockState togglePower(BlockState state, World world, BlockPos pos) {
         var state2 = super.togglePower(state, world, pos);
-        getTardis(world).ifPresent(tardis -> controlInput.accept(tardis.getControls(), state2.get(POWERED)));
+        if (!getTardis(world).map(tardis -> controlInput.apply(tardis.getControls(), state2.get(POWERED))).orElse(false)) {
+            inputFailure(world, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, 0);
+        }
         return state2;
     }
 

@@ -44,6 +44,7 @@ public class MiniTardis implements ModInitializer {
 
 		ModBlocks.load();
 		ModItems.load();
+		ModSounds.load();
 
 		PolymerResourcePackUtils.addModAssets(MOD_ID);
 		PolymerModels.load();

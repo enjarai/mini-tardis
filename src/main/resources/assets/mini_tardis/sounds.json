@@ -1,0 +1,32 @@
+{
+  "cloister_bell": {
+    "subtitle": "sound.mini_tardis.cloister_bell",
+    "sounds": [
+      "mini_tardis:cloister_bell"
+    ]
+  },
+  "tardis_landing": {
+    "subtitle": "sound.mini_tardis.tardis_landing",
+    "sounds": [
+      "mini_tardis:tardis_landing"
+    ]
+  },
+  "tardis_takeoff": {
+    "subtitle": "sound.mini_tardis.tardis_takeoff",
+    "sounds": [
+      "mini_tardis:tardis_takeoff"
+    ]
+  },
+  "tardis_fly_loop": {
+    "subtitle": "sound.mini_tardis.tardis_fly_loop",
+    "sounds": [
+      "mini_tardis:tardis_fly_loop"
+    ]
+  },
+  "coral_hum": {
+    "subtitle": "sound.mini_tardis.coral_hum",
+    "sounds": [
+      "mini_tardis:coral_hum"
+    ]
+  }
+}

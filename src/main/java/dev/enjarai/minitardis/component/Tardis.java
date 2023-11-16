@@ -17,6 +17,8 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
@@ -101,6 +103,9 @@ public class Tardis {
             state = newState;
             newState.init(this);
         }
+
+        // Interior hum
+        state.playForInterior(this, SoundEvents.ENTITY_GUARDIAN_AMBIENT, SoundCategory.AMBIENT, 0.3f, 0f);
     }
 
     public ServerWorld getInteriorWorld() {
@@ -108,6 +113,10 @@ public class Tardis {
             initializeInteriorWorld();
         }
         return interiorWorld.asWorld();
+    }
+
+    public Optional<ServerWorld> getExteriorWorld() {
+        return currentLocation.map(l -> l.getWorld(holder.getServer()));
     }
 
     private void initializeInteriorWorld() {

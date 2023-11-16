@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.InteriorDoorBlock;
 import dev.enjarai.minitardis.block.ModBlocks;
+import dev.enjarai.minitardis.block.TardisExteriorBlock;
 import dev.enjarai.minitardis.block.TardisExteriorBlockEntity;
 import dev.enjarai.minitardis.component.flight.FlightState;
 import dev.enjarai.minitardis.component.flight.LandedState;
@@ -203,7 +204,7 @@ public class Tardis {
                 }
 
                 if (blockEntity instanceof TardisExteriorBlockEntity exteriorEntity && this.equals(exteriorEntity.getLinkedTardis())) {
-                    var facing = Direction.NORTH; // exteriorEntity.getCachedState() TODO
+                    var facing = exteriorEntity.getCachedState().get(TardisExteriorBlock.FACING);
                     var exitPos = pos.add(facing.getVector());
 
                     var entityPos = Vec3d.ofBottomCenter(exitPos);

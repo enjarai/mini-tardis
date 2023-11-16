@@ -62,8 +62,9 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
                 && hit.getSide() == state.get(FACING)
                 && world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity) {
             blockEntity.teleportEntityIn(player);
+            return ActionResult.SUCCESS;
         }
-        return ActionResult.SUCCESS;
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override

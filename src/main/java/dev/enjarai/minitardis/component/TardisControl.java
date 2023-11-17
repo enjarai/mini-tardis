@@ -36,7 +36,7 @@ public class TardisControl {
     public boolean resetDestination() {
         if (tardis.getCurrentLocation().isEmpty()) return false;
 
-        return tardis.setDestination(tardis.getCurrentLocation());
+        return tardis.setDestination(tardis.getCurrentLocation(), false);
     }
 
     public boolean updateCoordinateScale(int scale) {
@@ -46,13 +46,13 @@ public class TardisControl {
 
     public boolean nudgeDestination(Direction direction) {
         return tardis.setDestination(tardis.getDestination()
-                .map(d -> d.with(d.pos().add(direction.getVector().multiply(coordinateScale)))))
+                .map(d -> d.with(d.pos().add(direction.getVector().multiply(coordinateScale)))), false)
                 && tardis.getDestination().isPresent();
     }
 
     public boolean rotateDestination(Direction direction) {
         return tardis.setDestination(tardis.getDestination()
-                .map(d -> d.with(direction)))
+                .map(d -> d.with(direction)), false)
                 && tardis.getDestination().isPresent();
     }
 

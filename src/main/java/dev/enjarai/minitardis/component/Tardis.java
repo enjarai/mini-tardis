@@ -273,12 +273,12 @@ public class Tardis {
         return currentLocation;
     }
 
-    public boolean setDestination(@Nullable TardisLocation destination) {
-        return setDestination(Optional.ofNullable(destination));
+    public boolean setDestination(@Nullable TardisLocation destination, boolean force) {
+        return setDestination(Optional.ofNullable(destination), force);
     }
 
-    public boolean setDestination(Optional<TardisLocation> destination) {
-        if (!state.canChangeCourse(this)) return false;
+    public boolean setDestination(Optional<TardisLocation> destination, boolean force) {
+        if (!force && !state.canChangeCourse(this)) return false;
 
         this.destination = destination;
         return true;

@@ -58,7 +58,7 @@ public class SearchingForLandingState implements FlightState {
 
                 var location = destination.get().with(pos);
                 if (tardis.canLandAt(location)) {
-                    tardis.setDestination(location);
+                    tardis.setDestination(location, true);
                     // Only in this case will we actually land.
                     return new LandingState();
                 }

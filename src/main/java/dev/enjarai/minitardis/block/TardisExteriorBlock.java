@@ -98,7 +98,7 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
 
             @Override
             protected void onTick() {
-                if (world.getTime() + pos.getX() % 20 == 0) {
+                if (world.getTime() % 20 == 0) {
                     exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(world.getBlockState(pos).get(FACING).asRotation()));
                 }
             }

@@ -7,6 +7,8 @@ import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 
+import java.util.Optional;
+
 public class LandingState extends TransitionalFlightState {
     public static final Codec<LandingState> CODEC = Codec.INT
             .xmap(LandingState::new, s -> s.ticksPassed).fieldOf("ticks_passed").codec();
@@ -30,8 +32,9 @@ public class LandingState extends TransitionalFlightState {
 
     @Override
     public FlightState tick(Tardis tardis) {
-        if (tardis.getDestination().map(tardis::canLandAt).orElse(false)) {
+        if (tardis.getCurrentLocation().map(tardis::canLandAt).orElse(false)) {
             playForInterior(tardis, ModSounds.TARDIS_FAILURE_SINGLE, SoundCategory.BLOCKS, 1, 1);
+            tardis.setCurrentLocation(Optional.empty());
             return new FlyingState();
         }
 

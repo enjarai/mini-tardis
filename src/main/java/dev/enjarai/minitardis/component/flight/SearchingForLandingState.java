@@ -50,8 +50,9 @@ public class SearchingForLandingState implements FlightState {
 
             for (int i = 0; i < BLOCKS_PER_TICK; i++) {
                 if (!searchIterator.hasNext()) {
-                    // If we've reached the end of our iterator, we're mildly fucked, but let's let LandingState handle that.
-                    return new LandingState();
+                    // If we've reached the end of our iterator, we're mildly fucked, but let's let FlyingState handle that.
+                    playForInterior(tardis, ModSounds.TARDIS_FAILURE_SINGLE, SoundCategory.BLOCKS, 1, 1);
+                    return new FlyingState();
                 }
                 var pos = searchIterator.next();
 
@@ -65,8 +66,8 @@ public class SearchingForLandingState implements FlightState {
 
             searchingTicks++;
         } else {
-            // If we have no destination, the landing state will error and kick us back to a flight state.
-            return new LandingState();
+            playForInterior(tardis, ModSounds.TARDIS_FAILURE_SINGLE, SoundCategory.BLOCKS, 1, 1);
+            return new FlyingState();
         }
 
         return this;

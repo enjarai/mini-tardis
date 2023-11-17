@@ -30,6 +30,11 @@ public class LandingState extends TransitionalFlightState {
 
     @Override
     public FlightState tick(Tardis tardis) {
+        if (tardis.getDestination().map(tardis::canLandAt).orElse(false)) {
+            playForInterior(tardis, ModSounds.TARDIS_FAILURE_SINGLE, SoundCategory.BLOCKS, 1, 1);
+            return new FlyingState();
+        }
+
         tickScreenShake(tardis, 1);
         return super.tick(tardis);
     }
@@ -51,6 +56,11 @@ public class LandingState extends TransitionalFlightState {
 
     @Override
     public boolean isSolid(Tardis tardis) {
+        return false;
+    }
+
+    @Override
+    public boolean canChangeCourse(Tardis tardis) {
         return false;
     }
 

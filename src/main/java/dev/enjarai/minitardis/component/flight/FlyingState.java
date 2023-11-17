@@ -11,12 +11,12 @@ public class FlyingState implements FlightState {
     public static final Codec<FlyingState> CODEC = Codec.INT
             .xmap(FlyingState::new, s -> s.flyingTicks).fieldOf("flying_ticks").codec();
     public static final Identifier ID = MiniTardis.id("flying");
-    private static final int SOUND_LOOP_LENGTH = 32;
+    static final int SOUND_LOOP_LENGTH = 32;
     private static final int AFTERSHAKE_LENGTH = 80;
 
     private int flyingTicks;
 
-    private FlyingState(int flyingTicks) {
+    FlyingState(int flyingTicks) {
         this.flyingTicks = flyingTicks;
     }
 
@@ -28,7 +28,6 @@ public class FlyingState implements FlightState {
     public FlightState tick(Tardis tardis) {
         flyingTicks++;
         if (flyingTicks % SOUND_LOOP_LENGTH == 0) {
-//            var pitch = tardis.getInteriorWorld().getRandom().nextFloat() * 0.1f + 0.95f;
             playForInterior(tardis, ModSounds.TARDIS_FLY_LOOP, SoundCategory.BLOCKS, 0.6f, 1);
         }
 
@@ -42,7 +41,11 @@ public class FlyingState implements FlightState {
 
     @Override
     public boolean suggestTransition(Tardis tardis, FlightState newState) {
-        return newState instanceof LandingState;
+        if (newState instanceof SearchingForLandingState landingState) {
+            landingState.flyingTicks = flyingTicks;
+            return true;
+        }
+        return false;
     }
 
     @Override

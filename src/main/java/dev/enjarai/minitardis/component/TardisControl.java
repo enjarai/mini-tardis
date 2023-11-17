@@ -3,6 +3,7 @@ package dev.enjarai.minitardis.component;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.component.flight.LandingState;
+import dev.enjarai.minitardis.component.flight.SearchingForLandingState;
 import dev.enjarai.minitardis.component.flight.TakingOffState;
 import net.minecraft.util.math.Direction;
 
@@ -33,8 +34,9 @@ public class TardisControl {
 
 
     public boolean resetDestination() {
-        tardis.setDestination(tardis.getCurrentLocation());
-        return true;
+        if (tardis.getCurrentLocation().isEmpty()) return false;
+
+        return tardis.setDestination(tardis.getCurrentLocation());
     }
 
     public boolean updateCoordinateScale(int scale) {
@@ -43,18 +45,18 @@ public class TardisControl {
     }
 
     public boolean nudgeDestination(Direction direction) {
-        tardis.setDestination(tardis.getDestination()
-                .map(d -> d.with(d.pos().add(direction.getVector().multiply(coordinateScale)))));
-        return tardis.getDestination().isPresent();
+        return tardis.setDestination(tardis.getDestination()
+                .map(d -> d.with(d.pos().add(direction.getVector().multiply(coordinateScale)))))
+                && tardis.getDestination().isPresent();
     }
 
     public boolean rotateDestination(Direction direction) {
-        tardis.setDestination(tardis.getDestination()
-                .map(d -> d.with(direction)));
-        return tardis.getDestination().isPresent();
+        return tardis.setDestination(tardis.getDestination()
+                .map(d -> d.with(direction)))
+                && tardis.getDestination().isPresent();
     }
 
     public boolean handbrake(boolean state) {
-        return tardis.suggestStateTransition(state ? new TakingOffState() : new LandingState());
+        return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState());
     }
 }

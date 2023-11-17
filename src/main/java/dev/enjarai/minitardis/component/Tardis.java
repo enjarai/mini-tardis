@@ -121,6 +121,10 @@ public class Tardis {
         return currentLocation.map(l -> l.getWorld(holder.getServer()));
     }
 
+    public Optional<ServerWorld> getDestinationWorld() {
+        return destination.map(l -> l.getWorld(holder.getServer()));
+    }
+
     private void initializeInteriorWorld() {
         var server = holder.getServer();
         var dimensionRegistry = server.getRegistryManager().get(RegistryKeys.DIMENSION_TYPE);
@@ -230,6 +234,20 @@ public class Tardis {
         }
     }
 
+    public boolean canLandAt(TardisLocation location) {
+        var world = location.getWorld(holder.getServer());
+        var pos = location.pos();
+        if (!world.isInBuildLimit(pos)) return false;
+        var facing = location.facing();
+
+        return world.getBlockState(pos).isReplaceable()
+                && world.getBlockState(pos.up()).isReplaceable()
+                && world.getBlockState(pos.down()).isSideSolidFullSquare(world, pos, Direction.UP)
+                && world.getBlockState(pos.offset(facing)).getCollisionShape(world, pos).isEmpty()
+                && world.getBlockState(pos.up().offset(facing)).getCollisionShape(world, pos).isEmpty()
+                && world.getBlockState(pos.down().offset(facing)).isSideSolidFullSquare(world, pos, Direction.UP);
+    }
+
 
     public BlockPos getInteriorCenter() {
         return INTERIOR_CENTER;
@@ -255,12 +273,15 @@ public class Tardis {
         return currentLocation;
     }
 
-    public void setDestination(@Nullable TardisLocation destination) {
-        setDestination(Optional.ofNullable(destination));
+    public boolean setDestination(@Nullable TardisLocation destination) {
+        return setDestination(Optional.ofNullable(destination));
     }
 
-    public void setDestination(Optional<TardisLocation> destination) {
+    public boolean setDestination(Optional<TardisLocation> destination) {
+        if (!state.canChangeCourse(this)) return false;
+
         this.destination = destination;
+        return true;
     }
 
     public Optional<TardisLocation> getDestination() {

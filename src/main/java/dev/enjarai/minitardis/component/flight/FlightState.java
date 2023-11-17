@@ -15,7 +15,8 @@ public interface FlightState {
             LandedState.ID, LandedState.CODEC,
             TakingOffState.ID, TakingOffState.CODEC,
             FlyingState.ID, FlyingState.CODEC,
-            LandingState.ID, LandingState.CODEC
+            LandingState.ID, LandingState.CODEC,
+            SearchingForLandingState.ID, SearchingForLandingState.CODEC
     );
     Codec<FlightState> CODEC = Identifier.CODEC.dispatch(FlightState::id, ALL::get);
 
@@ -49,6 +50,13 @@ public interface FlightState {
      * Whether entities should be able to enter and exit the Tardis.
      */
     default boolean isSolid(Tardis tardis) {
+        return true;
+    }
+
+    /**
+     * Whether the destination of the Tardis can be changed during this state.
+     */
+    default boolean canChangeCourse(Tardis tardis) {
         return true;
     }
 

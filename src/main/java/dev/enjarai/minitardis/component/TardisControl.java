@@ -7,6 +7,8 @@ import dev.enjarai.minitardis.component.flight.SearchingForLandingState;
 import dev.enjarai.minitardis.component.flight.TakingOffState;
 import net.minecraft.util.math.Direction;
 
+import java.util.Optional;
+
 /**
  * Takes in button presses and other inputs from the Tardis console and translates them into actions performed on it.
  */
@@ -46,8 +48,27 @@ public class TardisControl {
 
     public boolean nudgeDestination(Direction direction) {
         return tardis.setDestination(tardis.getDestination()
-                .map(d -> d.with(d.pos().add(direction.getVector().multiply(coordinateScale)))), false)
+                .map(d -> {
+                    if (direction.getAxis().isVertical()) {
+                        return snapLocationVertically(d, direction);
+                    } else {
+                        return d.with(d.pos().add(direction.getVector().multiply(coordinateScale)));
+                    }
+                }), false)
                 && tardis.getDestination().isPresent();
+    }
+
+    private TardisLocation snapLocationVertically(TardisLocation location, Direction direction) {
+        var world = tardis.getDestinationWorld();
+        if (world.isPresent()) {
+            for (var pos = location.pos().offset(direction); world.get().isInBuildLimit(pos); pos = pos.offset(direction)) {
+                var checkLocation = location.with(pos);
+                if (tardis.canSnapDestinationTo(checkLocation)) {
+                    return checkLocation;
+                }
+            }
+        }
+        return location;
     }
 
     public boolean rotateDestination(Direction direction) {

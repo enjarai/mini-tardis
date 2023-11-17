@@ -248,6 +248,15 @@ public class Tardis {
                 && world.getBlockState(pos.down().offset(facing)).isSideSolidFullSquare(world, pos, Direction.UP);
     }
 
+    public boolean canSnapDestinationTo(TardisLocation location) {
+        var world = location.getWorld(holder.getServer());
+        var pos = location.pos();
+        if (!world.isInBuildLimit(pos)) return false;
+
+        return world.getBlockState(pos).isReplaceable()
+                && !world.getBlockState(pos.down()).isReplaceable();
+    }
+
 
     public BlockPos getInteriorCenter() {
         return INTERIOR_CENTER;

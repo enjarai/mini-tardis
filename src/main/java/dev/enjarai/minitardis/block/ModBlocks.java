@@ -1,10 +1,7 @@
 package dev.enjarai.minitardis.block;
 
 import dev.enjarai.minitardis.MiniTardis;
-import dev.enjarai.minitardis.block.console.ConsoleButtonBlock;
-import dev.enjarai.minitardis.block.console.ConsoleLeverBlock;
-import dev.enjarai.minitardis.block.console.ConsoleRepeaterBlock;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlock;
+import dev.enjarai.minitardis.block.console.*;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
 import eu.pb4.polymer.core.api.block.SimplePolymerBlock;
@@ -48,19 +45,31 @@ public class ModBlocks {
     public static final InteriorDoorBlock INTERIOR_DOOR =
             register("interior_door", new InteriorDoorBlock(FabricBlockSettings.create()));
     public static final ConsoleLeverBlock HANDBRAKE =
-            register("handbrake", new ConsoleLeverBlock(FabricBlockSettings.create(), TardisControl::handbrake));
+            register("handbrake", new ConsoleLeverBlock(FabricBlockSettings.create(),
+                    TardisControl::handbrake));
     public static final ConsoleScreenBlock CONSOLE_SCREEN =
             register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create()));
     public static final ConsoleButtonBlock RESET_DESTINATION_BUTTON =
-            register("reset_destination_button", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.DARK_OAK_BUTTON, (controls, facing) -> controls.resetDestination()));
+            register("reset_destination_button", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.DARK_OAK_BUTTON,
+                    (controls, facing) -> controls.resetDestination()));
     public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_1 =
-            register("nudge_destination_button_1", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.OAK_BUTTON, TardisControl::nudgeDestination));
+            register("nudge_destination_button_1", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.OAK_BUTTON,
+                    TardisControl::nudgeDestination));
     public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_2 =
-            register("nudge_destination_button_2", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.SPRUCE_BUTTON, TardisControl::nudgeDestination));
+            register("nudge_destination_button_2", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.SPRUCE_BUTTON,
+                    TardisControl::nudgeDestination));
     public static final ConsoleRepeaterBlock COORDINATE_SCALE_SELECTOR =
-            register("coordinate_scale_selector", new ConsoleRepeaterBlock(FabricBlockSettings.create(), (controls, value) -> controls.updateCoordinateScale((int) Math.pow(10, value) / 10)));
+            register("coordinate_scale_selector", new ConsoleRepeaterBlock(FabricBlockSettings.create(),
+                    (controls, value) -> controls.updateCoordinateScale((int) Math.pow(10, value) / 10)));
     public static final ConsoleRepeaterBlock ROTATION_SELECTOR =
-            register("rotation_selector", new ConsoleRepeaterBlock(FabricBlockSettings.create(), (controls, value) -> controls.rotateDestination(Direction.fromHorizontal(value))));
+            register("rotation_selector", new ConsoleRepeaterBlock(FabricBlockSettings.create(),
+                    (controls, value) -> controls.rotateDestination(Direction.fromHorizontal(value))));
+    public static final ConsoleComparatorBlock STATE_COMPARATOR =
+            register("state_comparator", new ConsoleComparatorBlock(FabricBlockSettings.create(),
+                    (controls, value) -> true));
+    public static final ConsoleComparatorDependentBlock VERTICAL_NUDGE_DESTINATION_BUTTON =
+            register("vertical_nudge_destination_button", new ConsoleComparatorDependentBlock(FabricBlockSettings.create(),
+                    (controls, value) -> controls.nudgeDestination(value ? Direction.UP : Direction.DOWN)));
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);
@@ -74,7 +83,8 @@ public class ModBlocks {
     public static final List<? extends Block> ITEM_BLOCKS = List.of(
             TARDIS_PLATING, INTERIOR_DOOR, HANDBRAKE, CONSOLE_SCREEN,
             RESET_DESTINATION_BUTTON, NUDGE_DESTINATION_BUTTON_1, NUDGE_DESTINATION_BUTTON_2,
-            COORDINATE_SCALE_SELECTOR, ROTATION_SELECTOR
+            COORDINATE_SCALE_SELECTOR, ROTATION_SELECTOR, STATE_COMPARATOR,
+            VERTICAL_NUDGE_DESTINATION_BUTTON
     );
 
 

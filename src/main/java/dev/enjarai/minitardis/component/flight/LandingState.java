@@ -1,32 +1,39 @@
 package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.component.Tardis;
+import dev.enjarai.minitardis.component.TardisLocation;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 
 import java.util.Optional;
 
 public class LandingState extends TransitionalFlightState {
-    public static final Codec<LandingState> CODEC = Codec.INT
-            .xmap(LandingState::new, s -> s.ticksPassed).fieldOf("ticks_passed").codec();
+    public static final Codec<LandingState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.INT.fieldOf("ticks_passed").forGetter(s -> s.ticksPassed),
+            TardisLocation.CODEC.fieldOf("landing_destination").forGetter(s -> s.landingDestination)
+    ).apply(instance, LandingState::new));
     public static final Identifier ID = MiniTardis.id("landing");
 
-    private LandingState(int ticksPassed) {
+    private final TardisLocation landingDestination;
+
+    private LandingState(int ticksPassed, TardisLocation landingDestination) {
         super(ticksPassed);
+        this.landingDestination = landingDestination;
     }
 
-    public LandingState() {
-        this(0);
+    public LandingState(TardisLocation landingDestination) {
+        this(0, landingDestination);
     }
 
     @Override
     public void init(Tardis tardis) {
         playForInteriorAndExterior(tardis, ModSounds.TARDIS_LANDING, SoundCategory.BLOCKS, 1, 1);
 
-        tardis.setCurrentLocation(tardis.getDestination());
+        tardis.setCurrentLocation(landingDestination);
         tardis.buildExterior();
     }
 

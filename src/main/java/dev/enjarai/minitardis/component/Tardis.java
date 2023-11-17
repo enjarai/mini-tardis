@@ -253,8 +253,10 @@ public class Tardis {
         var pos = location.pos();
         if (!world.isInBuildLimit(pos)) return false;
 
-        return world.getBlockState(pos).isReplaceable()
-                && !world.getBlockState(pos.down()).isReplaceable();
+        var bottomState = world.getBlockState(pos);
+        if (!bottomState.isReplaceable() && !bottomState.isIn(ModBlocks.TARDIS_EXTERIOR_PARTS)) return false;
+        var floorState = world.getBlockState(pos.down());
+        return !floorState.isReplaceable() && !floorState.isIn(ModBlocks.TARDIS_EXTERIOR_PARTS);
     }
 
 

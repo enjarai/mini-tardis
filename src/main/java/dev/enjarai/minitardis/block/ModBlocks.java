@@ -16,6 +16,8 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.enums.Instrument;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.poi.PointOfInterestType;
@@ -70,6 +72,9 @@ public class ModBlocks {
     public static final ConsoleComparatorDependentBlock VERTICAL_NUDGE_DESTINATION_BUTTON =
             register("vertical_nudge_destination_button", new ConsoleComparatorDependentBlock(FabricBlockSettings.create(),
                     (controls, value) -> controls.nudgeDestination(value ? Direction.UP : Direction.DOWN)));
+    public static final ConsoleDaylightDetectorBlock FUEL_CONTROL =
+            register("fuel_control", new ConsoleDaylightDetectorBlock(FabricBlockSettings.create(),
+                    (controls, value) -> true)); // TODO
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);
@@ -84,8 +89,11 @@ public class ModBlocks {
             TARDIS_PLATING, INTERIOR_DOOR, HANDBRAKE, CONSOLE_SCREEN,
             RESET_DESTINATION_BUTTON, NUDGE_DESTINATION_BUTTON_1, NUDGE_DESTINATION_BUTTON_2,
             COORDINATE_SCALE_SELECTOR, ROTATION_SELECTOR, STATE_COMPARATOR,
-            VERTICAL_NUDGE_DESTINATION_BUTTON
+            VERTICAL_NUDGE_DESTINATION_BUTTON, FUEL_CONTROL
     );
+
+    public static final TagKey<Block> TARDIS_EXTERIOR_PARTS =
+            TagKey.of(RegistryKeys.BLOCK, MiniTardis.id("tardis_exterior_parts"));
 
 
     public static void load() {

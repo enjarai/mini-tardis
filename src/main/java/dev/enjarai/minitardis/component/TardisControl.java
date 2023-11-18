@@ -10,9 +10,7 @@ import dev.enjarai.minitardis.component.screen.ScreenApp;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Takes in button presses and other inputs from the Tardis console and translates them into actions performed on it.
@@ -90,5 +88,18 @@ public class TardisControl {
 
     public boolean handbrake(boolean state) {
         return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState());
+    }
+
+
+    public Tardis getTardis() {
+        return tardis;
+    }
+
+    public Optional<ScreenApp> getScreenApp(Identifier id) {
+        return Optional.ofNullable(screenApps.get(id));
+    }
+
+    public List<ScreenApp> getAllApps() {
+        return ImmutableList.copyOf(screenApps.values());
     }
 }

@@ -11,6 +11,8 @@ import java.util.NoSuchElementException;
 
 public class ModCanvasUtils {
     public static final CanvasImage SCREEN_BACKGROUND = loadImage("screen_background.png");
+    public static final CanvasImage APP_BACKGROUND = loadImage("app_background.png");
+    public static final CanvasImage SCREEN_SIDE_BUTTON = loadImage("screen_side_button.png");
 
     private static CanvasImage loadImage(String filename) {
         try (var stream = Files.newInputStream(FabricLoader.getInstance().getModContainer(MiniTardis.MOD_ID).orElseThrow()

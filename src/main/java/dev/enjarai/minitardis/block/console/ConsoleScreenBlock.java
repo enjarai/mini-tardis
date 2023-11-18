@@ -7,19 +7,16 @@ import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
-import eu.pb4.polymer.virtualentity.api.elements.TextDisplayElement;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.decoration.Brightness;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -28,7 +25,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,7 +71,11 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
         if (hitSide == facing.rotateYClockwise() || hitSide == facing.rotateYCounterclockwise()) {
             var newPos = pos.offset(hitSide).offset(facing.getOpposite());
             world.setBlockState(newPos, state.with(FACING, hitSide));
-            // TODO move BE data here
+
+            if (world.getBlockEntity(pos) instanceof ConsoleScreenBlockEntity oldEntity && world.getBlockEntity(newPos) instanceof ConsoleScreenBlockEntity newEntity) {
+                newEntity.selectedApp = oldEntity.selectedApp;
+            }
+
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
             inputSuccess(world, newPos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, 0);
             return ActionResult.SUCCESS;

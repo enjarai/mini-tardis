@@ -11,10 +11,14 @@ import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import eu.pb4.mapcanvas.api.utils.VirtualDisplay;
+import eu.pb4.mapcanvas.impl.view.SubView;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.ClickType;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -22,6 +26,7 @@ import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.*;
 
 public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware {
@@ -33,6 +38,9 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     @Nullable
     private ScheduledFuture<?> threadFuture;
 
+    @Nullable
+    Identifier selectedApp;
+
     public ConsoleScreenBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.CONSOLE_SCREEN_ENTITY, pos, state);
         var facing = state.get(ConsoleScreenBlock.FACING);
@@ -40,7 +48,22 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                 .builder(DrawableCanvas.create(), pos.offset(facing), facing)
                 .glowing()
                 .invisible()
+                .callback(this::handleClick)
                 .build();
+    }
+
+    @Override
+    protected void writeNbt(NbtCompound nbt) {
+        if (selectedApp != null) {
+            nbt.putString("selectedApp", selectedApp.toString());
+        }
+    }
+
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        if (nbt.contains("selectedApp")) {
+            selectedApp = new Identifier(nbt.getString("selectedApp"));
+        }
     }
 
     public void tick(World world, BlockPos pos, BlockState state) {
@@ -91,33 +114,61 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
     private void refresh(Tardis tardis) {
         var canvas = display.getCanvas();
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SCREEN_BACKGROUND);
 //        DefaultFonts.VANILLA.drawText(canvas, "testlmao", 20, 16 + 20, 8, CanvasColor.WHITE_HIGH);
 //        CanvasUtils.fill(display.getCanvas(), 64 + (int) getWorld().getTime() % 100 / 10, 64, 90, 90, CanvasColor.BLUE_NORMAL);
 
-        for (int x = 0; x < DestinationScanner.RANGE; x++) {
-            for (int y = 0; y < DestinationScanner.RANGE; y++) {
-                byte value = tardis.getDestinationScanner().getForX(x, y);
-                canvas.set(
-                        x, -y + 15 + DestinationScanner.RANGE,
-                        switch (value) {
-                            case 0 -> CanvasColor.BLACK_HIGH;
-                            case 1 -> CanvasColor.DEEPSLATE_GRAY_HIGH;
-                            case 2 -> CanvasColor.BLUE_NORMAL;
-                            case 3 -> CanvasColor.LIGHT_BLUE_NORMAL;
-                            case 4 -> CanvasColor.ORANGE_LOWEST;
-                            default -> CanvasColor.WHITE_HIGH;
-                        });
-            }
-        }
-        canvas.set(DestinationScanner.RANGE / 2, 16 + DestinationScanner.RANGE / 2, CanvasColor.ORANGE_HIGH);
-        canvas.set(DestinationScanner.RANGE / 2, 16 + DestinationScanner.RANGE / 2 - 1, CanvasColor.ORANGE_HIGH);
+        var controls = tardis.getControls();
+        Optional.ofNullable(selectedApp).flatMap(controls::getScreenApp).ifPresentOrElse(app -> {
+            CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.APP_BACKGROUND);
 
-        var destination = tardis.getDestination();
-        DefaultFonts.VANILLA.drawText(canvas,
-                "X: " + destination.map(l -> String.valueOf(l.pos().getX())).orElse("-"),
-                96 + 3, 16 + 3, 8, CanvasColor.WHITE_HIGH);
+            app.draw(controls, new SubView(canvas, 0, 16, 128, 96));
+            CanvasUtils.draw(canvas, 96 + 2, 16 + 2, ModCanvasUtils.SCREEN_SIDE_BUTTON);
+            DefaultFonts.VANILLA.drawText(canvas, "Menu", 96 + 2 + 2, 16 + 2 + 4, 8, CanvasColor.WHITE_HIGH);
+        }, () -> {
+            CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SCREEN_BACKGROUND);
+
+            var apps = controls.getAllApps();
+            for (int i = 0; i < apps.size(); i++) {
+                var app = apps.get(i);
+                app.drawIcon(controls, new SubView(canvas, getAppX(i), getAppY(i), 24, 24)); // TODO wrapping
+            }
+        });
 
         display.getCanvas().sendUpdates();
+    }
+
+    private void handleClick(ServerPlayerEntity player, ClickType type, int x, int y) {
+        //noinspection DataFlowIssue
+        getTardis(getWorld()).ifPresent(tardis -> {
+            var controls = tardis.getControls();
+            Optional.ofNullable(selectedApp).flatMap(controls::getScreenApp).ifPresentOrElse(app -> {
+                if (type == ClickType.RIGHT && x >= 96 + 2 && x < 96 + 2 + 28 && y >= 16 + 2 && y < 16 + 2 + 14) {
+                    selectedApp = null;
+                } else {
+                    app.onClick(controls, player, type, x, y);
+                }
+            }, () -> {
+                var apps = controls.getAllApps();
+                if (type == ClickType.RIGHT) {
+                    for (int i = 0; i < apps.size(); i++) {
+                        var appX = getAppX(i);
+                        var appY = getAppY(i);
+
+                        if (x >= appX && x < appX + 24 && y >= appY && y < appY + 24) {
+                            var app = apps.get(i);
+                            selectedApp = app.id();
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    private int getAppX(int i) {
+        return i * 26 + 4;
+    }
+
+    private int getAppY(int i) {
+        return 16 + 4;
     }
 }

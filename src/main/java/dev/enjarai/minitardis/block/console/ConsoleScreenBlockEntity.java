@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.component.DestinationScanner;
 import dev.enjarai.minitardis.component.Tardis;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -89,8 +90,21 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     private void refresh(Tardis tardis) {
         var canvas = display.getCanvas();
         CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SCREEN_BACKGROUND);
-        DefaultFonts.VANILLA.drawText(canvas, "testlmao", 20, 16 + 20, 8, CanvasColor.WHITE_HIGH);
+//        DefaultFonts.VANILLA.drawText(canvas, "testlmao", 20, 16 + 20, 8, CanvasColor.WHITE_HIGH);
         CanvasUtils.fill(display.getCanvas(), 64 + (int) getWorld().getTime() % 100 / 10, 64, 90, 90, CanvasColor.BLUE_NORMAL);
+
+        for (int i = 0; i < DestinationScanner.TOTAL_BLOCKS; i++) {
+            byte value = tardis.getDestinationScanner().getForX(i);
+            var pos = DestinationScanner.getPos(i);
+            canvas.set(
+                    pos.x + DestinationScanner.RANGE / 2, pos.y + DestinationScanner.RANGE / 2 + 16,
+                    switch (value) {
+                        case 0 -> CanvasColor.WHITE_HIGH;
+                        case 1 -> CanvasColor.DEEPSLATE_GRAY_HIGH;
+                        default -> CanvasColor.BLUE_NORMAL;
+                    });
+        }
+
         display.getCanvas().sendUpdates();
     }
 }

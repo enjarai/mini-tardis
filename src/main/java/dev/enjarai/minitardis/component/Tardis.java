@@ -59,6 +59,8 @@ public class Tardis {
     TardisHolder holder;
     @Nullable
     RuntimeWorldHandle interiorWorld;
+    DestinationScanner destinationScanner = new DestinationScanner(this, 128);
+
     private final UUID uuid;
     private boolean interiorPlaced;
     private Identifier interior;
@@ -108,6 +110,8 @@ public class Tardis {
         if (world.getTime() % (20 * 12) == 0) {
             state.playForInterior(this, ModSounds.CORAL_HUM, SoundCategory.AMBIENT, 0.3f, 1);
         }
+
+//        destinationScanner.tick(); TODO ohno
     }
 
     public ServerWorld getInteriorWorld() {
@@ -123,6 +127,10 @@ public class Tardis {
 
     public Optional<ServerWorld> getDestinationWorld() {
         return destination.map(l -> l.getWorld(holder.getServer()));
+    }
+
+    public DestinationScanner getDestinationScanner() {
+        return destinationScanner;
     }
 
     private void initializeInteriorWorld() {

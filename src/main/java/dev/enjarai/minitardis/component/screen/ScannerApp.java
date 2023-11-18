@@ -2,24 +2,30 @@ package dev.enjarai.minitardis.component.screen;
 
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
+import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.DestinationScanner;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.screen.element.SideButtonElement;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ClickType;
+import eu.pb4.mapcanvas.impl.view.RotatedView;
 import net.minecraft.util.Identifier;
 
-public class ScannerApp implements ScreenApp {
+public class ScannerApp extends ElementHoldingApp {
     public static final Codec<ScannerApp> CODEC = Codec.unit(ScannerApp::new);
     public static final Identifier ID = MiniTardis.id("scanner");
+
+    public ScannerApp() {
+        addElement(new SideButtonElement(96 + 2, 2 + 14, "XAxis", controls -> controls.getTardis().getDestinationScanner().useXAxis()));
+        addElement(new SideButtonElement(96 + 2, 2 + 14 + 14, "ZAxis", controls -> controls.getTardis().getDestinationScanner().useZAxis()));
+    }
 
     @Override
     public void draw(TardisControl controls, DrawableCanvas canvas) {
         for (int x = 0; x < DestinationScanner.RANGE; x++) {
             for (int y = 0; y < DestinationScanner.RANGE; y++) {
-                byte value = controls.getTardis().getDestinationScanner().getForX(x, y);
+                byte value = controls.getTardis().getDestinationScanner().getFor(x, y);
                 canvas.set(
                         x, -y - 1 + DestinationScanner.RANGE,
                         switch (value) {
@@ -32,18 +38,24 @@ public class ScannerApp implements ScreenApp {
                         });
             }
         }
-        canvas.set(DestinationScanner.RANGE / 2, DestinationScanner.RANGE / 2, CanvasColor.ORANGE_HIGH);
-        canvas.set(DestinationScanner.RANGE / 2, DestinationScanner.RANGE / 2 - 1, CanvasColor.ORANGE_HIGH);
-    }
+        canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2, CanvasColor.ORANGE_HIGH);
+        canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2 - 1, CanvasColor.ORANGE_HIGH);
 
-    @Override
-    public boolean onClick(TardisControl controls, ServerPlayerEntity player, ClickType type, int x, int y) {
-        return false;
+        CanvasUtils.draw(canvas, 96, 64, ModCanvasUtils.COORD_WIDGET);
+        controls.getTardis().getDestination().ifPresent(destination ->
+                CanvasUtils.draw(canvas, 96, 64, new RotatedView(ModCanvasUtils.FACING_WIDGET, Math.toRadians(destination.facing().asRotation()), 0, 0)));
+
+        super.draw(controls, canvas);
     }
 
     @Override
     public void drawIcon(TardisControl controls, DrawableCanvas canvas) {
         CanvasUtils.fill(canvas, 0, 0, 24, 24, CanvasColor.YELLOW_HIGH);
+    }
+
+    @Override
+    public void screenTick(TardisControl controls) {
+        controls.getTardis().getDestinationScanner().shouldScanNextTick();
     }
 
     @Override

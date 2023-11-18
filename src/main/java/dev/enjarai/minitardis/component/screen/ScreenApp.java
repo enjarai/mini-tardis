@@ -27,5 +27,8 @@ public interface ScreenApp {
 
     void drawIcon(TardisControl controls, DrawableCanvas canvas);
 
+    default void screenTick(TardisControl controls) {
+    }
+
     Identifier id();
 }

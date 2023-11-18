@@ -70,14 +70,18 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
 
         if (hitSide == facing.rotateYClockwise() || hitSide == facing.rotateYCounterclockwise()) {
             var newPos = pos.offset(hitSide).offset(facing.getOpposite());
-            world.setBlockState(newPos, state.with(FACING, hitSide));
 
-            if (world.getBlockEntity(pos) instanceof ConsoleScreenBlockEntity oldEntity && world.getBlockEntity(newPos) instanceof ConsoleScreenBlockEntity newEntity) {
-                newEntity.selectedApp = oldEntity.selectedApp;
+            if (world.getBlockState(newPos).isReplaceable()) {
+                world.setBlockState(newPos, state.with(FACING, hitSide));
+
+                if (world.getBlockEntity(pos) instanceof ConsoleScreenBlockEntity oldEntity && world.getBlockEntity(newPos) instanceof ConsoleScreenBlockEntity newEntity) {
+                    newEntity.selectedApp = oldEntity.selectedApp;
+                }
+
+                world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                inputSuccess(world, newPos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, 0);
             }
 
-            world.setBlockState(pos, Blocks.AIR.getDefaultState());
-            inputSuccess(world, newPos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, 0);
             return ActionResult.SUCCESS;
         }
 

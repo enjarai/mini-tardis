@@ -81,6 +81,11 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                     refresh(tardis);
                 }, 0, 1000 / 20, TimeUnit.MILLISECONDS));
             }
+
+            if (!nearbyPlayers.isEmpty() && selectedApp != null) {
+                getTardis(world).ifPresent(tardis -> tardis.getControls().getScreenApp(selectedApp)
+                        .ifPresent(app -> app.screenTick(tardis.getControls())));
+            }
         }
     }
 
@@ -145,7 +150,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                 if (type == ClickType.RIGHT && x >= 96 + 2 && x < 96 + 2 + 28 && y >= 16 + 2 && y < 16 + 2 + 14) {
                     selectedApp = null;
                 } else {
-                    app.onClick(controls, player, type, x, y);
+                    app.onClick(controls, player, type, x, y - 16);
                 }
             }, () -> {
                 var apps = controls.getAllApps();

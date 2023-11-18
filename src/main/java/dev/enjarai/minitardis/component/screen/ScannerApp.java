@@ -43,7 +43,7 @@ public class ScannerApp extends ElementHoldingApp {
 
         CanvasUtils.draw(canvas, 96, 64, ModCanvasUtils.COORD_WIDGET);
         controls.getTardis().getDestination().ifPresent(destination ->
-                CanvasUtils.draw(canvas, 96, 64, new RotatedView(ModCanvasUtils.FACING_WIDGET, Math.toRadians(destination.facing().asRotation()), 0, 0)));
+                CanvasUtils.draw(canvas, 96, 64, new RotatedView(ModCanvasUtils.FACING_WIDGET, Math.toRadians(destination.facing().asRotation()), 16, 16)));
 
         super.draw(controls, canvas);
     }

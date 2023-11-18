@@ -17,6 +17,8 @@ public class ModCanvasUtils {
     public static final CanvasImage COORD_WIDGET_X = loadImage("coord_widget_x.png");
     public static final CanvasImage COORD_WIDGET_Z = loadImage("coord_widget_z.png");
     public static final CanvasImage FACING_WIDGET = loadImage("facing_widget.png");
+    public static final CanvasImage SCANNER_APP = loadImage("app/scanner.png");
+    public static final CanvasImage GPS_APP = loadImage("app/gps.png");
 
     private static CanvasImage loadImage(String filename) {
         try (var stream = Files.newInputStream(FabricLoader.getInstance().getModContainer(MiniTardis.MOD_ID).orElseThrow()

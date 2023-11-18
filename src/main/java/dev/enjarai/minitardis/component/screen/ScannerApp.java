@@ -56,7 +56,7 @@ public class ScannerApp extends ElementHoldingApp {
 
     @Override
     public void drawIcon(TardisControl controls, DrawableCanvas canvas) {
-        CanvasUtils.fill(canvas, 0, 0, 24, 24, CanvasColor.YELLOW_HIGH);
+        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SCANNER_APP);
     }
 
     @Override

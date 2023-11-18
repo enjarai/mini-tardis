@@ -3,6 +3,7 @@ package dev.enjarai.minitardis.component.screen;
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -31,7 +32,7 @@ public class GpsApp implements ScreenApp {
 
     @Override
     public void drawIcon(TardisControl controls, DrawableCanvas canvas) {
-        CanvasUtils.fill(canvas, 0, 0, 24, 24, CanvasColor.BRIGHT_RED_HIGH);
+        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.GPS_APP);
     }
 
     @Override

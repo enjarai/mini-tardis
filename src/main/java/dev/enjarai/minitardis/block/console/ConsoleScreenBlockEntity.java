@@ -4,7 +4,6 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
-import dev.enjarai.minitardis.component.DestinationScanner;
 import dev.enjarai.minitardis.component.Tardis;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -17,12 +16,13 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ClickType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,8 +149,9 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
             Optional.ofNullable(selectedApp).flatMap(controls::getScreenApp).ifPresentOrElse(app -> {
                 if (type == ClickType.RIGHT && x >= 96 + 2 && x < 96 + 2 + 28 && y >= 16 + 2 && y < 16 + 2 + 14) {
                     selectedApp = null;
+                    playClickSound(0.5f);
                 } else {
-                    app.onClick(controls, player, type, x, y - 16);
+                    app.onClick(controls, this, player, type, x, y - 16);
                 }
             }, () -> {
                 var apps = controls.getAllApps();
@@ -162,6 +163,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                         if (x >= appX && x < appX + 24 && y >= appY && y < appY + 24) {
                             var app = apps.get(i);
                             selectedApp = app.id();
+                            playClickSound(1.5f);
                         }
                     }
                 }
@@ -175,5 +177,11 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
     private int getAppY(int i) {
         return 16 + 4;
+    }
+
+    public void playClickSound(float pitch) {
+        if (getWorld() instanceof ServerWorld serverWorld) {
+            serverWorld.playSound(null, getPos(), SoundEvents.BLOCK_NOTE_BLOCK_BIT.value(), SoundCategory.BLOCKS, 0.5f, pitch);
+        }
     }
 }

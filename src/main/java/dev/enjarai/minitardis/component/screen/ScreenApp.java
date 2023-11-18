@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.component.screen;
 
 import com.mojang.serialization.Codec;
+import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -23,7 +24,7 @@ public interface ScreenApp {
 
     void draw(TardisControl controls, DrawableCanvas canvas);
 
-    boolean onClick(TardisControl controls, ServerPlayerEntity player, ClickType type, int x, int y);
+    boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y);
 
     void drawIcon(TardisControl controls, DrawableCanvas canvas);
 

@@ -9,6 +9,7 @@ import dev.enjarai.minitardis.component.screen.element.SideButtonElement;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import eu.pb4.mapcanvas.impl.view.Rotate90ClockwiseView;
 import eu.pb4.mapcanvas.impl.view.RotatedView;
 import net.minecraft.util.Identifier;
 
@@ -41,9 +42,14 @@ public class ScannerApp extends ElementHoldingApp {
         canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2, CanvasColor.ORANGE_HIGH);
         canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2 - 1, CanvasColor.ORANGE_HIGH);
 
-        CanvasUtils.draw(canvas, 96, 64, ModCanvasUtils.COORD_WIDGET);
-        controls.getTardis().getDestination().ifPresent(destination ->
-                CanvasUtils.draw(canvas, 96, 64, new RotatedView(ModCanvasUtils.FACING_WIDGET, Math.toRadians(destination.facing().asRotation()), 16, 16)));
+        CanvasUtils.draw(canvas, 96, 64, controls.getTardis().getDestinationScanner().isZAxis() ? ModCanvasUtils.COORD_WIDGET_Z : ModCanvasUtils.COORD_WIDGET_X);
+        controls.getTardis().getDestination().ifPresent(destination -> {
+            DrawableCanvas view = ModCanvasUtils.FACING_WIDGET;
+            for (int i = 0; i < destination.facing().getHorizontal(); i++) {
+                view = new Rotate90ClockwiseView(view);
+            }
+            CanvasUtils.draw(canvas, 96, 64, view);
+        });
 
         super.draw(controls, canvas);
     }

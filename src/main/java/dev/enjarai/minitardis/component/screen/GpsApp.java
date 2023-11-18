@@ -2,6 +2,7 @@ package dev.enjarai.minitardis.component.screen;
 
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
+import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -24,7 +25,7 @@ public class GpsApp implements ScreenApp {
     }
 
     @Override
-    public boolean onClick(TardisControl controls, ServerPlayerEntity player, ClickType type, int x, int y) {
+    public boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
         return false;
     }
 

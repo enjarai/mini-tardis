@@ -1,5 +1,6 @@
 package dev.enjarai.minitardis.component.screen.element;
 
+import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.impl.view.SubView;
@@ -27,12 +28,12 @@ public abstract class PlacedElement implements AppElement {
     protected abstract void drawElement(TardisControl controls, DrawableCanvas canvas);
 
     @Override
-    public boolean onClick(TardisControl controls, ServerPlayerEntity player, ClickType type, int x, int y) {
+    public boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
         if (x >= this.x && x < this.x + width && y >= this.y && y < this.y + height) {
-            return onClickElement(controls, player, type, x - this.x, y - this.y);
+            return onClickElement(controls, blockEntity, player, type, x - this.x, y - this.y);
         }
         return false;
     }
 
-    protected abstract boolean onClickElement(TardisControl controls, ServerPlayerEntity player, ClickType type, int x, int y);
+    protected abstract boolean onClickElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y);
 }

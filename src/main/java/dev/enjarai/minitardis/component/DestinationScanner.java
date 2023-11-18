@@ -63,6 +63,10 @@ public class DestinationScanner {
         isZAxis = true;
     }
 
+    public boolean isZAxis() {
+        return isZAxis;
+    }
+
     public void resetIterators() {
         xIterator = newIterator();
         zIterator = newIterator();

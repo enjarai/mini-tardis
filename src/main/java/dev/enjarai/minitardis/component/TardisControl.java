@@ -100,6 +100,6 @@ public class TardisControl {
     }
 
     public List<ScreenApp> getAllApps() {
-        return ImmutableList.copyOf(screenApps.values());
+        return screenApps.values().stream().sorted(Comparator.comparing(ScreenApp::id)).toList();
     }
 }

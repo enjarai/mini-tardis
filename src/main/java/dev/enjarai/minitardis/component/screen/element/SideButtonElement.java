@@ -1,5 +1,6 @@
 package dev.enjarai.minitardis.component.screen.element;
 
+import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
@@ -31,10 +32,11 @@ public class SideButtonElement extends PlacedElement {
     }
 
     @Override
-    protected boolean onClickElement(TardisControl controls, ServerPlayerEntity player, ClickType type, int x, int y) {
+    protected boolean onClickElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
         if (type == ClickType.RIGHT) {
             pressedFrames = 2;
             clickCallback.accept(controls);
+            blockEntity.playClickSound(1);
             return true;
         }
         return false;

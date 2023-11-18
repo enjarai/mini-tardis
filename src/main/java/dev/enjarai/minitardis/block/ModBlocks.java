@@ -50,7 +50,7 @@ public class ModBlocks {
             register("handbrake", new ConsoleLeverBlock(FabricBlockSettings.create(),
                     TardisControl::handbrake));
     public static final ConsoleScreenBlock CONSOLE_SCREEN =
-            register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create()));
+            register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create().luminance(3)));
     public static final ConsoleButtonBlock RESET_DESTINATION_BUTTON =
             register("reset_destination_button", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.DARK_OAK_BUTTON,
                     (controls, facing) -> controls.resetDestination()));
@@ -78,6 +78,8 @@ public class ModBlocks {
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);
+    public static final BlockEntityType<ConsoleScreenBlockEntity> CONSOLE_SCREEN_ENTITY =
+            registerEntity("console_screen", ConsoleScreenBlockEntity::new, CONSOLE_SCREEN);
 
     public static final PointOfInterestType TARDIS_EXTERIOR_POI =
             PointOfInterestHelper.register(MiniTardis.id("tardis_exterior"), 0, 1, TARDIS_EXTERIOR);

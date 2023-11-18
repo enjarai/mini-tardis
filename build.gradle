@@ -76,6 +76,7 @@ dependencies {
 	modImplementation include("xyz.nucleoid:server-translations-api:${property('deps.server_translations_api')}")
 	include(modImplementation("me.lucko:fabric-permissions-api:${property('deps.permissions_api')}"))
 	modImplementation include("xyz.nucleoid:fantasy:${property('deps.fantasy')}")
+	modImplementation include("eu.pb4:map-canvas-api:${property('deps.map_api')}")
 }
 
 processResources {

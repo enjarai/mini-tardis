@@ -2,19 +2,27 @@ package dev.enjarai.minitardis.block.console;
 
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
+import dev.enjarai.minitardis.item.PolymerModels;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
+import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import eu.pb4.polymer.virtualentity.api.elements.TextDisplayElement;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.decoration.Brightness;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
@@ -25,7 +33,7 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
-public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock, TardisAware, BlockWithElementHolder {
+public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock, TardisAware, BlockWithElementHolder, ConsoleInput {
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
 
     public ConsoleScreenBlock(Settings settings) {
@@ -59,6 +67,23 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
         return null;
     }
 
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        var facing = state.get(FACING);
+        var hitSide = hit.getSide();
+
+        if (hitSide == facing.rotateYClockwise() || hitSide == facing.rotateYCounterclockwise()) {
+            var newPos = pos.offset(hitSide).offset(facing.getOpposite());
+            world.setBlockState(newPos, state.with(FACING, hitSide));
+            // TODO move BE data here
+            world.setBlockState(pos, Blocks.AIR.getDefaultState());
+            inputSuccess(world, newPos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, 0);
+            return ActionResult.SUCCESS;
+        }
+
+        return super.onUse(state, world, pos, player, hand, hit);
+    }
+
     @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
@@ -81,53 +106,30 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
 
     @Override
     public Block getPolymerBlock(BlockState state) {
-        return Blocks.LIGHT;
+        return Blocks.BARRIER;
     }
 
-    @Override
-    public BlockState getPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).getDefaultState().with(LightBlock.LEVEL_15, 3);
-    }
+//    @Override
+//    public BlockState getPolymerBlockState(BlockState state) {
+//        return getPolymerBlock(state).getDefaultState().with(LightBlock.LEVEL_15, 3);
+//    }
 
 //    @Override
 //    public boolean tickElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
 //        return true;
 //    }
 
-//    @Override
-//    public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-//        var tardisOptional = getTardis(world);
-//        if (tardisOptional.isPresent()) {
-//            var tardis = tardisOptional.get();
-//            var rotation = RotationAxis.NEGATIVE_Y.rotationDegrees(initialBlockState.get(FACING).asRotation());
-//
-//            var stateText = new TextDisplayElement();
-//            var destinationText = new TextDisplayElement();
-//
-//            stateText.setRightRotation(rotation);
-//            destinationText.setRightRotation(rotation);
-//            destinationText.setOffset(new Vec3d(0, -0.5, 0));
-//
-//            return new ElementHolder() {
-//                {
-//                    addElement(stateText);
-//                    addElement(destinationText);
-//                    update();
-//                }
-//
-//                @Override
-//                protected void onTick() {
-//                    update();
-//                }
-//
-//                private void update() {
-//                    stateText.setText(tardis.getState().getName());
-//                    destinationText.setText(Text.literal(tardis.getDestination()
-//                            .map(l -> l.pos().getX() + " " + l.pos().getY() + " " + l.pos().getZ() + " " + l.facing().getName().toUpperCase().charAt(0))
-//                            .orElse("Unknown"))); // TODO dimension
-//                }
-//            };
-//        }
-//        return null;
-//    }
+    @Override
+    public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
+        var facing = initialBlockState.get(FACING);
+
+        var exteriorElement = new ItemDisplayElement();
+        exteriorElement.setItem(PolymerModels.getStack(PolymerModels.ROTATING_MONITOR));
+        exteriorElement.setOffset(Vec3d.ZERO.offset(facing.getOpposite(), 0.495));
+        exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
+
+        return new ElementHolder() {{
+                addElement(exteriorElement);
+        }};
+    }
 }

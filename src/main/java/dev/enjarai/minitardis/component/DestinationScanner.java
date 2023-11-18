@@ -1,6 +1,8 @@
 package dev.enjarai.minitardis.component;
 
 import dev.enjarai.minitardis.block.ModBlocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import org.joml.Vector2i;
@@ -58,11 +60,19 @@ public class DestinationScanner {
             pos2.add(RANGE / 2 - 1, RANGE / 2 - 1);
 
             var state = world.getBlockState(pos3);
-            byte value = (byte) (state.isReplaceable() ? 0 : state.isIn(ModBlocks.TARDIS_EXTERIOR_PARTS) ? 2 : 1);
+            byte value = getValue(state);
             axis[getIndex(pos2)] = value;
         }
 
         return iterator;
+    }
+
+    private byte getValue(BlockState state) {
+        if (state.getFluidState().isOf(Fluids.WATER)) return 3;
+        if (state.getFluidState().isOf(Fluids.LAVA)) return 4;
+        if (state.isReplaceable()) return 0;
+        if (state.isIn(ModBlocks.TARDIS_EXTERIOR_PARTS)) return 2;
+        return 1;
     }
 
     public static int getIndex(Vector2i pos) {

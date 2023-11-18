@@ -9,6 +9,7 @@ import net.minecraft.item.Items;
 public class PolymerModels {
     public static final PolymerModelData TARDIS = get("item/tardis");
     public static final PolymerModelData INTERIOR_DOOR = get("item/interior_door");
+    public static final PolymerModelData ROTATING_MONITOR = get("item/rotating_monitor");
 
     private static PolymerModelData get(String modelPath) {
         return PolymerResourcePackUtils.requestModel(Items.LAPIS_LAZULI, MiniTardis.id(modelPath));

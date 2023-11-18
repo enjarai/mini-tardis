@@ -1,37 +1,48 @@
 package dev.enjarai.minitardis.component;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.enjarai.minitardis.component.flight.LandingState;
 import dev.enjarai.minitardis.component.flight.SearchingForLandingState;
 import dev.enjarai.minitardis.component.flight.TakingOffState;
+import dev.enjarai.minitardis.component.screen.ScreenApp;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
-import java.util.Optional;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Takes in button presses and other inputs from the Tardis console and translates them into actions performed on it.
  */
 public class TardisControl {
     public static final Codec<TardisControl> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.fieldOf("coordinate_scale").forGetter(c -> c.coordinateScale)
+            Codec.INT.fieldOf("coordinate_scale").forGetter(c -> c.coordinateScale),
+            ScreenApp.CODEC.listOf().fieldOf("screen_apps").forGetter(c -> ImmutableList.copyOf(c.screenApps.values()))
     ).apply(instance, TardisControl::new));
 
     private int coordinateScale;
+    private final Map<Identifier, ScreenApp> screenApps;
 
     Tardis tardis;
 
-    private TardisControl(int coordinateScale) {
+    private TardisControl(int coordinateScale, Collection<ScreenApp> screenApps) {
         this.coordinateScale = coordinateScale;
+        var builder = ImmutableMap.<Identifier, ScreenApp>builder();
+        ScreenApp.CONSTRUCTORS.forEach((key, value) -> builder.put(key, value.get()));
+        screenApps.forEach(app -> builder.put(app.id(), app));
+        this.screenApps = builder.buildKeepingLast();
     }
 
     @SuppressWarnings("CopyConstructorMissesField")
     public TardisControl(TardisControl copyFrom) {
-        this(copyFrom.coordinateScale);
+        this(copyFrom.coordinateScale, copyFrom.screenApps.values());
     }
 
     public TardisControl() {
-        this(1);
+        this(1, List.of());
     }
 
 

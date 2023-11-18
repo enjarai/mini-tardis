@@ -35,8 +35,9 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
     public ConsoleScreenBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.CONSOLE_SCREEN_ENTITY, pos, state);
+        var facing = state.get(ConsoleScreenBlock.FACING);
         this.display = VirtualDisplay
-                .builder(DrawableCanvas.create(), pos, state.get(ConsoleScreenBlock.FACING))
+                .builder(DrawableCanvas.create(), pos.offset(facing), facing)
                 .glowing()
                 .invisible()
                 .build();
@@ -102,10 +103,15 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                         switch (value) {
                             case 0 -> CanvasColor.BLACK_HIGH;
                             case 1 -> CanvasColor.DEEPSLATE_GRAY_HIGH;
-                            default -> CanvasColor.BLUE_NORMAL;
+                            case 2 -> CanvasColor.BLUE_NORMAL;
+                            case 3 -> CanvasColor.LIGHT_BLUE_NORMAL;
+                            case 4 -> CanvasColor.ORANGE_LOWEST;
+                            default -> CanvasColor.WHITE_HIGH;
                         });
             }
         }
+        canvas.set(DestinationScanner.RANGE / 2, 16 + DestinationScanner.RANGE / 2, CanvasColor.ORANGE_HIGH);
+        canvas.set(DestinationScanner.RANGE / 2, 16 + DestinationScanner.RANGE / 2 - 1, CanvasColor.ORANGE_HIGH);
 
         var destination = tardis.getDestination();
         DefaultFonts.VANILLA.drawText(canvas,

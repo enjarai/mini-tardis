@@ -13,11 +13,13 @@ import java.util.function.Supplier;
 public interface ScreenApp {
     Map<Identifier, Codec<? extends ScreenApp>> ALL = Map.of(
             ScannerApp.ID, ScannerApp.CODEC,
-            GpsApp.ID, GpsApp.CODEC
+            GpsApp.ID, GpsApp.CODEC,
+            BadAppleApp.ID, BadAppleApp.CODEC
     );
     Map<Identifier, Supplier<? extends ScreenApp>> CONSTRUCTORS = Map.of(
             ScannerApp.ID, ScannerApp::new,
-            GpsApp.ID, GpsApp::new
+            GpsApp.ID, GpsApp::new,
+            BadAppleApp.ID, BadAppleApp::new
     );
     Codec<ScreenApp> CODEC = Identifier.CODEC.dispatch(ScreenApp::id, ALL::get);
 

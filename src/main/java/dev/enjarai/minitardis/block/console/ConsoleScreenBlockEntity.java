@@ -1,9 +1,13 @@
 package dev.enjarai.minitardis.block.console;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
+import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.component.Tardis;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
+import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import eu.pb4.mapcanvas.api.utils.VirtualDisplay;
 import net.minecraft.block.BlockState;
@@ -12,74 +16,81 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 
 public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware {
     private static final int MAX_DISPLAY_DISTANCE = 30;
+    private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(4, new ThreadFactoryBuilder().setDaemon(true).build());
 
     private final VirtualDisplay display;
-    private final List<ServerPlayerEntity> nearbyPlayers = new ArrayList<>();
+    private final List<ServerPlayerEntity> addedPlayers = new ArrayList<>();
+    @Nullable
+    private ScheduledFuture<?> threadFuture;
 
     public ConsoleScreenBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.CONSOLE_SCREEN_ENTITY, pos, state);
         this.display = VirtualDisplay
                 .builder(DrawableCanvas.create(), pos, state.get(ConsoleScreenBlock.FACING))
                 .glowing()
+                .invisible()
                 .build();
     }
 
     public void tick(World world, BlockPos pos, BlockState state) {
         if (world instanceof ServerWorld serverWorld) {
-            var players = serverWorld.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
-            var wasEmpty = nearbyPlayers.isEmpty() && !players.isEmpty();
+            var nearbyPlayers = serverWorld.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
 
-            if (wasEmpty) {
-                var thread = new Thread(() -> {
-                    do {
-                        refreshPlayers(serverWorld);
-                        refresh();
-                        try {
-                            Thread.sleep(1000 / 20);
-                        } catch (InterruptedException ignored) {
-                        }
-                    } while (!nearbyPlayers.isEmpty());
-                });
-                thread.setDaemon(true);
-                thread.start();
+            if (addedPlayers.isEmpty() && nearbyPlayers.isEmpty() && threadFuture != null) {
+                threadFuture.cancel(true);
+                threadFuture = null;
+            }
+
+            if (!nearbyPlayers.isEmpty() && threadFuture == null) {
+                getTardis(world).ifPresent(tardis -> threadFuture = executor.scheduleAtFixedRate(() -> {
+                    refreshPlayers(serverWorld);
+                    refresh(tardis);
+                }, 0, 1000 / 20, TimeUnit.MILLISECONDS));
             }
         }
     }
 
     public void cleanUpForRemoval() {
         display.destroy();
-        nearbyPlayers.clear();
+        addedPlayers.clear();
+        if (threadFuture != null) {
+            threadFuture.cancel(true);
+        }
     }
 
     private void refreshPlayers(ServerWorld world) {
-        var players = world.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
+        var nearbyPlayers = world.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
 
-        nearbyPlayers.removeIf(player -> {
-            if (!players.contains(player)) {
+        addedPlayers.removeIf(player -> {
+            if (!nearbyPlayers.contains(player)) {
                 display.removePlayer(player);
                 display.getCanvas().removePlayer(player);
                 return true;
             }
             return false;
         });
-        players.forEach(player -> {
-            if (!nearbyPlayers.contains(player)) {
+        nearbyPlayers.forEach(player -> {
+            if (!addedPlayers.contains(player)) {
                 display.addPlayer(player);
                 display.getCanvas().addPlayer(player);
-                nearbyPlayers.add(player);
+                addedPlayers.add(player);
             }
         });
     }
 
-    private void refresh() {
-        CanvasUtils.clear(display.getCanvas(), CanvasColor.BLACK_HIGH);
-        CanvasUtils.fill(display.getCanvas(), 64 + (int) getWorld().getTime() % 100, 64, 128, 127, CanvasColor.BLUE_NORMAL);
+    private void refresh(Tardis tardis) {
+        var canvas = display.getCanvas();
+        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SCREEN_BACKGROUND);
+        DefaultFonts.VANILLA.drawText(canvas, "testlmao", 20, 16 + 20, 8, CanvasColor.WHITE_HIGH);
+        CanvasUtils.fill(display.getCanvas(), 64 + (int) getWorld().getTime() % 100 / 10, 64, 90, 90, CanvasColor.BLUE_NORMAL);
         display.getCanvas().sendUpdates();
     }
 }

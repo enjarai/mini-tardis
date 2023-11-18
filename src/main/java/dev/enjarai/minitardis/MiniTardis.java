@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis;
 
 import dev.enjarai.minitardis.block.ModBlocks;
+import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.command.TardisCommand;
 import dev.enjarai.minitardis.component.ModComponents;
 import dev.enjarai.minitardis.component.Tardis;
@@ -45,6 +46,7 @@ public class MiniTardis implements ModInitializer {
 		ModBlocks.load();
 		ModItems.load();
 		ModSounds.load();
+		ModCanvasUtils.load();
 
 		PolymerResourcePackUtils.addModAssets(MOD_ID);
 		PolymerModels.load();

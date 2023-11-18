@@ -89,59 +89,45 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
         return getPolymerBlock(state).getDefaultState().with(LightBlock.LEVEL_15, 3);
     }
 
-    @Override
-    public boolean tickElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        return true;
-    }
+//    @Override
+//    public boolean tickElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
+//        return true;
+//    }
 
-    @Override
-    public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        var tardisOptional = getTardis(world);
-        if (tardisOptional.isPresent()) {
-            var tardis = tardisOptional.get();
-            var rotation = RotationAxis.NEGATIVE_Y.rotationDegrees(initialBlockState.get(FACING).asRotation());
-
-            var stateText = new TextDisplayElement();
-            var destinationText = new TextDisplayElement();
-
-            stateText.setRightRotation(rotation);
-            destinationText.setRightRotation(rotation);
-            destinationText.setOffset(new Vec3d(0, -0.5, 0));
-
-            return new ElementHolder() {
-                {
-                    addElement(stateText);
-                    addElement(destinationText);
-                    update();
-                }
-
-                @Override
-                protected void onTick() {
-                    update();
-                }
-
-                private void update() {
-                    stateText.setText(tardis.getState().getName());
-                    destinationText.setText(Text.literal(tardis.getDestination()
-                            .map(l -> l.pos().getX() + " " + l.pos().getY() + " " + l.pos().getZ() + " " + l.facing().getName().toUpperCase().charAt(0))
-                            .orElse("Unknown"))); // TODO dimension
-                }
-            };
-        }
-        return null;
-    }
-
-    //    @Override
-//    public void onPolymerBlockSend(BlockState blockState, BlockPos.Mutable pos, ServerPlayerEntity player) {
-//        var main = new NbtCompound();
-//        main.putString("id", "minecraft:sign");
-//        main.putInt("x", pos.getX());
-//        main.putInt("y", pos.getY());
-//        main.putInt("z", pos.getZ());
-//        main.putBoolean("is_waxed", true);
-//        var frontText = new NbtCompound();
-//        var messages = new NbtList();
-//        messages.add()
-//        player.networkHandler.sendPacket(PolymerBlockUtils.createBlockEntityPacket(pos.toImmutable(), BlockEntityType.SIGN, main));
+//    @Override
+//    public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
+//        var tardisOptional = getTardis(world);
+//        if (tardisOptional.isPresent()) {
+//            var tardis = tardisOptional.get();
+//            var rotation = RotationAxis.NEGATIVE_Y.rotationDegrees(initialBlockState.get(FACING).asRotation());
+//
+//            var stateText = new TextDisplayElement();
+//            var destinationText = new TextDisplayElement();
+//
+//            stateText.setRightRotation(rotation);
+//            destinationText.setRightRotation(rotation);
+//            destinationText.setOffset(new Vec3d(0, -0.5, 0));
+//
+//            return new ElementHolder() {
+//                {
+//                    addElement(stateText);
+//                    addElement(destinationText);
+//                    update();
+//                }
+//
+//                @Override
+//                protected void onTick() {
+//                    update();
+//                }
+//
+//                private void update() {
+//                    stateText.setText(tardis.getState().getName());
+//                    destinationText.setText(Text.literal(tardis.getDestination()
+//                            .map(l -> l.pos().getX() + " " + l.pos().getY() + " " + l.pos().getZ() + " " + l.facing().getName().toUpperCase().charAt(0))
+//                            .orElse("Unknown"))); // TODO dimension
+//                }
+//            };
+//        }
+//        return null;
 //    }
 }

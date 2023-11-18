@@ -29,26 +29,33 @@ public class DestinationScanner {
             @SuppressWarnings("OptionalGetWithoutIsPresent")
             var location = tardis.getDestination().get();
 
-            xIterator = updateAxis(world, xAxis, xIterator, (pos3, pos2) -> pos3.move(location.pos()).move(pos2.x, pos2.y, 0));
+            xIterator = updateAxis(world, xAxis, xIterator, (pos3, pos2) -> pos3.set(location.pos()).move(pos2.x, pos2.y, 0));
         });
     }
 
-    public byte getForX(Vector2i pos) {
-        return getForX(getIndex(pos));
+    public byte getForX(int x, int y) {
+        return getForX(getIndex(x, y));
     }
 
     public byte getForX(int pos) {
         return xAxis[pos];
     }
 
+    public void resetIterators() {
+        xIterator = newIterator();
+        zIterator = newIterator();
+    }
+
     private Iterator<Vector2i> updateAxis(ServerWorld world, byte[] axis, Iterator<Vector2i> iterator, BiConsumer<BlockPos.Mutable, Vector2i> posApplier) {
         var pos3 = new BlockPos.Mutable();
+        var pos2 = new Vector2i();
 
         for (int i = 0; i < maxPerTick; i++) {
             if (!iterator.hasNext()) return newIterator();
 
-            var pos2 = iterator.next();
+            pos2.set(iterator.next());
             posApplier.accept(pos3, pos2);
+            pos2.add(RANGE / 2 - 1, RANGE / 2 - 1);
 
             var state = world.getBlockState(pos3);
             byte value = (byte) (state.isReplaceable() ? 0 : state.isIn(ModBlocks.TARDIS_EXTERIOR_PARTS) ? 2 : 1);
@@ -59,7 +66,11 @@ public class DestinationScanner {
     }
 
     public static int getIndex(Vector2i pos) {
-        return (pos.x + RANGE / 2) + (pos.y + RANGE / 2) * RANGE;
+        return getIndex(pos.x, pos.y);
+    }
+
+    public static int getIndex(int x, int y) {
+        return (x + y * RANGE) % TOTAL_BLOCKS;
     }
 
     public static Vector2i getPos(int index) {

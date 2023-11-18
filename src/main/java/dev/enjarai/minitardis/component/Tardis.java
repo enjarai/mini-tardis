@@ -111,7 +111,7 @@ public class Tardis {
             state.playForInterior(this, ModSounds.CORAL_HUM, SoundCategory.AMBIENT, 0.3f, 1);
         }
 
-//        destinationScanner.tick(); TODO ohno
+        destinationScanner.tick(); // TODO ohno
     }
 
     public ServerWorld getInteriorWorld() {
@@ -300,6 +300,7 @@ public class Tardis {
         if (!force && !state.canChangeCourse(this)) return false;
 
         this.destination = destination;
+        destinationScanner.resetIterators();
         return true;
     }
 

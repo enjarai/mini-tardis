@@ -18,6 +18,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,19 +92,25 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         var canvas = display.getCanvas();
         CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SCREEN_BACKGROUND);
 //        DefaultFonts.VANILLA.drawText(canvas, "testlmao", 20, 16 + 20, 8, CanvasColor.WHITE_HIGH);
-        CanvasUtils.fill(display.getCanvas(), 64 + (int) getWorld().getTime() % 100 / 10, 64, 90, 90, CanvasColor.BLUE_NORMAL);
+//        CanvasUtils.fill(display.getCanvas(), 64 + (int) getWorld().getTime() % 100 / 10, 64, 90, 90, CanvasColor.BLUE_NORMAL);
 
-        for (int i = 0; i < DestinationScanner.TOTAL_BLOCKS; i++) {
-            byte value = tardis.getDestinationScanner().getForX(i);
-            var pos = DestinationScanner.getPos(i);
-            canvas.set(
-                    pos.x + DestinationScanner.RANGE / 2, pos.y + DestinationScanner.RANGE / 2 + 16,
-                    switch (value) {
-                        case 0 -> CanvasColor.WHITE_HIGH;
-                        case 1 -> CanvasColor.DEEPSLATE_GRAY_HIGH;
-                        default -> CanvasColor.BLUE_NORMAL;
-                    });
+        for (int x = 0; x < DestinationScanner.RANGE; x++) {
+            for (int y = 0; y < DestinationScanner.RANGE; y++) {
+                byte value = tardis.getDestinationScanner().getForX(x, y);
+                canvas.set(
+                        x, -y + 15 + DestinationScanner.RANGE,
+                        switch (value) {
+                            case 0 -> CanvasColor.BLACK_HIGH;
+                            case 1 -> CanvasColor.DEEPSLATE_GRAY_HIGH;
+                            default -> CanvasColor.BLUE_NORMAL;
+                        });
+            }
         }
+
+        var destination = tardis.getDestination();
+        DefaultFonts.VANILLA.drawText(canvas,
+                "X: " + destination.map(l -> String.valueOf(l.pos().getX())).orElse("-"),
+                96 + 3, 16 + 3, 8, CanvasColor.WHITE_HIGH);
 
         display.getCanvas().sendUpdates();
     }

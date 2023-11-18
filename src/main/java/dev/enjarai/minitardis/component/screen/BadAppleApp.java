@@ -6,7 +6,6 @@ import dev.enjarai.minitardis.canvas.BadApple;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
@@ -20,20 +19,22 @@ public class BadAppleApp implements ScreenApp {
 
     @Override
     public void draw(TardisControl controls, DrawableCanvas canvas) {
-        for (int i = 0; i < 96 * 96; i++) {
-            var pixel = BadApple.getPixel(frameCounter, i);
-            var color = switch (pixel) {
-                case 0 -> CanvasColor.BLACK_LOWEST;
-                case 1 -> CanvasColor.BLACK_LOW;
-                case 2 -> CanvasColor.BLACK_NORMAL;
-                case 3 -> CanvasColor.BLACK_HIGH;
-                case 4 -> CanvasColor.WHITE_LOWEST;
-                case 5 -> CanvasColor.WHITE_LOW;
-                case 6 -> CanvasColor.WHITE_NORMAL;
-                case 7 -> CanvasColor.WHITE_HIGH;
-                default -> CanvasColor.WHITE_HIGH;
-            };
-            canvas.set(i % 128, i / 128, color);
+        for (int x = 0; x < BadApple.width; x++) {
+            for (int y = 0; y < BadApple.height; y++) {
+                var pixel = BadApple.getPixel(frameCounter, x, y);
+                var color = switch (pixel) {
+                    case 0 -> CanvasColor.BLACK_LOWEST;
+                    case 1 -> CanvasColor.BLACK_LOW;
+                    case 2 -> CanvasColor.BLACK_NORMAL;
+                    case 3 -> CanvasColor.BLACK_HIGH;
+                    case 4 -> CanvasColor.WHITE_LOWEST;
+                    case 5 -> CanvasColor.WHITE_LOW;
+                    case 6 -> CanvasColor.WHITE_NORMAL;
+                    case 7 -> CanvasColor.WHITE_HIGH;
+                    default -> CanvasColor.WHITE_HIGH;
+                };
+                canvas.set((int) (x * BadApple.width / 128.0f), (int) (y * BadApple.height / 96.0f), color);
+            }
         }
 
         frameCounter++;

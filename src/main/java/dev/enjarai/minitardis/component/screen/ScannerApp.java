@@ -44,7 +44,7 @@ public class ScannerApp extends ElementHoldingApp {
 
         CanvasUtils.draw(canvas, 96, 64, controls.getTardis().getDestinationScanner().isZAxis() ? ModCanvasUtils.COORD_WIDGET_Z : ModCanvasUtils.COORD_WIDGET_X);
         controls.getTardis().getDestination().ifPresent(destination -> {
-            DrawableCanvas view = ModCanvasUtils.FACING_WIDGET;
+            DrawableCanvas view = ModCanvasUtils.DESTINATION_FACING_WIDGET;
             for (int i = 0; i < destination.facing().getHorizontal(); i++) {
                 view = new Rotate90ClockwiseView(view);
             }

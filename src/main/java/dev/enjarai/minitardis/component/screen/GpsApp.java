@@ -20,9 +20,10 @@ public class GpsApp implements ScreenApp {
     @Override
     public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         var destination = controls.getTardis().getDestination();
+        DefaultFonts.VANILLA.drawText(canvas, "Current Location", 3, 4, 8, CanvasColor.WHITE_HIGH);
         DefaultFonts.VANILLA.drawText(canvas,
-                "X: " + destination.map(l -> String.valueOf(l.pos().getX())).orElse("-"),
-                3, 16 + 3, 8, CanvasColor.WHITE_HIGH);
+                destination.map(l -> l.pos().getX() + " " + l.pos().getY() + " " + l.pos().getZ()).orElse("Unknown"),
+                3, 4 + 9, 8, CanvasColor.WHITE_HIGH);
     }
 
     @Override

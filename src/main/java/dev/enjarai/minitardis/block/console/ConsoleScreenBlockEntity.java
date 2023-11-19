@@ -79,7 +79,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                 getTardis(world).ifPresent(tardis -> threadFuture = executor.scheduleAtFixedRate(() -> {
                     refreshPlayers(serverWorld);
                     refresh(tardis);
-                }, 0, 1000 / 20, TimeUnit.MILLISECONDS));
+                }, 0, 1000 / 30, TimeUnit.MILLISECONDS));
             }
 
             if (!nearbyPlayers.isEmpty() && selectedApp != null) {

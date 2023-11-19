@@ -16,7 +16,8 @@ public interface FlightState {
             TakingOffState.ID, TakingOffState.CODEC,
             FlyingState.ID, FlyingState.CODEC,
             LandingState.ID, LandingState.CODEC,
-            SearchingForLandingState.ID, SearchingForLandingState.CODEC
+            SearchingForLandingState.ID, SearchingForLandingState.CODEC,
+            CrashingState.ID, CrashingState.CODEC
     );
     Codec<FlightState> CODEC = Identifier.CODEC.dispatch(FlightState::id, ALL::get);
 
@@ -56,7 +57,7 @@ public interface FlightState {
     /**
      * Whether the destination of the Tardis can be changed during this state.
      */
-    default boolean canChangeCourse(Tardis tardis) {
+    default boolean tryChangeCourse(Tardis tardis) {
         return true;
     }
 

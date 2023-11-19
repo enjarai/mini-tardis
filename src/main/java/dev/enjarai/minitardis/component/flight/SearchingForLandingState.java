@@ -14,7 +14,8 @@ import java.util.Iterator;
 public class SearchingForLandingState implements FlightState {
     public static final Codec<SearchingForLandingState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks),
-            Codec.INT.fieldOf("searching_ticks").forGetter(s -> s.searchingTicks)
+            Codec.INT.fieldOf("searching_ticks").forGetter(s -> s.searchingTicks),
+            Codec.BOOL.fieldOf("crashing").forGetter(s -> s.crashing)
     ).apply(instance, SearchingForLandingState::new));
     public static final Identifier ID = MiniTardis.id("searching_for_landing");
     private static final int BLOCKS_PER_TICK = 64;
@@ -22,50 +23,68 @@ public class SearchingForLandingState implements FlightState {
 
     int flyingTicks;
     private int searchingTicks;
+    private final boolean crashing;
     private Iterator<BlockPos> searchIterator;
 
-    private SearchingForLandingState(int flyingTicks, int searchingTicks) {
+    private SearchingForLandingState(int flyingTicks, int searchingTicks, boolean crashing) {
         this.flyingTicks = flyingTicks;
         this.searchingTicks = searchingTicks;
+        this.crashing = crashing;
     }
 
-    public SearchingForLandingState() {
-        this(0, 0);
+    public SearchingForLandingState(boolean crashing) {
+        this(0, 0, crashing);
     }
 
     @Override
     public FlightState tick(Tardis tardis) {
         flyingTicks++;
         if (flyingTicks % FlyingState.SOUND_LOOP_LENGTH == 0) {
-            playForInterior(tardis, ModSounds.TARDIS_FLY_LOOP, SoundCategory.BLOCKS, 0.6f, 1);
+            float pitch = 1;
+
+            if (crashing) {
+                pitch += tardis.getInteriorWorld().getRandom().nextFloat() - 0.5f;
+            }
+
+            playForInterior(tardis,
+                    crashing ? ModSounds.TARDIS_FLY_LOOP_ERROR : ModSounds.TARDIS_FLY_LOOP,
+                    SoundCategory.BLOCKS, crashing ? 1 : 0.6f, pitch);
         }
 
-        tickScreenShake(tardis, 0.5f);
+        tickScreenShake(tardis, crashing ? 2 : 0.5f);
 
-        var destination = tardis.getDestination();
-        if (destination.isPresent()) {
+        var maybeDestination = tardis.getDestination();
+        if (maybeDestination.isPresent()) {
+            var destination = maybeDestination.get();
+
+            // Shuffle the landing location if we're crashing
+            if (crashing) {
+                var random = tardis.getInteriorWorld().getRandom();
+                destination = destination.with(destination.pos().add(random.nextBetween(-1000, 1000), 0, random.nextBetween(-1000, 1000)));
+            }
+
             if (searchIterator == null) {
-                searchIterator = BlockPos.iterateOutwards(destination.get().pos(), MAX_SEARCH_RANGE, MAX_SEARCH_RANGE, MAX_SEARCH_RANGE).iterator();
+                searchIterator = BlockPos.iterateOutwards(destination.pos(), MAX_SEARCH_RANGE, MAX_SEARCH_RANGE, MAX_SEARCH_RANGE).iterator();
             }
 
             for (int i = 0; i < BLOCKS_PER_TICK; i++) {
                 if (!searchIterator.hasNext()) {
                     // If we've reached the end of our iterator, we're mildly fucked, but let's let FlyingState handle that.
-                    playForInterior(tardis, ModSounds.TARDIS_FAILURE_SINGLE, SoundCategory.BLOCKS, 1, 1);
+                    tardis.getControls().moderateMalfunction();
                     return new FlyingState();
                 }
                 var pos = searchIterator.next();
 
-                var location = destination.get().with(pos);
+                var location = destination.with(pos);
                 if (tardis.canLandAt(location)) {
                     // Only in this case will we actually land.
-                    return new LandingState(location);
+                    return crashing ? new CrashingState(location) : new LandingState(location);
                 }
             }
 
             searchingTicks++;
         } else {
-            playForInterior(tardis, ModSounds.TARDIS_FAILURE_SINGLE, SoundCategory.BLOCKS, 1, 1);
+            tardis.getControls().minorMalfunction();
             return new FlyingState();
         }
 
@@ -83,7 +102,8 @@ public class SearchingForLandingState implements FlightState {
     }
 
     @Override
-    public boolean canChangeCourse(Tardis tardis) {
+    public boolean tryChangeCourse(Tardis tardis) {
+        tardis.getControls().moderateMalfunction();
         return false;
     }
 

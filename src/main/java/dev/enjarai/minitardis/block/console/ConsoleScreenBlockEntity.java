@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.block.console;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
@@ -78,8 +79,13 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
             if (!nearbyPlayers.isEmpty() && threadFuture == null) {
                 getTardis(world).ifPresent(tardis -> threadFuture = executor.scheduleAtFixedRate(() -> {
-                    refreshPlayers(serverWorld);
-                    refresh(tardis);
+                    try {
+                        refreshPlayers(serverWorld);
+                        refresh(tardis);
+                    } catch (Exception e) {
+                        MiniTardis.LOGGER.error("Tardis screen draw thread failed:", e);
+                        throw e;
+                    }
                 }, 0, 1000 / 30, TimeUnit.MILLISECONDS));
             }
 
@@ -95,6 +101,13 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         addedPlayers.clear();
         if (threadFuture != null) {
             threadFuture.cancel(true);
+        }
+
+        // If we have an app selected, close it properly
+        if (selectedApp != null) {
+            //noinspection DataFlowIssue
+            getTardis(getWorld()).ifPresent(tardis -> tardis.getControls().getScreenApp(selectedApp)
+                    .ifPresent(app -> app.screenClose(tardis.getControls(), this)));
         }
     }
 
@@ -125,9 +138,9 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
         var controls = tardis.getControls();
         Optional.ofNullable(selectedApp).flatMap(controls::getScreenApp).ifPresentOrElse(app -> {
-            CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.APP_BACKGROUND);
-
-            app.draw(controls, this, new SubView(canvas, 0, 16, 128, 96));
+            var view = new SubView(canvas, 0, 16, 128, 96);
+            app.drawBackground(controls, this, view);
+            app.draw(controls, this, view);
             CanvasUtils.draw(canvas, 96 + 2, 16 + 2, ModCanvasUtils.SCREEN_SIDE_BUTTON);
             DefaultFonts.VANILLA.drawText(canvas, "Menu", 96 + 2 + 2, 16 + 2 + 4, 8, CanvasColor.WHITE_HIGH);
         }, () -> {

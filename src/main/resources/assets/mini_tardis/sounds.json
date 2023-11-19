@@ -29,6 +29,19 @@
       "mini_tardis:coral_hum"
     ]
   },
+  "tardis_crash_land": {
+    "subtitle": "sound.mini_tardis.tardis_crash_land",
+    "sounds": [
+      "mini_tardis:tardis_crash_land"
+    ]
+  },
+  "tardis_fly_loop_error": {
+    "subtitle": "sound.mini_tardis.tardis_fly_loop_error",
+    "sounds": [
+      "mini_tardis:tardis_fly_loop_error",
+      "mini_tardis:tardis_fly_loop_error_2"
+    ]
+  },
   "bad_apple": {
     "subtitle": "sound.mini_tardis.bad_apple",
     "sounds": [

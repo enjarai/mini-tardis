@@ -9,16 +9,19 @@ import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisExteriorBlock;
 import dev.enjarai.minitardis.block.TardisExteriorBlockEntity;
 import dev.enjarai.minitardis.component.flight.FlightState;
+import dev.enjarai.minitardis.component.flight.FlyingState;
 import dev.enjarai.minitardis.component.flight.LandedState;
 import net.minecraft.block.FacingBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
@@ -53,13 +56,15 @@ public class Tardis {
             TardisLocation.CODEC.optionalFieldOf("destination").forGetter(t -> t.destination),
             BlockPos.CODEC.optionalFieldOf("interior_door_position", BlockPos.ORIGIN).forGetter(t -> t.interiorDoorPosition),
             TardisControl.CODEC.optionalFieldOf("controls", new TardisControl()).forGetter(t -> t.controls),
-            FlightState.CODEC.optionalFieldOf("flight_state", new LandedState()).forGetter(t -> t.state)
+            FlightState.CODEC.optionalFieldOf("flight_state", new LandedState()).forGetter(t -> t.state),
+            Codec.INT.optionalFieldOf("stability", 100).forGetter(t -> t.stability)
     ).apply(instance, Tardis::new));
 
     TardisHolder holder;
     @Nullable
     RuntimeWorldHandle interiorWorld;
     DestinationScanner destinationScanner = new DestinationScanner(this, 128);
+    private int sparksQueued;
 
     private final UUID uuid;
     private boolean interiorPlaced;
@@ -69,8 +74,9 @@ public class Tardis {
     private BlockPos interiorDoorPosition;
     private final TardisControl controls;
     private FlightState state;
+    private int stability;
 
-    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Optional<TardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state) {
+    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Optional<TardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability) {
         this.uuid = uuid;
         this.interiorPlaced = interiorPlaced;
         this.interior = interior;
@@ -79,12 +85,13 @@ public class Tardis {
         this.interiorDoorPosition = interiorDoorPosition;
         this.controls = new TardisControl(controls);
         this.state = state;
+        this.stability = stability;
 
         this.controls.tardis = this;
     }
 
     public Tardis(TardisHolder holder, @Nullable TardisLocation location) {
-        this(UUID.randomUUID(), false, DEFAULT_INTERIOR, Optional.ofNullable(location), Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(), new LandedState());
+        this(UUID.randomUUID(), false, DEFAULT_INTERIOR, Optional.ofNullable(location), Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(), new LandedState(), 100);
 
         holder.addTardis(this);
 
@@ -111,7 +118,13 @@ public class Tardis {
             state.playForInterior(this, ModSounds.CORAL_HUM, SoundCategory.AMBIENT, 0.3f, 1);
         }
 
-        destinationScanner.tick(); // TODO ohno
+        // Sparks
+        if (sparksQueued > 0 && world.getRandom().nextBetween(0, 20) == 0) {
+            createInteriorSparks(false); // todo when exploding sparks?
+            sparksQueued--;
+        }
+
+        destinationScanner.tick();
     }
 
     public ServerWorld getInteriorWorld() {
@@ -226,7 +239,7 @@ public class Tardis {
                 var blockEntity = world.getBlockEntity(pos);
 
                 // Potentially rebuild the exterior if it doesn't exist yet
-                if (!(blockEntity instanceof TardisExteriorBlockEntity)) {
+                if (!(blockEntity instanceof TardisExteriorBlockEntity exteriorEntity && this.equals(exteriorEntity.getLinkedTardis()))) {
                     buildExterior();
                     blockEntity = world.getBlockEntity(pos);
                 }
@@ -297,7 +310,7 @@ public class Tardis {
     }
 
     public boolean setDestination(Optional<TardisLocation> destination, boolean force) {
-        if (!force && !state.canChangeCourse(this)) return false;
+        if (!force && !state.tryChangeCourse(this)) return false;
 
         this.destination = destination;
         destinationScanner.resetIterators();
@@ -324,6 +337,55 @@ public class Tardis {
 
     public FlightState getState() {
         return state;
+    }
+
+    public <T extends FlightState> Optional<T> getState(Class<T> stateType) {
+        if (stateType.isInstance(state)) {
+            return Optional.of(stateType.cast(state));
+        }
+        return Optional.empty();
+    }
+
+    public int getStability() {
+        return stability;
+    }
+
+    public void setStability(int stability) {
+        if (stability < this.stability) {
+            getState(FlyingState.class).ifPresent(state -> state.errorLoops = 2);
+            if (sparksQueued < 10) {
+                sparksQueued += (this.stability - stability) / getInteriorWorld().getRandom().nextBetween(18, 26);
+            }
+        }
+        this.stability = stability;
+    }
+
+    public void destabilize(int amount) {
+        setStability(Math.max(0, getStability() - amount));
+    }
+
+    public void createInteriorSparks(boolean damage) {
+        findSparkPos().ifPresent(pos -> {
+            var world = getInteriorWorld();
+
+            world.spawnParticles(ParticleTypes.FIREWORK, pos.x, pos.y, pos.z, 20, 0, 0, 0, 0.2);
+            world.spawnParticles(ParticleTypes.LAVA, pos.x, pos.y, pos.z, 10, 0, 0, 0, 0.2);
+            world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_ZOMBIE_VILLAGER_CURE, SoundCategory.BLOCKS, 2, 0.5f + world.getRandom().nextFloat());
+        });
+    }
+
+    private Optional<Vec3d> findSparkPos() {
+        var world = getInteriorWorld();
+        for (var pos : BlockPos.iterateRandomly(world.getRandom(), 128, getInteriorCenter(), 16)) {
+            if (!world.getBlockState(pos).isReplaceable()) continue;
+
+            for (var direction : Direction.values()) {
+                if (world.getBlockState(pos.offset(direction)).isSideSolidFullSquare(world, pos, direction.getOpposite())) {
+                    return Optional.of(Vec3d.ofCenter(pos).add(Vec3d.of(direction.getVector()).multiply(0.5)));
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

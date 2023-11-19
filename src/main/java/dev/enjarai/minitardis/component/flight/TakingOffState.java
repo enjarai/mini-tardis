@@ -35,11 +35,21 @@ public class TakingOffState extends TransitionalFlightState {
     @Override
     public FlightState tick(Tardis tardis) {
         tickScreenShake(tardis, 1);
+
+        if (tardis.getStability() <= 0 && tardis.getCurrentLocation().isPresent()) {
+            return new CrashingState(tardis.getCurrentLocation().get());
+        }
+
         return super.tick(tardis);
     }
 
     @Override
     public boolean suggestTransition(Tardis tardis, FlightState newState) {
+        if (newState instanceof SearchingForLandingState) {
+            tardis.getControls().majorMalfunction();
+        } else {
+            tardis.getControls().moderateMalfunction();
+        }
         return false;
     }
 

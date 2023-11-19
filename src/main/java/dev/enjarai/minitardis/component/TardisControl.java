@@ -45,7 +45,10 @@ public class TardisControl {
 
 
     public boolean resetDestination() {
-        if (tardis.getCurrentLocation().isEmpty()) return false;
+        if (tardis.getCurrentLocation().isEmpty()) {
+            minorMalfunction();
+            return false;
+        }
 
         return tardis.setDestination(tardis.getCurrentLocation(), false);
     }
@@ -87,7 +90,20 @@ public class TardisControl {
     }
 
     public boolean handbrake(boolean state) {
-        return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState());
+        return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState(false));
+    }
+
+
+    public void minorMalfunction() {
+        tardis.destabilize(1);
+    }
+
+    public void moderateMalfunction() {
+        tardis.destabilize(20);
+    }
+
+    public void majorMalfunction() {
+        tardis.destabilize(100);
     }
 
 

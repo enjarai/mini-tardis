@@ -7,7 +7,8 @@ public class ModSounds {
     public static SoundEvent TARDIS_TAKEOFF = createSound("tardis_takeoff");
     public static SoundEvent TARDIS_LANDING = createSound("tardis_landing");
     public static SoundEvent TARDIS_FLY_LOOP = createSound("tardis_fly_loop");
-    public static SoundEvent TARDIS_FAILURE_SINGLE = createSound("tardis_failure_single"); // TODO
+    public static SoundEvent TARDIS_FLY_LOOP_ERROR = createSound("tardis_fly_loop_error");
+    public static SoundEvent TARDIS_CRASH_LAND = createSound("tardis_crash_land");
     public static SoundEvent CORAL_HUM = createSound("coral_hum");
     public static SoundEvent BAD_APPLE = createSound("bad_apple");
 

@@ -1,4 +1,4 @@
-//package dev.enjarai.minitardis.canvas;
+package dev.enjarai.minitardis.canvas;
 
 import java.io.IOException;
 import java.nio.file.Files;

@@ -11,6 +11,11 @@ public class LandedState implements FlightState {
 
     @Override
     public FlightState tick(Tardis tardis) {
+        var stability = tardis.getStability();
+        if (stability < 100) {
+            tardis.setStability(stability + 1);
+        }
+
         return this;
     }
 

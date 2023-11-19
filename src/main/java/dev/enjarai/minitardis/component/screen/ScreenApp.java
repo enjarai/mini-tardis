@@ -2,8 +2,10 @@ package dev.enjarai.minitardis.component.screen;
 
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
+import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 import net.minecraft.util.Identifier;
@@ -15,12 +17,14 @@ public interface ScreenApp {
     Map<Identifier, Codec<? extends ScreenApp>> ALL = Map.of(
             ScannerApp.ID, ScannerApp.CODEC,
             GpsApp.ID, GpsApp.CODEC,
-            BadAppleApp.ID, BadAppleApp.CODEC
+            BadAppleApp.ID, BadAppleApp.CODEC,
+            StatusApp.ID, StatusApp.CODEC
     );
     Map<Identifier, Supplier<? extends ScreenApp>> CONSTRUCTORS = Map.of(
             ScannerApp.ID, ScannerApp::new,
             GpsApp.ID, GpsApp::new,
-            BadAppleApp.ID, BadAppleApp::new
+            BadAppleApp.ID, BadAppleApp::new,
+            StatusApp.ID, StatusApp::new
     );
     Codec<ScreenApp> CODEC = Identifier.CODEC.dispatch(ScreenApp::id, ALL::get);
 
@@ -29,6 +33,10 @@ public interface ScreenApp {
      * THIS IS CALLED OFF-THREAD, DON'T INTERACT WITH THE WORLD IF AT ALL POSSIBLE.
      */
     void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas);
+
+    default void drawBackground(TardisControl control, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.APP_BACKGROUND);
+    }
 
     /**
      * Handle a player clicking on the screen. Coordinates provided are relative to the draw canvas.

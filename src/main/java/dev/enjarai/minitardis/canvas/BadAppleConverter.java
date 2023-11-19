@@ -29,12 +29,24 @@ public class BadAppleConverter {
         var frames = goodApple.length;
         var width = 128;
         var height = 96;
-        var badApple = new byte[frames * width * height];
+        var mediumApple = new byte[frames * width * height];
 
         for (var frame = 0; frame < frames; frame++) {
             for (var x = 0; x < width; x++) {
                 for (var y = 0; y < height; y++) {
-                    badApple[frame * width * height + x * height + y] = goodApple[frame][y * width + x];
+                    mediumApple[frame * width * height + x * height + y] = goodApple[frame][y * width + x];
+                }
+            }
+        }
+
+        var badApple = new byte[mediumApple.length / 2];
+        for (var frame = 0; frame < frames; frame++) {
+            for (var x = 0; x < width; x++) {
+                for (var y = 0; y < height / 2; y++) {
+                    var index = frame * width * height + x * height + y * 2;
+                    var pixel1 = mediumApple[index] << 4;
+                    var pixel2 = mediumApple[index + 1];
+                    badApple[index / 2] = (byte) (pixel1 | pixel2);
                 }
             }
         }

@@ -2,6 +2,7 @@ package dev.enjarai.minitardis.component.screen;
 
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
+import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.DestinationScanner;
 import dev.enjarai.minitardis.component.TardisControl;
@@ -60,7 +61,7 @@ public class ScannerApp extends ElementHoldingApp {
     }
 
     @Override
-    public void screenTick(TardisControl controls) {
+    public void screenTick(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
         controls.getTardis().getDestinationScanner().shouldScanNextTick();
     }
 

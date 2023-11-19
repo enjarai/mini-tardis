@@ -22,13 +22,42 @@ public interface ScreenApp {
     );
     Codec<ScreenApp> CODEC = Identifier.CODEC.dispatch(ScreenApp::id, ALL::get);
 
+    /**
+     * Draw the contents of the application to the provided canvas, the canvas provided is limited to the available area.
+     * THIS IS CALLED OFF-THREAD, DON'T INTERACT WITH THE WORLD IF AT ALL POSSIBLE.
+     */
     void draw(TardisControl controls, DrawableCanvas canvas);
 
+    /**
+     * Handle a player clicking on the screen. Coordinates provided are relative to the draw canvas.
+     */
     boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y);
 
+    /**
+     * Draw the icon of the application to the provided canvas, the canvas provided is limited to the available area.
+     * THIS IS CALLED OFF-THREAD, DON'T INTERACT WITH THE WORLD IF AT ALL POSSIBLE.
+     */
     void drawIcon(TardisControl controls, DrawableCanvas canvas);
 
-    default void screenTick(TardisControl controls) {
+    /**
+     * Called every tick for every screen displaying this app.
+     * Keep in mind multiple screens can display the same app, and will share the app's state.
+     */
+    default void screenTick(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+    }
+
+    /**
+     * Called when a screen opens this app.
+     * Keep in mind multiple screens can display the same app, and will share the app's state.
+     */
+    default void screenOpen(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+    }
+
+    /**
+     * Called when a screen closes this app.
+     * Keep in mind multiple screens can display the same app, and will share the app's state.
+     */
+    default void screenClose(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
     }
 
     Identifier id();

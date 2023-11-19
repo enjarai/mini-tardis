@@ -84,7 +84,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
             if (!nearbyPlayers.isEmpty() && selectedApp != null) {
                 getTardis(world).ifPresent(tardis -> tardis.getControls().getScreenApp(selectedApp)
-                        .ifPresent(app -> app.screenTick(tardis.getControls())));
+                        .ifPresent(app -> app.screenTick(tardis.getControls(), this)));
             }
         }
     }
@@ -148,8 +148,9 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
             var controls = tardis.getControls();
             Optional.ofNullable(selectedApp).flatMap(controls::getScreenApp).ifPresentOrElse(app -> {
                 if (type == ClickType.RIGHT && x >= 96 + 2 && x < 96 + 2 + 28 && y >= 16 + 2 && y < 16 + 2 + 14) {
+                    app.screenClose(controls, this);
                     selectedApp = null;
-                    playClickSound(0.5f);
+                    playClickSound(0.8f);
                 } else {
                     app.onClick(controls, this, player, type, x, y - 16);
                 }
@@ -163,6 +164,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                         if (x >= appX && x < appX + 24 && y >= appY && y < appY + 24) {
                             var app = apps.get(i);
                             selectedApp = app.id();
+                            app.screenOpen(controls, this);
                             playClickSound(1.5f);
                         }
                     }

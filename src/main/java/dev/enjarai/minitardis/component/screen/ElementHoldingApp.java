@@ -19,7 +19,7 @@ public abstract class ElementHoldingApp implements ScreenApp {
     }
 
     @Override
-    public void draw(TardisControl controls, DrawableCanvas canvas) {
+    public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         children.forEach(el -> el.draw(controls, canvas));
     }
 

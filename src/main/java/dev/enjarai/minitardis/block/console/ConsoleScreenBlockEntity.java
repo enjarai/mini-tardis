@@ -126,7 +126,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         Optional.ofNullable(selectedApp).flatMap(controls::getScreenApp).ifPresentOrElse(app -> {
             CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.APP_BACKGROUND);
 
-            app.draw(controls, new SubView(canvas, 0, 16, 128, 96));
+            app.draw(controls, this, new SubView(canvas, 0, 16, 128, 96));
             CanvasUtils.draw(canvas, 96 + 2, 16 + 2, ModCanvasUtils.SCREEN_SIDE_BUTTON);
             DefaultFonts.VANILLA.drawText(canvas, "Menu", 96 + 2 + 2, 16 + 2 + 4, 8, CanvasColor.WHITE_HIGH);
         }, () -> {
@@ -135,7 +135,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
             var apps = controls.getAllApps();
             for (int i = 0; i < apps.size(); i++) {
                 var app = apps.get(i);
-                app.drawIcon(controls, new SubView(canvas, getAppX(i), getAppY(i), 24, 24)); // TODO wrapping
+                app.drawIcon(controls, this, new SubView(canvas, getAppX(i), getAppY(i), 24, 24)); // TODO wrapping
             }
         });
 

@@ -18,7 +18,7 @@ public class GpsApp implements ScreenApp {
     public static final Identifier ID = MiniTardis.id("gps");
 
     @Override
-    public void draw(TardisControl controls, DrawableCanvas canvas) {
+    public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         var destination = controls.getTardis().getDestination();
         DefaultFonts.VANILLA.drawText(canvas,
                 "X: " + destination.map(l -> String.valueOf(l.pos().getX())).orElse("-"),
@@ -31,7 +31,7 @@ public class GpsApp implements ScreenApp {
     }
 
     @Override
-    public void drawIcon(TardisControl controls, DrawableCanvas canvas) {
+    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.GPS_APP);
     }
 

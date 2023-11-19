@@ -11,7 +11,6 @@ import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import eu.pb4.mapcanvas.impl.view.Rotate90ClockwiseView;
-import eu.pb4.mapcanvas.impl.view.RotatedView;
 import net.minecraft.util.Identifier;
 
 public class ScannerApp extends ElementHoldingApp {
@@ -24,7 +23,7 @@ public class ScannerApp extends ElementHoldingApp {
     }
 
     @Override
-    public void draw(TardisControl controls, DrawableCanvas canvas) {
+    public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         for (int x = 0; x < DestinationScanner.RANGE; x++) {
             for (int y = 0; y < DestinationScanner.RANGE; y++) {
                 byte value = controls.getTardis().getDestinationScanner().getFor(x, y);
@@ -52,11 +51,11 @@ public class ScannerApp extends ElementHoldingApp {
             CanvasUtils.draw(canvas, 96, 64, view);
         });
 
-        super.draw(controls, canvas);
+        super.draw(controls, blockEntity, canvas);
     }
 
     @Override
-    public void drawIcon(TardisControl controls, DrawableCanvas canvas) {
+    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SCANNER_APP);
     }
 

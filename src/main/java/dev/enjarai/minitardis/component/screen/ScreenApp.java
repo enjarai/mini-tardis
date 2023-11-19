@@ -26,7 +26,7 @@ public interface ScreenApp {
      * Draw the contents of the application to the provided canvas, the canvas provided is limited to the available area.
      * THIS IS CALLED OFF-THREAD, DON'T INTERACT WITH THE WORLD IF AT ALL POSSIBLE.
      */
-    void draw(TardisControl controls, DrawableCanvas canvas);
+    void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas);
 
     /**
      * Handle a player clicking on the screen. Coordinates provided are relative to the draw canvas.
@@ -37,7 +37,7 @@ public interface ScreenApp {
      * Draw the icon of the application to the provided canvas, the canvas provided is limited to the available area.
      * THIS IS CALLED OFF-THREAD, DON'T INTERACT WITH THE WORLD IF AT ALL POSSIBLE.
      */
-    void drawIcon(TardisControl controls, DrawableCanvas canvas);
+    void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas);
 
     /**
      * Called every tick for every screen displaying this app.

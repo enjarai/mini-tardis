@@ -2,6 +2,8 @@ package dev.enjarai.minitardis.component.screen;
 
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
+import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -16,21 +18,22 @@ public class GpsApp implements ScreenApp {
     public static final Identifier ID = MiniTardis.id("gps");
 
     @Override
-    public void draw(TardisControl controls, DrawableCanvas canvas) {
+    public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         var destination = controls.getTardis().getDestination();
+        DefaultFonts.VANILLA.drawText(canvas, "Current Location", 3, 4, 8, CanvasColor.WHITE_HIGH);
         DefaultFonts.VANILLA.drawText(canvas,
-                "X: " + destination.map(l -> String.valueOf(l.pos().getX())).orElse("-"),
-                3, 16 + 3, 8, CanvasColor.WHITE_HIGH);
+                destination.map(l -> l.pos().getX() + " " + l.pos().getY() + " " + l.pos().getZ()).orElse("Unknown"),
+                3, 4 + 9, 8, CanvasColor.WHITE_HIGH);
     }
 
     @Override
-    public boolean onClick(TardisControl controls, ServerPlayerEntity player, ClickType type, int x, int y) {
+    public boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
         return false;
     }
 
     @Override
-    public void drawIcon(TardisControl controls, DrawableCanvas canvas) {
-        CanvasUtils.fill(canvas, 0, 0, 24, 24, CanvasColor.BRIGHT_RED_HIGH);
+    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.GPS_APP);
     }
 
     @Override

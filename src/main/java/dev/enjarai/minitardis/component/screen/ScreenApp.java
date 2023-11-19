@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.component.screen;
 
 import com.mojang.serialization.Codec;
+import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -23,11 +24,43 @@ public interface ScreenApp {
     );
     Codec<ScreenApp> CODEC = Identifier.CODEC.dispatch(ScreenApp::id, ALL::get);
 
-    void draw(TardisControl controls, DrawableCanvas canvas);
+    /**
+     * Draw the contents of the application to the provided canvas, the canvas provided is limited to the available area.
+     * THIS IS CALLED OFF-THREAD, DON'T INTERACT WITH THE WORLD IF AT ALL POSSIBLE.
+     */
+    void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas);
 
-    boolean onClick(TardisControl controls, ServerPlayerEntity player, ClickType type, int x, int y);
+    /**
+     * Handle a player clicking on the screen. Coordinates provided are relative to the draw canvas.
+     */
+    boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y);
 
-    void drawIcon(TardisControl controls, DrawableCanvas canvas);
+    /**
+     * Draw the icon of the application to the provided canvas, the canvas provided is limited to the available area.
+     * THIS IS CALLED OFF-THREAD, DON'T INTERACT WITH THE WORLD IF AT ALL POSSIBLE.
+     */
+    void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas);
+
+    /**
+     * Called every tick for every screen displaying this app.
+     * Keep in mind multiple screens can display the same app, and will share the app's state.
+     */
+    default void screenTick(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+    }
+
+    /**
+     * Called when a screen opens this app.
+     * Keep in mind multiple screens can display the same app, and will share the app's state.
+     */
+    default void screenOpen(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+    }
+
+    /**
+     * Called when a screen closes this app.
+     * Keep in mind multiple screens can display the same app, and will share the app's state.
+     */
+    default void screenClose(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+    }
 
     Identifier id();
 }

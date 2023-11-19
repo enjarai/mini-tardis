@@ -4,7 +4,6 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
-import dev.enjarai.minitardis.component.DestinationScanner;
 import dev.enjarai.minitardis.component.Tardis;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -17,12 +16,13 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ClickType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +37,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     private final List<ServerPlayerEntity> addedPlayers = new ArrayList<>();
     @Nullable
     private ScheduledFuture<?> threadFuture;
+    public int badAppleFrameCounter;
 
     @Nullable
     Identifier selectedApp;
@@ -79,7 +80,12 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                 getTardis(world).ifPresent(tardis -> threadFuture = executor.scheduleAtFixedRate(() -> {
                     refreshPlayers(serverWorld);
                     refresh(tardis);
-                }, 0, 1000 / 20, TimeUnit.MILLISECONDS));
+                }, 0, 1000 / 30, TimeUnit.MILLISECONDS));
+            }
+
+            if (!nearbyPlayers.isEmpty() && selectedApp != null) {
+                getTardis(world).ifPresent(tardis -> tardis.getControls().getScreenApp(selectedApp)
+                        .ifPresent(app -> app.screenTick(tardis.getControls(), this)));
             }
         }
     }
@@ -121,7 +127,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         Optional.ofNullable(selectedApp).flatMap(controls::getScreenApp).ifPresentOrElse(app -> {
             CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.APP_BACKGROUND);
 
-            app.draw(controls, new SubView(canvas, 0, 16, 128, 96));
+            app.draw(controls, this, new SubView(canvas, 0, 16, 128, 96));
             CanvasUtils.draw(canvas, 96 + 2, 16 + 2, ModCanvasUtils.SCREEN_SIDE_BUTTON);
             DefaultFonts.VANILLA.drawText(canvas, "Menu", 96 + 2 + 2, 16 + 2 + 4, 8, CanvasColor.WHITE_HIGH);
         }, () -> {
@@ -130,7 +136,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
             var apps = controls.getAllApps();
             for (int i = 0; i < apps.size(); i++) {
                 var app = apps.get(i);
-                app.drawIcon(controls, new SubView(canvas, getAppX(i), getAppY(i), 24, 24)); // TODO wrapping
+                app.drawIcon(controls, this, new SubView(canvas, getAppX(i), getAppY(i), 24, 24)); // TODO wrapping
             }
         });
 
@@ -143,9 +149,11 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
             var controls = tardis.getControls();
             Optional.ofNullable(selectedApp).flatMap(controls::getScreenApp).ifPresentOrElse(app -> {
                 if (type == ClickType.RIGHT && x >= 96 + 2 && x < 96 + 2 + 28 && y >= 16 + 2 && y < 16 + 2 + 14) {
+                    app.screenClose(controls, this);
                     selectedApp = null;
+                    playClickSound(0.8f);
                 } else {
-                    app.onClick(controls, player, type, x, y);
+                    app.onClick(controls, this, player, type, x, y - 16);
                 }
             }, () -> {
                 var apps = controls.getAllApps();
@@ -157,6 +165,8 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                         if (x >= appX && x < appX + 24 && y >= appY && y < appY + 24) {
                             var app = apps.get(i);
                             selectedApp = app.id();
+                            app.screenOpen(controls, this);
+                            playClickSound(1.5f);
                         }
                     }
                 }
@@ -170,5 +180,11 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
     private int getAppY(int i) {
         return 16 + 4;
+    }
+
+    public void playClickSound(float pitch) {
+        if (getWorld() instanceof ServerWorld serverWorld) {
+            serverWorld.playSound(null, getPos(), SoundEvents.BLOCK_NOTE_BLOCK_BIT.value(), SoundCategory.BLOCKS, 0.5f, pitch);
+        }
     }
 }

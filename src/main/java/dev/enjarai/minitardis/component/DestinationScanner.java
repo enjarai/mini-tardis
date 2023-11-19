@@ -20,6 +20,8 @@ public class DestinationScanner {
     private final byte[] zAxis = new byte[TOTAL_BLOCKS];
     private Iterator<Vector2i> xIterator = newIterator();
     private Iterator<Vector2i> zIterator = newIterator();
+    private boolean shouldScanNextTick;
+    private boolean isZAxis;
 
     public DestinationScanner(Tardis tardis, int maxPerTick) {
         this.tardis = tardis;
@@ -27,25 +29,51 @@ public class DestinationScanner {
     }
 
     public void tick() {
-        tardis.getDestinationWorld().ifPresent(world -> {
-            @SuppressWarnings("OptionalGetWithoutIsPresent")
-            var location = tardis.getDestination().get();
+        if (shouldScanNextTick) {
+            tardis.getDestinationWorld().ifPresent(world -> {
+                @SuppressWarnings("OptionalGetWithoutIsPresent")
+                var location = tardis.getDestination().get();
 
-            xIterator = updateAxis(world, xAxis, xIterator, (pos3, pos2) -> pos3.set(location.pos()).move(pos2.x, pos2.y, 0));
-        });
+                if (isZAxis) {
+                    zIterator = updateAxis(world, zAxis, zIterator, (pos3, pos2) -> pos3.set(location.pos()).move(0, pos2.y, pos2.x));
+                } else {
+                    xIterator = updateAxis(world, xAxis, xIterator, (pos3, pos2) -> pos3.set(location.pos()).move(pos2.x, pos2.y, 0));
+                }
+            });
+
+            shouldScanNextTick = false;
+        } else {
+            resetIterators();
+        }
     }
 
-    public byte getForX(int x, int y) {
-        return getForX(getIndex(x, y));
+    public byte getFor(int x, int y) {
+        return getFor(getIndex(x, y));
     }
 
-    public byte getForX(int pos) {
-        return xAxis[pos];
+    public byte getFor(int pos) {
+        return isZAxis ? zAxis[pos] : xAxis[pos];
+    }
+
+    public void useXAxis() {
+        isZAxis = false;
+    }
+
+    public void useZAxis() {
+        isZAxis = true;
+    }
+
+    public boolean isZAxis() {
+        return isZAxis;
     }
 
     public void resetIterators() {
         xIterator = newIterator();
         zIterator = newIterator();
+    }
+
+    public void shouldScanNextTick() {
+        shouldScanNextTick = true;
     }
 
     private Iterator<Vector2i> updateAxis(ServerWorld world, byte[] axis, Iterator<Vector2i> iterator, BiConsumer<BlockPos.Mutable, Vector2i> posApplier) {

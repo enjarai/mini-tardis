@@ -28,5 +28,14 @@
     "sounds": [
       "mini_tardis:coral_hum"
     ]
+  },
+  "bad_apple": {
+    "subtitle": "sound.mini_tardis.bad_apple",
+    "sounds": [
+      {
+        "name": "mini_tardis:bad_apple",
+        "stream": true
+      }
+    ]
   }
 }

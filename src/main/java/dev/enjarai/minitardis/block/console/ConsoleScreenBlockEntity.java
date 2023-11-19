@@ -37,6 +37,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     private final List<ServerPlayerEntity> addedPlayers = new ArrayList<>();
     @Nullable
     private ScheduledFuture<?> threadFuture;
+    public int badAppleFrameCounter;
 
     @Nullable
     Identifier selectedApp;

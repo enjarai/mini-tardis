@@ -35,4 +35,8 @@ public class BadApple {
     public static byte getPixel(int frame, int x, int y) {
         return badApple[frame * width * height + x * height + y];
     }
+
+    public static int getFrameCount() {
+        return badApple.length / (width * height);
+    }
 }

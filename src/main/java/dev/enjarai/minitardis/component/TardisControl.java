@@ -6,7 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.component.flight.SearchingForLandingState;
 import dev.enjarai.minitardis.component.flight.TakingOffState;
-import dev.enjarai.minitardis.component.screen.ScreenApp;
+import dev.enjarai.minitardis.component.screen.app.ScreenApp;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 

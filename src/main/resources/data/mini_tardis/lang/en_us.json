@@ -10,6 +10,10 @@
   "mini_tardis.state.mini_tardis.landing": "Landing...",
   "mini_tardis.state.mini_tardis.searching_for_landing": "Searching...",
 
+  "dimension.minecraft.overworld": "Overworld",
+  "dimension.minecraft.the_nether": "The Nether",
+  "dimension.minecraft.the_end": "The End",
+
   "sound.mini_tardis.cloister_bell": "Cloister Bell Chimes",
   "sound.mini_tardis.tardis_landing": "Tardis Landing",
   "sound.mini_tardis.tardis_takeoff": "Tardis Taking Off",

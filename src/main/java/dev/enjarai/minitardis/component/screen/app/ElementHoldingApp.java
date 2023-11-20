@@ -1,4 +1,4 @@
-package dev.enjarai.minitardis.component.screen;
+package dev.enjarai.minitardis.component.screen.app;
 
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.component.TardisControl;

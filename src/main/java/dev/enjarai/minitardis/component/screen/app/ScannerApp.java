@@ -1,4 +1,4 @@
-package dev.enjarai.minitardis.component.screen;
+package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;

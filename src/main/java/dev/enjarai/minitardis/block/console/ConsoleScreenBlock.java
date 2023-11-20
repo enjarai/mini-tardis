@@ -27,6 +27,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 @SuppressWarnings("deprecation")
 public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock, TardisAware, BlockWithElementHolder, ConsoleInput {
@@ -129,7 +130,9 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
 
         var exteriorElement = new ItemDisplayElement();
         exteriorElement.setItem(PolymerModels.getStack(PolymerModels.ROTATING_MONITOR));
-        exteriorElement.setOffset(Vec3d.ZERO.offset(facing.getOpposite(), 0.495));
+//        var matrix = new Matrix4f();
+//        matrix.translate();
+        exteriorElement.setTranslation(facing.getOpposite().getUnitVector().mul(0.5f));
         exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
 
         return new ElementHolder() {{

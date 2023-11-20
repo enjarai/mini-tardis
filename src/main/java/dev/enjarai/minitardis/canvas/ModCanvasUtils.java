@@ -14,6 +14,7 @@ public class ModCanvasUtils {
     public static final CanvasImage SCREEN_BACKGROUND = loadImage("screen_background.png");
     public static final CanvasImage APP_BACKGROUND = loadImage("app_background.png");
     public static final CanvasImage STATUS_BACKGROUND = loadImage("status_background.png");
+    public static final CanvasImage GPS_BACKGROUND = loadImage("gps_background.png");
     public static final CanvasImage SCREEN_SIDE_BUTTON = loadImage("screen_side_button.png");
     public static final CanvasImage SCREEN_SIDE_BUTTON_PRESSED = loadImage("screen_side_button_pressed.png");
     public static final CanvasImage COORD_WIDGET_X = loadImage("coord_widget_x.png");

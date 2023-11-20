@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -280,6 +281,10 @@ public class Tardis {
         return !floorState.isReplaceable() && !floorState.isIn(ModBlocks.TARDIS_EXTERIOR_PARTS);
     }
 
+
+    public MinecraftServer getServer() {
+        return holder.getServer();
+    }
 
     public BlockPos getInteriorCenter() {
         return INTERIOR_CENTER;

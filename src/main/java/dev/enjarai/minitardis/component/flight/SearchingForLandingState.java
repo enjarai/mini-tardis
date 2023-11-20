@@ -23,7 +23,7 @@ public class SearchingForLandingState implements FlightState {
 
     int flyingTicks;
     private int searchingTicks;
-    private final boolean crashing;
+    final boolean crashing;
     private Iterator<BlockPos> searchIterator;
 
     private SearchingForLandingState(int flyingTicks, int searchingTicks, boolean crashing) {

@@ -82,7 +82,7 @@ public class ModBlocks {
     public static final ConsoleToggleButtonBlock COORDINATE_LOCK =
             register("coordinate_lock", new ConsoleToggleButtonBlock(FabricBlockSettings.create(),
                     BlockSetType.STONE, Blocks.STONE_BUTTON, false,
-                    TardisControl::setDestinationLocked));
+                    (controls, value) -> controls.setDestinationLocked(value, false)));
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);
@@ -99,7 +99,7 @@ public class ModBlocks {
             TARDIS_PLATING, INTERIOR_DOOR, HANDBRAKE, CONSOLE_SCREEN,
             RESET_DESTINATION_BUTTON, NUDGE_DESTINATION_BUTTON_1, NUDGE_DESTINATION_BUTTON_2,
             COORDINATE_SCALE_SELECTOR, ROTATION_SELECTOR, STATE_COMPARATOR,
-            VERTICAL_NUDGE_DESTINATION_BUTTON, FUEL_CONTROL
+            VERTICAL_NUDGE_DESTINATION_BUTTON, FUEL_CONTROL, COORDINATE_LOCK
     );
 
     public static final TagKey<Block> TARDIS_EXTERIOR_PARTS =

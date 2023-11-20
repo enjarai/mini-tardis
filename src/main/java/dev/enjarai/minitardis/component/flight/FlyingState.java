@@ -62,8 +62,15 @@ public class FlyingState implements FlightState {
     @Override
     public boolean suggestTransition(Tardis tardis, FlightState newState) {
         if (newState instanceof SearchingForLandingState landingState) {
+            if (!landingState.crashing && !tardis.getControls().isDestinationLocked()) {
+                tardis.getControls().moderateMalfunction();
+                return false;
+            }
+
             landingState.flyingTicks = flyingTicks;
             return true;
+        } else if (newState instanceof TakingOffState) {
+            return false;
         }
         tardis.getControls().minorMalfunction();
         return false;

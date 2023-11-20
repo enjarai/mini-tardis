@@ -21,7 +21,7 @@ public class LandedState implements FlightState {
 
     @Override
     public boolean suggestTransition(Tardis tardis, FlightState newState) {
-        return newState instanceof TakingOffState;
+        return newState instanceof TakingOffState && tardis.getControls().isDestinationLocked();
     }
 
     @Override

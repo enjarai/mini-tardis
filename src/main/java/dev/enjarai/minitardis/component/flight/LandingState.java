@@ -50,6 +50,11 @@ public class LandingState extends TransitionalFlightState {
     }
 
     @Override
+    public void complete(Tardis tardis) {
+        tardis.getControls().setDestinationLocked(false, true);
+    }
+
+    @Override
     public boolean suggestTransition(Tardis tardis, FlightState newState) {
         tardis.getControls().moderateMalfunction();
         return false;

@@ -106,18 +106,15 @@ public class TardisControl {
     }
 
     public boolean handbrake(boolean state) {
-        if (isDestinationLocked()) {
-            return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState(false));
-        }
-        return false;
+        return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState(false));
     }
 
     public boolean isDestinationLocked() {
         return destinationLocked;
     }
 
-    public boolean setDestinationLocked(boolean destinationLocked) {
-        if (tardis.getState().tryChangeCourse(tardis)) {
+    public boolean setDestinationLocked(boolean destinationLocked, boolean force) {
+        if (force || tardis.getState().tryChangeCourse(tardis)) {
             this.destinationLocked = destinationLocked;
             return true;
         }

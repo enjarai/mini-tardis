@@ -1,0 +1,55 @@
+package dev.enjarai.minitardis.block.console;
+
+import dev.enjarai.minitardis.component.TardisControl;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockSetType;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
+
+import java.util.function.BiFunction;
+
+@SuppressWarnings("deprecation")
+public class ConsoleToggleButtonBlock extends ConsoleButtonBlock {
+    private final BiFunction<TardisControl, Boolean, Boolean> controlInput;
+
+    public ConsoleToggleButtonBlock(Settings settings, BlockSetType buttonType, Block polymerBlock, boolean wooden, BiFunction<TardisControl, Boolean, Boolean> controlInput) {
+        super(settings, buttonType, polymerBlock, wooden, null);
+        this.controlInput = controlInput;
+    }
+
+    @Override
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        var isPowered = !state.get(POWERED);
+        world.setBlockState(pos, state.with(POWERED, isPowered));
+
+        if (!getTardis(world).map(tardis -> controlInput.apply(tardis.getControls(), isPowered)).orElse(false)) {
+            inputFailure(world, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_OPEN, 0);
+        }
+
+        return ActionResult.SUCCESS;
+    }
+
+    @Override
+    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        getTardis(world).ifPresent(tardis -> {
+            var locked = tardis.getControls().isDestinationLocked();
+            if (state.get(POWERED) != locked) {
+                world.setBlockState(pos, state.with(POWERED, locked));
+            }
+        });
+        world.scheduleBlockTick(pos, this, 10);
+    }
+
+    @Override
+    public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+        world.scheduleBlockTick(pos, this, 10);
+    }
+}

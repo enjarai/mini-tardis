@@ -57,13 +57,13 @@ public class SearchingForLandingState implements FlightState {
         if (maybeDestination.isPresent()) {
             var destination = maybeDestination.get();
 
-            // Shuffle the landing location if we're crashing
-            if (crashing) {
-                var random = tardis.getInteriorWorld().getRandom();
-                destination = destination.with(destination.pos().add(random.nextBetween(-1000, 1000), 0, random.nextBetween(-1000, 1000)));
-            }
-
             if (searchIterator == null) {
+                // Shuffle the landing location if we're crashing
+                if (crashing) {
+                    var random = tardis.getInteriorWorld().getRandom();
+                    destination = destination.with(destination.pos().add(random.nextBetween(-1000, 1000), 0, random.nextBetween(-1000, 1000)));
+                }
+
                 searchIterator = BlockPos.iterateOutwards(destination.pos(), MAX_SEARCH_RANGE, MAX_SEARCH_RANGE, MAX_SEARCH_RANGE).iterator();
             }
 

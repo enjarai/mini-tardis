@@ -18,29 +18,32 @@ import java.util.*;
 public class TardisControl {
     public static final Codec<TardisControl> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("coordinate_scale").forGetter(c -> c.coordinateScale),
-            ScreenApp.CODEC.listOf().fieldOf("screen_apps").forGetter(c -> ImmutableList.copyOf(c.screenApps.values()))
+            ScreenApp.CODEC.listOf().fieldOf("screen_apps").forGetter(c -> ImmutableList.copyOf(c.screenApps.values())),
+            Codec.BOOL.optionalFieldOf("destination_locked", false).forGetter(c -> c.destinationLocked)
     ).apply(instance, TardisControl::new));
 
     private int coordinateScale;
     private final Map<Identifier, ScreenApp> screenApps;
+    private boolean destinationLocked;
 
     Tardis tardis;
 
-    private TardisControl(int coordinateScale, Collection<ScreenApp> screenApps) {
+    private TardisControl(int coordinateScale, Collection<ScreenApp> screenApps, boolean destinationLocked) {
         this.coordinateScale = coordinateScale;
         var builder = ImmutableMap.<Identifier, ScreenApp>builder();
         ScreenApp.CONSTRUCTORS.forEach((key, value) -> builder.put(key, value.get()));
         screenApps.forEach(app -> builder.put(app.id(), app));
         this.screenApps = builder.buildKeepingLast();
+        this.destinationLocked = destinationLocked;
     }
 
     @SuppressWarnings("CopyConstructorMissesField")
     public TardisControl(TardisControl copyFrom) {
-        this(copyFrom.coordinateScale, copyFrom.screenApps.values());
+        this(copyFrom.coordinateScale, copyFrom.screenApps.values(), copyFrom.destinationLocked);
     }
 
     public TardisControl() {
-        this(1, List.of());
+        this(1, List.of(), false);
     }
 
 
@@ -50,7 +53,12 @@ public class TardisControl {
             return false;
         }
 
-        return tardis.setDestination(tardis.getCurrentLocation(), false);
+        var success = tardis.setDestination(tardis.getCurrentLocation(), false);
+
+        if (success) {
+            destinationLocked = false;
+        }
+        return success;
     }
 
     public boolean updateCoordinateScale(int scale) {
@@ -59,7 +67,7 @@ public class TardisControl {
     }
 
     public boolean nudgeDestination(Direction direction) {
-        return tardis.setDestination(tardis.getDestination()
+        var success = tardis.setDestination(tardis.getDestination()
                 .map(d -> {
                     if (direction.getAxis().isVertical()) {
                         return snapLocationVertically(d, direction);
@@ -68,6 +76,10 @@ public class TardisControl {
                     }
                 }), false)
                 && tardis.getDestination().isPresent();
+        if (success) {
+            destinationLocked = false;
+        }
+        return success;
     }
 
     private TardisLocation snapLocationVertically(TardisLocation location, Direction direction) {
@@ -84,13 +96,32 @@ public class TardisControl {
     }
 
     public boolean rotateDestination(Direction direction) {
-        return tardis.setDestination(tardis.getDestination()
+        var success = tardis.setDestination(tardis.getDestination()
                 .map(d -> d.with(direction)), false)
                 && tardis.getDestination().isPresent();
+        if (success) {
+            destinationLocked = false;
+        }
+        return success;
     }
 
     public boolean handbrake(boolean state) {
-        return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState(false));
+        if (isDestinationLocked()) {
+            return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState(false));
+        }
+        return false;
+    }
+
+    public boolean isDestinationLocked() {
+        return destinationLocked;
+    }
+
+    public boolean setDestinationLocked(boolean destinationLocked) {
+        if (tardis.getState().tryChangeCourse(tardis)) {
+            this.destinationLocked = destinationLocked;
+            return true;
+        }
+        return false;
     }
 
 

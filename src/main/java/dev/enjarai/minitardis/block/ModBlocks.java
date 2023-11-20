@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockSetType;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.entity.BlockEntity;
@@ -52,13 +53,16 @@ public class ModBlocks {
     public static final ConsoleScreenBlock CONSOLE_SCREEN =
             register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create()));
     public static final ConsoleButtonBlock RESET_DESTINATION_BUTTON =
-            register("reset_destination_button", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.DARK_OAK_BUTTON,
+            register("reset_destination_button", new ConsoleButtonBlock(FabricBlockSettings.create(),
+                    BlockSetType.DARK_OAK, Blocks.DARK_OAK_BUTTON, true,
                     (controls, facing) -> controls.resetDestination()));
     public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_1 =
-            register("nudge_destination_button_1", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.OAK_BUTTON,
+            register("nudge_destination_button_1", new ConsoleButtonBlock(FabricBlockSettings.create(),
+                    BlockSetType.OAK, Blocks.OAK_BUTTON, true,
                     TardisControl::nudgeDestination));
     public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_2 =
-            register("nudge_destination_button_2", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.SPRUCE_BUTTON,
+            register("nudge_destination_button_2", new ConsoleButtonBlock(FabricBlockSettings.create(),
+                    BlockSetType.SPRUCE, Blocks.SPRUCE_BUTTON, true,
                     TardisControl::nudgeDestination));
     public static final ConsoleRepeaterBlock COORDINATE_SCALE_SELECTOR =
             register("coordinate_scale_selector", new ConsoleRepeaterBlock(FabricBlockSettings.create(),
@@ -75,6 +79,10 @@ public class ModBlocks {
     public static final ConsoleDaylightDetectorBlock FUEL_CONTROL =
             register("fuel_control", new ConsoleDaylightDetectorBlock(FabricBlockSettings.create(),
                     (controls, value) -> true)); // TODO
+    public static final ConsoleToggleButtonBlock COORDINATE_LOCK =
+            register("coordinate_lock", new ConsoleToggleButtonBlock(FabricBlockSettings.create(),
+                    BlockSetType.STONE, Blocks.STONE_BUTTON, false,
+                    TardisControl::setDestinationLocked));
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);

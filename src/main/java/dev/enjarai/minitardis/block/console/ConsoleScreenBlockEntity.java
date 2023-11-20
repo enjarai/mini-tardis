@@ -42,7 +42,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
     private final VirtualDisplay display;
     private final TardisScreenView canvas;
-    private final Random drawRandom = new LocalRandom(69420); // funny numbers haha
+    public final Random drawRandom = new LocalRandom(69420); // funny numbers haha
     private final List<ServerPlayerEntity> addedPlayers = new ArrayList<>();
     @Nullable
     private ScheduledFuture<?> threadFuture;

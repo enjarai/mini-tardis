@@ -33,8 +33,11 @@ public class GpsApp implements ScreenApp {
         drawLocation(destination, canvas, 3, 4 + 61);
 
         var isLocked = controls.isDestinationLocked();
-        var color = isLocked ? CanvasColor.BLUE_HIGH : CanvasColor.DARK_RED_HIGH;
-        CanvasUtils.fill(canvas, 2, 84, 126, 94, color);
+        var color = isLocked ? CanvasColor.LIME_HIGH : CanvasColor.RED_HIGH;
+//        CanvasUtils.fill(canvas, 2, 84, 126, 94, color);
+        var lockedText = isLocked ? ">> Locked <<" : "|| Unlocked ||";
+        var lockedWidth = DefaultFonts.VANILLA.getTextWidth(lockedText, 8);
+        DefaultFonts.VANILLA.drawText(canvas, lockedText, 64 - lockedWidth / 2, 86, 8, color);
     }
 
     private void drawLocation(Optional<TardisLocation> optionalLocation, DrawableCanvas canvas, int x, int y) {

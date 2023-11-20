@@ -58,7 +58,8 @@ public class Tardis {
             BlockPos.CODEC.optionalFieldOf("interior_door_position", BlockPos.ORIGIN).forGetter(t -> t.interiorDoorPosition),
             TardisControl.CODEC.optionalFieldOf("controls", new TardisControl()).forGetter(t -> t.controls),
             FlightState.CODEC.optionalFieldOf("flight_state", new LandedState()).forGetter(t -> t.state),
-            Codec.INT.optionalFieldOf("stability", 100).forGetter(t -> t.stability)
+            Codec.INT.optionalFieldOf("stability", 1000).forGetter(t -> t.stability),
+            Codec.INT.optionalFieldOf("fuel", 500).forGetter(t -> t.fuel)
     ).apply(instance, Tardis::new));
 
     TardisHolder holder;
@@ -76,8 +77,9 @@ public class Tardis {
     private final TardisControl controls;
     private FlightState state;
     private int stability;
+    private int fuel;
 
-    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Optional<TardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability) {
+    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Optional<TardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability, int fuel) {
         this.uuid = uuid;
         this.interiorPlaced = interiorPlaced;
         this.interior = interior;
@@ -87,12 +89,13 @@ public class Tardis {
         this.controls = new TardisControl(controls);
         this.state = state;
         this.stability = stability;
+        this.fuel = fuel;
 
         this.controls.tardis = this;
     }
 
     public Tardis(TardisHolder holder, @Nullable TardisLocation location) {
-        this(UUID.randomUUID(), false, DEFAULT_INTERIOR, Optional.ofNullable(location), Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(), new LandedState(), 100);
+        this(UUID.randomUUID(), false, DEFAULT_INTERIOR, Optional.ofNullable(location), Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(), new LandedState(), 1000, 500);
 
         holder.addTardis(this);
 
@@ -123,6 +126,10 @@ public class Tardis {
         if (sparksQueued > 0 && world.getRandom().nextBetween(0, 20) == 0) {
             createInteriorSparks(false); // todo when exploding sparks?
             sparksQueued--;
+        }
+
+        if (stability < 200 && world.getRandom().nextBetween(0, 20000) < 800 - stability * 4 && sparksQueued < 10) {
+            sparksQueued++;
         }
 
         destinationScanner.tick();
@@ -359,7 +366,7 @@ public class Tardis {
         if (stability < this.stability) {
             getState(FlyingState.class).ifPresent(state -> state.errorLoops = 2);
             if (sparksQueued < 10) {
-                sparksQueued += (this.stability - stability) / getInteriorWorld().getRandom().nextBetween(18, 26);
+                sparksQueued += (this.stability - stability) / getInteriorWorld().getRandom().nextBetween(50, 150);
             }
         }
         this.stability = stability;
@@ -367,6 +374,16 @@ public class Tardis {
 
     public void destabilize(int amount) {
         setStability(Math.max(0, getStability() - amount));
+    }
+
+    public int getFuel() {
+        return fuel;
+    }
+
+    public boolean addOrDrainFuel(int amount) {
+        var oldFuel = fuel;
+        fuel = MathHelper.clamp(amount, 0, 1000);
+        return fuel != oldFuel;
     }
 
     public void createInteriorSparks(boolean damage) {

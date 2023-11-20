@@ -6,6 +6,7 @@ import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
@@ -105,6 +106,11 @@ public class SearchingForLandingState implements FlightState {
     public boolean tryChangeCourse(Tardis tardis) {
         tardis.getControls().moderateMalfunction();
         return false;
+    }
+
+    @Override
+    public Text getName() {
+        return crashing ? Text.translatable("mini_tardis.state.mini_tardis.searching_for_landing.crashing") : FlightState.super.getName();
     }
 
     @Override

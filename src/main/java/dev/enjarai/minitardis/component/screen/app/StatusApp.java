@@ -4,8 +4,10 @@ import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
+import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
@@ -19,9 +21,34 @@ public class StatusApp implements ScreenApp {
 
     @Override
     public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        DefaultFonts.VANILLA.drawText(canvas, controls.getTardis().getState().getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
+        var tardis = controls.getTardis();
 
-        DefaultFonts.VANILLA.drawText(canvas, "tmpStab: " + controls.getTardis().getStability(), 3, 4 + 48, 8, CanvasColor.WHITE_HIGH);
+        DefaultFonts.VANILLA.drawText(canvas, tardis.getState().getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
+
+        DefaultFonts.VANILLA.drawText(canvas, "tmpStab: " + tardis.getStability(), 3, 4 + 48, 8, CanvasColor.WHITE_HIGH);
+
+        var random = blockEntity.drawRandom;
+        var isSolid = tardis.getState().isSolid(tardis);
+        var stutterOffsetStability = isSolid ? 0 : random.nextBetween(-1, 1);
+        drawVerticalBar(canvas, tardis.getStability() * 480 / 10000 + stutterOffsetStability, 96, 16, ModCanvasUtils.VERTICAL_BAR_ORANGE, "STB");
+        var stutterOffsetFuel = isSolid ? 0 : random.nextBetween(-1, 1);
+        drawVerticalBar(canvas, tardis.getFuel() * 480 / 10000 + stutterOffsetFuel, 72, 16, ModCanvasUtils.VERTICAL_BAR_BLUE, "ART");
+    }
+
+    private void drawVerticalBar(DrawableCanvas canvas, int value, int x, int y, CanvasImage barType, String label) {
+        CanvasUtils.draw(canvas, x, y, ModCanvasUtils.VERTICAL_BAR_EMPTY);
+        for (int ly = 48 - value; ly < 48; ly++) {
+            for (int lx = 0; lx < 16; lx++) {
+                byte color = barType.getRaw(8 + lx, 8 + ly);
+
+                if (color != 0) {
+                    canvas.setRaw(8 + lx + x, 8 + ly + y, color);
+                }
+            }
+        }
+
+        var labelWidth = DefaultFonts.VANILLA.getTextWidth(label, 8);
+        DefaultFonts.VANILLA.drawText(canvas, label, x + 15 - labelWidth / 2, y + 64, 8, CanvasColor.WHITE_HIGH);
     }
 
     @Override

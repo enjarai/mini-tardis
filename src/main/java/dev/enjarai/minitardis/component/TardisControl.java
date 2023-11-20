@@ -123,15 +123,15 @@ public class TardisControl {
 
 
     public void minorMalfunction() {
-        tardis.destabilize(1);
+        tardis.destabilize(10);
     }
 
     public void moderateMalfunction() {
-        tardis.destabilize(20);
+        tardis.destabilize(200);
     }
 
     public void majorMalfunction() {
-        tardis.destabilize(100);
+        tardis.destabilize(1000);
     }
 
 

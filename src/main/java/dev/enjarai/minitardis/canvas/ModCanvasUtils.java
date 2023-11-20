@@ -21,6 +21,9 @@ public class ModCanvasUtils {
     public static final CanvasImage COORD_WIDGET_Z = loadImage("coord_widget_z.png");
     public static final CanvasImage DESTINATION_FACING_WIDGET = loadImage("destination_facing_widget.png");
     public static final CanvasImage CURRENT_FACING_WIDGET = loadImage("current_facing_widget.png");
+    public static final CanvasImage VERTICAL_BAR_EMPTY = loadImage("vertical_bar_empty.png");
+    public static final CanvasImage VERTICAL_BAR_BLUE = loadImage("vertical_bar_blue.png");
+    public static final CanvasImage VERTICAL_BAR_ORANGE = loadImage("vertical_bar_orange.png");
     public static final CanvasImage SCANNER_APP = loadImage("app/scanner.png");
     public static final CanvasImage GPS_APP = loadImage("app/gps.png");
     public static final CanvasImage BAD_APPLE_APP = loadImage("app/bad_apple.png");

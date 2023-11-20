@@ -10,6 +10,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
@@ -33,6 +34,11 @@ public class TardisExteriorExtensionBlock extends Block implements PolymerBlock 
             return ActionResult.SUCCESS;
         }
         return super.onUse(state, world, pos, player, hand, hit);
+    }
+
+    @Override
+    public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
+        return true;
     }
 
     @Override

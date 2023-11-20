@@ -33,12 +33,14 @@ public class ModBlocks {
                     .mapColor(MapColor.LAPIS_BLUE)
                     .strength(-1.0F, 3600000.0F)
                     .dropsNothing()
+                    .nonOpaque()
                     .allowsSpawning(Blocks::never)));
     public static final TardisExteriorExtensionBlock TARDIS_EXTERIOR_EXTENSION =
             register("tardis_exterior_extension", new TardisExteriorExtensionBlock(FabricBlockSettings.create()
                     .mapColor(MapColor.LAPIS_BLUE)
                     .strength(-1.0F, 3600000.0F)
                     .dropsNothing()
+                    .nonOpaque()
                     .allowsSpawning(Blocks::never)));
     public static final SimplePolymerBlock TARDIS_PLATING =
             register("tardis_plating", new SimplePolymerBlock(FabricBlockSettings.create()
@@ -51,7 +53,7 @@ public class ModBlocks {
             register("handbrake", new ConsoleLeverBlock(FabricBlockSettings.create(),
                     TardisControl::handbrake));
     public static final ConsoleScreenBlock CONSOLE_SCREEN =
-            register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create()));
+            register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create().nonOpaque()));
     public static final ConsoleButtonBlock RESET_DESTINATION_BUTTON =
             register("reset_destination_button", new ConsoleButtonBlock(FabricBlockSettings.create(),
                     BlockSetType.DARK_OAK, Blocks.DARK_OAK_BUTTON, true,

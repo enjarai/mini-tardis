@@ -28,6 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,6 +80,11 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
     }
 
     @Override
+    public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
+        return true;
+    }
+
+    @Override
     public boolean tickElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
         return true;
     }
@@ -88,7 +94,6 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
         var exteriorElement = new ItemDisplayElement();
         exteriorElement.setItem(PolymerModels.getStack(PolymerModels.TARDIS));
         exteriorElement.setOffset(new Vec3d(0, 1, 0));
-        exteriorElement.setBrightness(Brightness.FULL);
         exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(initialBlockState.get(FACING).asRotation()));
 
         return new ElementHolder() {

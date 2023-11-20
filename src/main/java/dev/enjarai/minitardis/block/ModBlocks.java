@@ -50,7 +50,7 @@ public class ModBlocks {
             register("handbrake", new ConsoleLeverBlock(FabricBlockSettings.create(),
                     TardisControl::handbrake));
     public static final ConsoleScreenBlock CONSOLE_SCREEN =
-            register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create().luminance(3)));
+            register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create()));
     public static final ConsoleButtonBlock RESET_DESTINATION_BUTTON =
             register("reset_destination_button", new ConsoleButtonBlock(FabricBlockSettings.create(), Blocks.DARK_OAK_BUTTON,
                     (controls, facing) -> controls.resetDestination()));

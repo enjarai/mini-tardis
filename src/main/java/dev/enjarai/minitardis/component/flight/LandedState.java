@@ -16,12 +16,20 @@ public class LandedState implements FlightState {
             tardis.setStability(stability + 1);
         }
 
+        if (tardis.getControls().areEnergyConduitsUnlocked() && tardis.getInteriorWorld().getTime() % 40 == 0) {
+            tardis.addOrDrainFuel(-1);
+        }
+
         return this;
     }
 
     @Override
     public boolean suggestTransition(Tardis tardis, FlightState newState) {
-        return newState instanceof TakingOffState && tardis.getControls().isDestinationLocked();
+        if (newState instanceof TakingOffState && tardis.getControls().isDestinationLocked() && tardis.getControls().areEnergyConduitsUnlocked()) {
+            return true;
+        }
+
+        return newState instanceof RefuelingState && !tardis.getControls().areEnergyConduitsUnlocked();
     }
 
     @Override

@@ -6,6 +6,8 @@ import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.flight.FlightState;
+import dev.enjarai.minitardis.component.flight.RefuelingState;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -25,13 +27,12 @@ public class StatusApp implements ScreenApp {
 
         DefaultFonts.VANILLA.drawText(canvas, tardis.getState().getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
 
-        DefaultFonts.VANILLA.drawText(canvas, "tmpStab: " + tardis.getStability(), 3, 4 + 48, 8, CanvasColor.WHITE_HIGH);
-
         var random = blockEntity.drawRandom;
-        var isSolid = tardis.getState().isSolid(tardis);
+        var state = tardis.getState();
+        var isSolid = state.isSolid(tardis);
         var stutterOffsetStability = isSolid ? 0 : random.nextBetween(-1, 1);
         drawVerticalBar(canvas, tardis.getStability() * 480 / 10000 + stutterOffsetStability, 96, 16, ModCanvasUtils.VERTICAL_BAR_ORANGE, "STB");
-        var stutterOffsetFuel = isSolid ? 0 : random.nextBetween(-1, 1);
+        var stutterOffsetFuel = isSolid || state instanceof RefuelingState ? 0 : random.nextBetween(-1, 1);
         drawVerticalBar(canvas, tardis.getFuel() * 480 / 10000 + stutterOffsetFuel, 72, 16, ModCanvasUtils.VERTICAL_BAR_BLUE, "ART");
     }
 

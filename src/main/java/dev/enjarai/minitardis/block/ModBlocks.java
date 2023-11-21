@@ -80,7 +80,7 @@ public class ModBlocks {
                     (controls, value) -> controls.nudgeDestination(value ? Direction.UP : Direction.DOWN)));
     public static final ConsoleDaylightDetectorBlock FUEL_CONTROL =
             register("fuel_control", new ConsoleDaylightDetectorBlock(FabricBlockSettings.create(),
-                    (controls, value) -> true)); // TODO
+                    TardisControl::setEnergyConduits));
     public static final ConsoleToggleButtonBlock COORDINATE_LOCK =
             register("coordinate_lock", new ConsoleToggleButtonBlock(FabricBlockSettings.create(),
                     BlockSetType.STONE, Blocks.STONE_BUTTON, false,

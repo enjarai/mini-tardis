@@ -40,6 +40,11 @@ public class TakingOffState extends TransitionalFlightState {
             return new CrashingState(tardis.getCurrentLocation().get());
         }
 
+        if (ticksPassed % 2 == 0 && !tardis.addOrDrainFuel(-1)) {
+            tardis.getControls().majorMalfunction();
+            return this;
+        }
+
         return super.tick(tardis);
     }
 

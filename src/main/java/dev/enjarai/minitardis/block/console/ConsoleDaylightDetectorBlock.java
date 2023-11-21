@@ -32,7 +32,7 @@ public class ConsoleDaylightDetectorBlock extends Block implements PolymerBlock,
     public ConsoleDaylightDetectorBlock(Settings settings, BiFunction<TardisControl, Boolean, Boolean> controlInput) {
         super(settings);
         this.controlInput = controlInput;
-        setDefaultState(getStateManager().getDefaultState().with(INVERTED, false));
+        setDefaultState(getStateManager().getDefaultState().with(INVERTED, true));
     }
 
     @Override
@@ -45,10 +45,10 @@ public class ConsoleDaylightDetectorBlock extends Block implements PolymerBlock,
         if (!player.getAbilities().allowModifyWorld) {
             return ActionResult.PASS;
         } else {
-            world.setBlockState(pos, state.cycle(INVERTED), Block.NOTIFY_ALL);
-            var value = world.getBlockState(pos).get(INVERTED);
+            var value = !state.cycle(INVERTED).get(INVERTED);
             if (getTardis(world).map(tardis -> controlInput.apply(tardis.getControls(), value)).orElse(false)) {
                 inputSuccess(world, pos, SoundEvents.BLOCK_NOTE_BLOCK_HAT.value(), value ? 2 : 1);
+                world.setBlockState(pos, state.with(INVERTED, !value), Block.NOTIFY_ALL);
                 if (value) {
 //                    inputSuccess(world, pos, SoundEvents.ENTITY_HORSE_BREATHE, 0); // TODO smt better
                 }

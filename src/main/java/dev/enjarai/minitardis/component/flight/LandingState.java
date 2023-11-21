@@ -45,6 +45,11 @@ public class LandingState extends TransitionalFlightState {
             return new FlyingState();
         }
 
+        if (ticksPassed % 2 == 0 && !tardis.addOrDrainFuel(-1)) {
+            tardis.getControls().moderateMalfunction();
+            return this;
+        }
+
         tickScreenShake(tardis, 1);
         return super.tick(tardis);
     }

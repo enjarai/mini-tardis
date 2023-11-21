@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.enjarai.minitardis.component.flight.RefuelingState;
 import dev.enjarai.minitardis.component.flight.SearchingForLandingState;
 import dev.enjarai.minitardis.component.flight.TakingOffState;
 import dev.enjarai.minitardis.component.screen.app.ScreenApp;
@@ -19,31 +20,34 @@ public class TardisControl {
     public static final Codec<TardisControl> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("coordinate_scale").forGetter(c -> c.coordinateScale),
             ScreenApp.CODEC.listOf().fieldOf("screen_apps").forGetter(c -> ImmutableList.copyOf(c.screenApps.values())),
-            Codec.BOOL.optionalFieldOf("destination_locked", false).forGetter(c -> c.destinationLocked)
+            Codec.BOOL.optionalFieldOf("destination_locked", false).forGetter(c -> c.destinationLocked),
+            Codec.BOOL.optionalFieldOf("energy_conduits_unlocked", false).forGetter(c -> c.energyConduitsUnlocked)
     ).apply(instance, TardisControl::new));
 
     private int coordinateScale;
     private final Map<Identifier, ScreenApp> screenApps;
     private boolean destinationLocked;
+    private boolean energyConduitsUnlocked;
 
     Tardis tardis;
 
-    private TardisControl(int coordinateScale, Collection<ScreenApp> screenApps, boolean destinationLocked) {
+    private TardisControl(int coordinateScale, Collection<ScreenApp> screenApps, boolean destinationLocked, boolean energyConduitsUnlocked) {
         this.coordinateScale = coordinateScale;
         var builder = ImmutableMap.<Identifier, ScreenApp>builder();
         ScreenApp.CONSTRUCTORS.forEach((key, value) -> builder.put(key, value.get()));
         screenApps.forEach(app -> builder.put(app.id(), app));
         this.screenApps = builder.buildKeepingLast();
         this.destinationLocked = destinationLocked;
+        this.energyConduitsUnlocked = energyConduitsUnlocked;
     }
 
     @SuppressWarnings("CopyConstructorMissesField")
     public TardisControl(TardisControl copyFrom) {
-        this(copyFrom.coordinateScale, copyFrom.screenApps.values(), copyFrom.destinationLocked);
+        this(copyFrom.coordinateScale, copyFrom.screenApps.values(), copyFrom.destinationLocked, copyFrom.energyConduitsUnlocked);
     }
 
     public TardisControl() {
-        this(1, List.of(), false);
+        this(1, List.of(), false, false);
     }
 
 
@@ -119,6 +123,24 @@ public class TardisControl {
             return true;
         }
         return false;
+    }
+
+    public boolean areEnergyConduitsUnlocked() {
+        return energyConduitsUnlocked;
+    }
+
+    public boolean setEnergyConduits(boolean unlocked) {
+        if (!unlocked && !tardis.getState().isSolid(tardis)) {
+            majorMalfunction();
+            return false;
+        }
+
+        if (unlocked && tardis.getState() instanceof RefuelingState) {
+            return false;
+        }
+
+        energyConduitsUnlocked = unlocked;
+        return true;
     }
 
 

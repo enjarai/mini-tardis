@@ -34,17 +34,18 @@ public class FlyingState implements FlightState {
         flyingTicks++;
         if (flyingTicks % SOUND_LOOP_LENGTH == 0) {
             var isError = errorLoops > 0;
-            float pitch = 1;
 
             if (isError) {
                 errorLoops--;
 
-                pitch += tardis.getInteriorWorld().getRandom().nextFloat() - 0.5f;
+                float errorPitch = tardis.getInteriorWorld().getRandom().nextFloat() - 0.5f;
+
+                playForInterior(tardis, ModSounds.TARDIS_FLY_LOOP_ERROR,
+                        SoundCategory.BLOCKS, 0.6f, errorPitch);
             }
 
-            playForInterior(tardis,
-                    isError ? ModSounds.TARDIS_FLY_LOOP_ERROR : ModSounds.TARDIS_FLY_LOOP,
-                    SoundCategory.BLOCKS, 0.6f, pitch);
+            playForInterior(tardis, ModSounds.TARDIS_FLY_LOOP,
+                    SoundCategory.BLOCKS, 0.6f, 1);
         }
 
         var shakeIntensity = (AFTERSHAKE_LENGTH - flyingTicks) / (float) AFTERSHAKE_LENGTH;
@@ -54,6 +55,11 @@ public class FlyingState implements FlightState {
 
         if (tardis.getStability() <= 0) {
             return new SearchingForLandingState(true);
+        }
+
+        if (flyingTicks % 10 == 0 && !tardis.addOrDrainFuel(-1)) {
+            tardis.getControls().moderateMalfunction();
+            return this;
         }
 
         return this;

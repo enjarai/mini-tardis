@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.enjarai.minitardis.component.flight.LandedState;
 import dev.enjarai.minitardis.component.flight.RefuelingState;
 import dev.enjarai.minitardis.component.flight.SearchingForLandingState;
 import dev.enjarai.minitardis.component.flight.TakingOffState;
@@ -141,6 +142,10 @@ public class TardisControl {
 
         energyConduitsUnlocked = unlocked;
         return true;
+    }
+
+    public boolean refuelToggle(boolean state) {
+        return tardis.suggestStateTransition(state ? new RefuelingState() : new LandedState());
     }
 
 

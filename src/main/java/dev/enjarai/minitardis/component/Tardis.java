@@ -382,7 +382,7 @@ public class Tardis {
 
     public boolean addOrDrainFuel(int amount) {
         var oldFuel = fuel;
-        fuel = MathHelper.clamp(amount, 0, 1000);
+        fuel = MathHelper.clamp(oldFuel + amount, 0, 1000);
         return fuel != oldFuel;
     }
 

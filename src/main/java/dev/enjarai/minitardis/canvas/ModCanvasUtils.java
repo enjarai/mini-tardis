@@ -24,6 +24,10 @@ public class ModCanvasUtils {
     public static final CanvasImage VERTICAL_BAR_EMPTY = loadImage("vertical_bar_empty.png");
     public static final CanvasImage VERTICAL_BAR_BLUE = loadImage("vertical_bar_blue.png");
     public static final CanvasImage VERTICAL_BAR_ORANGE = loadImage("vertical_bar_orange.png");
+    public static final CanvasImage LOCK_ICON_LOCKED = loadImage("lock_icon_locked.png");
+    public static final CanvasImage LOCK_ICON_UNLOCKED = loadImage("lock_icon_unlocked.png");
+    public static final CanvasImage ENERGY_CONDUITS_ACTIVE = loadImage("energy_conduits_active.png");
+    public static final CanvasImage ENERGY_CONDUITS_INACTIVE = loadImage("energy_conduits_inactive.png");
     public static final CanvasImage SCANNER_APP = loadImage("app/scanner.png");
     public static final CanvasImage GPS_APP = loadImage("app/gps.png");
     public static final CanvasImage BAD_APPLE_APP = loadImage("app/bad_apple.png");

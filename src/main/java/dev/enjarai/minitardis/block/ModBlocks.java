@@ -3,6 +3,7 @@ package dev.enjarai.minitardis.block;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.*;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.flight.RefuelingState;
 import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
 import eu.pb4.polymer.core.api.block.SimplePolymerBlock;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -14,18 +15,15 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.enums.Instrument;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.poi.PointOfInterestType;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class ModBlocks {
     public static final TardisExteriorBlock TARDIS_EXTERIOR =
@@ -51,7 +49,7 @@ public class ModBlocks {
             register("interior_door", new InteriorDoorBlock(FabricBlockSettings.create()));
     public static final ConsoleLeverBlock HANDBRAKE =
             register("handbrake", new ConsoleLeverBlock(FabricBlockSettings.create(),
-                    TardisControl::handbrake));
+                    TardisControl::handbrake, null));
     public static final ConsoleScreenBlock CONSOLE_SCREEN =
             register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create().nonOpaque()));
     public static final ConsoleButtonBlock RESET_DESTINATION_BUTTON =
@@ -85,6 +83,9 @@ public class ModBlocks {
             register("coordinate_lock", new ConsoleToggleButtonBlock(FabricBlockSettings.create(),
                     BlockSetType.STONE, Blocks.STONE_BUTTON, false,
                     (controls, value) -> controls.setDestinationLocked(value, false)));
+    public static final ConsoleLeverBlock REFUEL_TOGGLE =
+            register("refuel_toggle", new ConsoleLeverBlock(FabricBlockSettings.create(),
+                    TardisControl::refuelToggle, (controls, currentState) -> controls.getTardis().getState() instanceof RefuelingState));
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);
@@ -101,7 +102,8 @@ public class ModBlocks {
             TARDIS_PLATING, INTERIOR_DOOR, HANDBRAKE, CONSOLE_SCREEN,
             RESET_DESTINATION_BUTTON, NUDGE_DESTINATION_BUTTON_1, NUDGE_DESTINATION_BUTTON_2,
             COORDINATE_SCALE_SELECTOR, ROTATION_SELECTOR, STATE_COMPARATOR,
-            VERTICAL_NUDGE_DESTINATION_BUTTON, FUEL_CONTROL, COORDINATE_LOCK
+            VERTICAL_NUDGE_DESTINATION_BUTTON, FUEL_CONTROL, COORDINATE_LOCK,
+            REFUEL_TOGGLE
     );
 
     public static final TagKey<Block> TARDIS_EXTERIOR_PARTS =

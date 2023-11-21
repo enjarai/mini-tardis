@@ -13,6 +13,7 @@ import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import eu.pb4.mapcanvas.impl.view.RotatedView;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 import net.minecraft.util.Identifier;
@@ -32,8 +33,16 @@ public class StatusApp implements ScreenApp {
         var isSolid = state.isSolid(tardis);
         var stutterOffsetStability = isSolid ? 0 : random.nextBetween(-1, 1);
         drawVerticalBar(canvas, tardis.getStability() * 480 / 10000 + stutterOffsetStability, 96, 16, ModCanvasUtils.VERTICAL_BAR_ORANGE, "STB");
-        var stutterOffsetFuel = isSolid || state instanceof RefuelingState ? 0 : random.nextBetween(-1, 1);
+        var stutterOffsetFuel = isSolid || (state instanceof RefuelingState && tardis.getFuel() < 1000) ? 0 : random.nextBetween(-1, 1);
         drawVerticalBar(canvas, tardis.getFuel() * 480 / 10000 + stutterOffsetFuel, 72, 16, ModCanvasUtils.VERTICAL_BAR_BLUE, "ART");
+
+        var conduitsUnlocked = controls.areEnergyConduitsUnlocked();
+        CanvasUtils.draw(canvas, 24, 48, conduitsUnlocked ? ModCanvasUtils.ENERGY_CONDUITS_ACTIVE : ModCanvasUtils.ENERGY_CONDUITS_INACTIVE);
+        DefaultFonts.VANILLA.drawText(canvas, "CND", 24 + 7, 80, 8, CanvasColor.WHITE_HIGH);
+
+        var destinationLocked = controls.isDestinationLocked();
+        CanvasUtils.draw(canvas, 0, 48, destinationLocked ? ModCanvasUtils.LOCK_ICON_LOCKED : ModCanvasUtils.LOCK_ICON_UNLOCKED);
+        DefaultFonts.VANILLA.drawText(canvas, "LCK", 7, 80, 8, CanvasColor.WHITE_HIGH);
     }
 
     private void drawVerticalBar(DrawableCanvas canvas, int value, int x, int y, CanvasImage barType, String label) {

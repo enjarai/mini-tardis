@@ -5,6 +5,7 @@
   "block.mini_tardis.console_screen": "Console Screen",
 
   "mini_tardis.state.mini_tardis.landed": "Landed",
+  "mini_tardis.state.mini_tardis.refueling": "Refueling",
   "mini_tardis.state.mini_tardis.taking_off": "Taking Off...",
   "mini_tardis.state.mini_tardis.flying": "In Flight",
   "mini_tardis.state.mini_tardis.landing": "Landing...",

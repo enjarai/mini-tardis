@@ -38,10 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import xyz.nucleoid.fantasy.RuntimeWorldConfig;
 import xyz.nucleoid.fantasy.RuntimeWorldHandle;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Tardis {
@@ -59,7 +56,8 @@ public class Tardis {
             TardisControl.CODEC.optionalFieldOf("controls", new TardisControl()).forGetter(t -> t.controls),
             FlightState.CODEC.optionalFieldOf("flight_state", new LandedState()).forGetter(t -> t.state),
             Codec.INT.optionalFieldOf("stability", 1000).forGetter(t -> t.stability),
-            Codec.INT.optionalFieldOf("fuel", 500).forGetter(t -> t.fuel)
+            Codec.INT.optionalFieldOf("fuel", 500).forGetter(t -> t.fuel),
+            HistoryEntry.CODEC.listOf().optionalFieldOf("history", List.of()).forGetter(t -> t.history)
     ).apply(instance, Tardis::new));
 
     TardisHolder holder;
@@ -78,8 +76,9 @@ public class Tardis {
     private FlightState state;
     private int stability;
     private int fuel;
+    private final List<HistoryEntry> history;
 
-    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Optional<TardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability, int fuel) {
+    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Optional<TardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability, int fuel, List<HistoryEntry> history) {
         this.uuid = uuid;
         this.interiorPlaced = interiorPlaced;
         this.interior = interior;
@@ -90,12 +89,13 @@ public class Tardis {
         this.state = state;
         this.stability = stability;
         this.fuel = fuel;
+        this.history = new ArrayList<>(history);
 
         this.controls.tardis = this;
     }
 
     public Tardis(TardisHolder holder, @Nullable TardisLocation location) {
-        this(UUID.randomUUID(), false, DEFAULT_INTERIOR, Optional.ofNullable(location), Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(), new LandedState(), 1000, 500);
+        this(UUID.randomUUID(), false, DEFAULT_INTERIOR, Optional.ofNullable(location), Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(), new LandedState(), 1000, 500, List.of());
 
         holder.addTardis(this);
 
@@ -384,6 +384,14 @@ public class Tardis {
         var oldFuel = fuel;
         fuel = MathHelper.clamp(oldFuel + amount, 0, 1000);
         return fuel != oldFuel;
+    }
+
+    public List<HistoryEntry> getHistory() {
+        return history;
+    }
+
+    public void addHistoryEntry(HistoryEntry entry) {
+        history.add(0, entry);
     }
 
     public void createInteriorSparks(boolean damage) {

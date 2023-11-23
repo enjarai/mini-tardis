@@ -26,6 +26,7 @@ import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -108,6 +109,20 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
             entity.cleanUpForRemoval();
         }
         super.onStateReplaced(state, world, pos, newState, moved);
+    }
+
+    @Override
+    public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
+        var direction = state.get(FACING);
+        BlockPos blockPos = pos.offset(direction.getOpposite());
+        return world.getBlockState(blockPos).isSideSolidFullSquare(world, blockPos, direction);
+    }
+
+    @Override
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        return state.get(FACING).getOpposite() == direction && !state.canPlaceAt(world, pos)
+                ? Blocks.AIR.getDefaultState()
+                : super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
     }
 
     @Override

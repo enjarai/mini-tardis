@@ -4,6 +4,8 @@
   "block.mini_tardis.handbrake": "Handbrake",
   "block.mini_tardis.console_screen": "Console Screen",
 
+  "item.mini_tardis.fez": "Fez",
+
   "mini_tardis.state.mini_tardis.landed": "Landed",
   "mini_tardis.state.mini_tardis.refueling": "Refueling",
   "mini_tardis.state.mini_tardis.taking_off": "Taking Off...",

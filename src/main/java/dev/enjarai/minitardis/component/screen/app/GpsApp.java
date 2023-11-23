@@ -40,7 +40,7 @@ public class GpsApp implements ScreenApp {
         DefaultFonts.VANILLA.drawText(canvas, lockedText, 64 - lockedWidth / 2, 86, 8, color);
     }
 
-    private void drawLocation(Optional<TardisLocation> optionalLocation, DrawableCanvas canvas, int x, int y) {
+    public static void drawLocation(Optional<TardisLocation> optionalLocation, DrawableCanvas canvas, int x, int y) {
         optionalLocation.ifPresentOrElse(location -> {
             var xText = String.valueOf(location.pos().getX());
             var yText = String.valueOf(location.pos().getY());

@@ -6,7 +6,7 @@ import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.DestinationScanner;
 import dev.enjarai.minitardis.component.TardisControl;
-import dev.enjarai.minitardis.component.screen.element.SideButtonElement;
+import dev.enjarai.minitardis.component.screen.element.SmallButtonElement;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
@@ -18,8 +18,8 @@ public class ScannerApp extends ElementHoldingApp {
     public static final Identifier ID = MiniTardis.id("scanner");
 
     public ScannerApp() {
-        addElement(new SideButtonElement(96 + 2, 2 + 14, "XAxis", controls -> controls.getTardis().getDestinationScanner().useXAxis()));
-        addElement(new SideButtonElement(96 + 2, 2 + 14 + 14, "ZAxis", controls -> controls.getTardis().getDestinationScanner().useZAxis()));
+        addElement(new SmallButtonElement(96 + 2, 2 + 14, "XAxis", controls -> controls.getTardis().getDestinationScanner().useXAxis()));
+        addElement(new SmallButtonElement(96 + 2, 2 + 14 + 14, "ZAxis", controls -> controls.getTardis().getDestinationScanner().useZAxis()));
     }
 
     @Override

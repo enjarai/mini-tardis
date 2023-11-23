@@ -12,12 +12,12 @@ import net.minecraft.util.ClickType;
 
 import java.util.function.Consumer;
 
-public class SideButtonElement extends PlacedElement {
+public class SmallButtonElement extends PlacedElement {
     private String text;
     private Consumer<TardisControl> clickCallback;
     private int pressedFrames;
 
-    public SideButtonElement(int x, int y, String text, Consumer<TardisControl> clickCallback) {
+    public SmallButtonElement(int x, int y, String text, Consumer<TardisControl> clickCallback) {
         super(x, y, 28, 14);
         this.text = text;
         this.clickCallback = clickCallback;

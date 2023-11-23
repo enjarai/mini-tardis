@@ -3,6 +3,7 @@ package dev.enjarai.minitardis.component.flight;
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
+import dev.enjarai.minitardis.component.HistoryEntry;
 import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
@@ -29,6 +30,7 @@ public class TakingOffState extends TransitionalFlightState {
 
     @Override
     public void complete(Tardis tardis) {
+        tardis.getCurrentLocation().ifPresent(location -> tardis.addHistoryEntry(new HistoryEntry(location)));
         tardis.setCurrentLocation(Optional.empty());
     }
 

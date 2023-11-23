@@ -18,14 +18,18 @@ public abstract class ElementHoldingApp implements ScreenApp {
         return element;
     }
 
+    public Iterable<AppElement> children(TardisControl controls) {
+        return children;
+    }
+
     @Override
     public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        children.forEach(el -> el.draw(controls, canvas));
+        children(controls).forEach(el -> el.draw(controls, canvas));
     }
 
     @Override
     public boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
-        for (var element : children) {
+        for (var element : children(controls)) {
             if (element.onClick(controls, blockEntity, player, type, x, y)) {
                 return true;
             }

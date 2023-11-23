@@ -1,42 +1,73 @@
 package dev.enjarai.minitardis.component.screen.app;
 
+import com.google.common.collect.Iterables;
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
-import dev.enjarai.minitardis.component.TardisLocation;
+import dev.enjarai.minitardis.component.screen.element.AppElement;
+import dev.enjarai.minitardis.component.screen.element.SmallButtonElement;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.ClickType;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
 import java.util.Optional;
 
 public class HistoryApp extends ElementHoldingApp {
-    public static final Codec<HistoryApp> CODEC = Codec.unit(HistoryApp::new);
+    public static final Codec<HistoryApp> CODEC = Codec.INT.xmap(HistoryApp::new, a -> a.currentPage).fieldOf("current_page").codec();
     public static final Identifier ID = MiniTardis.id("history");
+    private static final int ENTRIES_PER_PAGE = 3;
+
+    private int currentPage;
+
+    private final List<SmallButtonElement> shownEntryButtons = List.of(
+            new SmallButtonElement(98, 28, "Set", controls -> controls.getTardis()
+                    .setDestination(controls.getTardis().getHistory().get(currentPage * ENTRIES_PER_PAGE).location(), false)),
+            new SmallButtonElement(98, 54, "Set", controls -> controls.getTardis()
+                    .setDestination(controls.getTardis().getHistory().get(currentPage * ENTRIES_PER_PAGE + 1).location(), false)),
+            new SmallButtonElement(98, 80, "Set", controls -> controls.getTardis()
+                    .setDestination(controls.getTardis().getHistory().get(currentPage * ENTRIES_PER_PAGE + 2).location(), false))
+    );
+
+    private HistoryApp(int currentPage) {
+        this.currentPage = currentPage;
+
+        addElement(new SmallButtonElement(2, 2, "Prev", controls -> this.currentPage = Math.max(this.currentPage - 1, 0)));
+        addElement(new SmallButtonElement(30, 2, "Next", controls -> this.currentPage = Math.min(this.currentPage + 1, (controls.getTardis().getHistory().size() - 1) / ENTRIES_PER_PAGE)));
+    }
+
+    public HistoryApp() {
+        this(0);
+    }
+
+    @Override
+    public Iterable<AppElement> children(TardisControl controls) {
+        return Iterables.concat(super.children(controls), shownEntryButtons.subList(0, Math.min(controls.getTardis().getHistory().size() - currentPage * ENTRIES_PER_PAGE, 3)));
+    }
 
     @Override
     public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        var current = controls.getTardis().getCurrentLocation();
-        DefaultFonts.VANILLA.drawText(canvas, "Current Location", 3, 4, 8, CanvasColor.WHITE_HIGH);
-        drawLocation(current, canvas, 3, 4 + 20);
+        var history = controls.getTardis().getHistory();
 
-        var destination = controls.getTardis().getDestination();
-        DefaultFonts.VANILLA.drawText(canvas, "Destination", 3, 4 + 41, 8, CanvasColor.WHITE_HIGH);
-        drawLocation(destination, canvas, 3, 4 + 61);
+        DefaultFonts.VANILLA.drawText(canvas, this.currentPage + 1 + "/" + ((history.size() - 1) / ENTRIES_PER_PAGE + 1), 62, 7, 8, CanvasColor.WHITE_HIGH);
 
-        var isLocked = controls.isDestinationLocked();
-        var color = isLocked ? CanvasColor.LIME_HIGH : CanvasColor.RED_HIGH;
-//        CanvasUtils.fill(canvas, 2, 84, 126, 94, color);
-        var lockedText = isLocked ? ">> Locked <<" : "|| Unlocked ||";
-        var lockedWidth = DefaultFonts.VANILLA.getTextWidth(lockedText, 8);
-        DefaultFonts.VANILLA.drawText(canvas, lockedText, 64 - lockedWidth / 2, 86, 8, color);
+        for (int i = currentPage * ENTRIES_PER_PAGE; i < Math.min((currentPage * ENTRIES_PER_PAGE) + ENTRIES_PER_PAGE, history.size()); i++) {
+            var relativeIndex = i - currentPage * ENTRIES_PER_PAGE;
+            var entry = history.get(i);
+
+            if (entry.location().equals(controls.getTardis().getDestination().orElse(null))) {
+                CanvasUtils.draw(canvas, 2, 18 + 26 * relativeIndex, ModCanvasUtils.HISTORY_CURRENT_OUTLINE);
+            }
+
+            var numText = (i + 1) + ".";
+            var numWidth = DefaultFonts.VANILLA.getTextWidth(numText, 8);
+            DefaultFonts.VANILLA.drawText(canvas, numText, 4, 20 + 26 * relativeIndex, 8, CanvasColor.WHITE_HIGH);
+            GpsApp.drawLocation(Optional.of(entry.location()), canvas, 4 + numWidth + 4, 20 + 26 * relativeIndex);
+        }
 
         super.draw(controls, blockEntity, canvas);
     }

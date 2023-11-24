@@ -87,16 +87,13 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
 
     @Override
     public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        var blockEntity = (TardisExteriorBlockEntity) world.getBlockEntity(pos);
-
         var exteriorElement = new ItemDisplayElement();
-        var alpha = blockEntity.getLinkedTardis().getState().getExteriorAlpha(blockEntity.getLinkedTardis());
-        exteriorElement.setItem(PolymerModels.getStack(alpha < 0 ? PolymerModels.TARDIS : PolymerModels.TARDIS_ALPHA[alpha]));
+        exteriorElement.setItem(PolymerModels.getStack(PolymerModels.TARDIS_ALPHA[0]));
         exteriorElement.setOffset(new Vec3d(0, 1, 0));
         exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(initialBlockState.get(FACING).asRotation()));
 
         return new ElementHolder() {
-            byte currentAlpha = alpha;
+            byte currentAlpha = 0;
 
             {
                 addElement(exteriorElement);
@@ -108,10 +105,12 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
                     exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(world.getBlockState(pos).get(FACING).asRotation()));
                 }
 
-                var alpha = blockEntity.getLinkedTardis().getState().getExteriorAlpha(blockEntity.getLinkedTardis());
-                if (alpha != currentAlpha) {
-                    exteriorElement.setItem(PolymerModels.getStack(alpha < 0 ? PolymerModels.TARDIS : PolymerModels.TARDIS_ALPHA[alpha]));
-                    currentAlpha = alpha;
+                if (world.getTime() % 5 == 0 && world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity) {
+                    var alpha = blockEntity.getLinkedTardis().getState().getExteriorAlpha(blockEntity.getLinkedTardis());
+                    if (alpha != currentAlpha) {
+                        exteriorElement.setItem(PolymerModels.getStack(alpha < 0 ? PolymerModels.TARDIS : PolymerModels.TARDIS_ALPHA[alpha]));
+                        currentAlpha = alpha;
+                    }
                 }
             }
         };

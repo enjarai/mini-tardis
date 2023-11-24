@@ -71,6 +71,13 @@ public interface FlightState {
         return Text.translatable("mini_tardis.state." + id().getNamespace() + "." + id().getPath());
     }
 
+    /**
+     * The transparency level of the Tardis exterior from 15 to 0. -1 is no transparency.
+     */
+    default byte getExteriorAlpha(Tardis tardis) {
+        return -1;
+    }
+
     default void playForInterior(Tardis tardis, SoundEvent soundEvent, SoundCategory category, float volume, float pitch) {
         var world = tardis.getInteriorWorld();
         for (var player : world.getPlayers()) {

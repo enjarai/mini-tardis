@@ -87,6 +87,11 @@ public class LandingState extends TransitionalFlightState {
     }
 
     @Override
+    public byte getExteriorAlpha(Tardis tardis) {
+        return (byte) (ticksPassed / (getTransitionDuration(tardis) / 15));
+    }
+
+    @Override
     public Identifier id() {
         return ID;
     }

@@ -76,6 +76,11 @@ public class TakingOffState extends TransitionalFlightState {
     }
 
     @Override
+    public byte getExteriorAlpha(Tardis tardis) {
+        return (byte) (getTransitionDuration(tardis) - ticksPassed / (getTransitionDuration(tardis) / 15));
+    }
+
+    @Override
     public Identifier id() {
         return ID;
     }

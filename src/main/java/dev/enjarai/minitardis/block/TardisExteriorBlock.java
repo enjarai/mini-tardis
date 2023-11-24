@@ -2,7 +2,6 @@ package dev.enjarai.minitardis.block;
 
 import dev.enjarai.minitardis.item.PolymerModels;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
-import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
@@ -10,12 +9,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BeaconBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.Brightness;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
@@ -91,12 +87,17 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
 
     @Override
     public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
+        var blockEntity = (TardisExteriorBlockEntity) world.getBlockEntity(pos);
+
         var exteriorElement = new ItemDisplayElement();
-        exteriorElement.setItem(PolymerModels.getStack(PolymerModels.TARDIS));
+        var alpha = blockEntity.getLinkedTardis().getState().getExteriorAlpha(blockEntity.getLinkedTardis());
+        exteriorElement.setItem(PolymerModels.getStack(alpha < 0 ? PolymerModels.TARDIS : PolymerModels.TARDIS_ALPHA[alpha]));
         exteriorElement.setOffset(new Vec3d(0, 1, 0));
         exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(initialBlockState.get(FACING).asRotation()));
 
         return new ElementHolder() {
+            byte currentAlpha = alpha;
+
             {
                 addElement(exteriorElement);
             }
@@ -105,6 +106,12 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
             protected void onTick() {
                 if (world.getTime() % 20 == 0) {
                     exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(world.getBlockState(pos).get(FACING).asRotation()));
+                }
+
+                var alpha = blockEntity.getLinkedTardis().getState().getExteriorAlpha(blockEntity.getLinkedTardis());
+                if (alpha != currentAlpha) {
+                    exteriorElement.setItem(PolymerModels.getStack(alpha < 0 ? PolymerModels.TARDIS : PolymerModels.TARDIS_ALPHA[alpha]));
+                    currentAlpha = alpha;
                 }
             }
         };

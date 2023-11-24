@@ -1,0 +1,6 @@
+{
+    "parent": "mini_tardis:item/tardis",
+    "textures": {
+        "0": "mini_tardis:item/tardis_alpha_9"
+    }
+}

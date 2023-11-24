@@ -8,6 +8,7 @@ import net.minecraft.item.Items;
 
 public class PolymerModels {
     public static final PolymerModelData TARDIS = get("item/tardis");
+    public static final PolymerModelData[] TARDIS_ALPHA = new PolymerModelData[16];
     public static final PolymerModelData INTERIOR_DOOR = get("item/interior_door");
     public static final PolymerModelData ROTATING_MONITOR = get("item/rotating_monitor");
     public static final PolymerModelData FEZ = get("item/fez");
@@ -23,5 +24,8 @@ public class PolymerModels {
     }
 
     public static void load() {
+        for (int i = 0; i < 16; i++) {
+            TARDIS_ALPHA[i] = get("item/tardis_alpha_" + i);
+        }
     }
 }

@@ -200,11 +200,11 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     }
 
     private int getAppX(int i) {
-        return i * 26 + 4;
+        return i % 4 * 30 + 6;
     }
 
     private int getAppY(int i) {
-        return 4;
+        return i / 4 * 30 + 6;
     }
 
     public void playClickSound(float pitch) {

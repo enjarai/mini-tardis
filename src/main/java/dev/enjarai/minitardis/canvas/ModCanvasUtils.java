@@ -34,6 +34,7 @@ public class ModCanvasUtils {
     public static final CanvasImage GPS_APP = loadImage("app/gps.png");
     public static final CanvasImage BAD_APPLE_APP = loadImage("app/bad_apple.png");
     public static final CanvasImage STATUS_APP = loadImage("app/status.png");
+    public static final CanvasImage HISTORY_APP = loadImage("app/history.png");
 
     private static CanvasImage loadImage(String filename) {
         try (var stream = Files.newInputStream(FabricLoader.getInstance().getModContainer(MiniTardis.MOD_ID).orElseThrow()

@@ -79,7 +79,7 @@ public class HistoryApp extends ElementHoldingApp {
 
     @Override
     public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.GPS_APP);
+        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.HISTORY_APP);
     }
 
     @Override

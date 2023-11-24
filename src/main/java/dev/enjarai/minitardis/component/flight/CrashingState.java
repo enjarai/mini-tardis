@@ -84,6 +84,12 @@ public class CrashingState extends TransitionalFlightState {
     }
 
     @Override
+    public byte getExteriorAlpha(Tardis tardis) {
+        var vwoompWave = Math.sin(ticksPassed / 5.0) * 0.2 + 1;
+        return (byte) (ticksPassed / (getTransitionDuration(tardis) / 15) * vwoompWave);
+    }
+
+    @Override
     public Identifier id() {
         return ID;
     }

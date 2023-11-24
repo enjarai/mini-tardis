@@ -31,9 +31,8 @@ public class LandingState extends TransitionalFlightState {
 
     @Override
     public void init(Tardis tardis) {
-        playForInteriorAndExterior(tardis, ModSounds.TARDIS_LANDING, SoundCategory.BLOCKS, 1, 1);
-
         tardis.setCurrentLocation(landingDestination);
+        playForInteriorAndExterior(tardis, ModSounds.TARDIS_LANDING, SoundCategory.BLOCKS, 1, 1);
         tardis.buildExterior();
     }
 
@@ -88,7 +87,8 @@ public class LandingState extends TransitionalFlightState {
 
     @Override
     public byte getExteriorAlpha(Tardis tardis) {
-        return (byte) (ticksPassed / (getTransitionDuration(tardis) / 15));
+        var vwoompWave = Math.sin(ticksPassed / 5.0) * 0.2 + 1;
+        return (byte) (ticksPassed / (getTransitionDuration(tardis) / 15) * vwoompWave);
     }
 
     @Override

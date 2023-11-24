@@ -77,7 +77,8 @@ public class TakingOffState extends TransitionalFlightState {
 
     @Override
     public byte getExteriorAlpha(Tardis tardis) {
-        return (byte) (getTransitionDuration(tardis) - ticksPassed / (getTransitionDuration(tardis) / 15));
+        var vwoompWave = Math.sin(ticksPassed / 6.0 + 1.8) * 0.2 + 1;
+        return (byte) ((getTransitionDuration(tardis) - ticksPassed) / (getTransitionDuration(tardis) / 15) * vwoompWave);
     }
 
     @Override

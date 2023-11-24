@@ -20,10 +20,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -105,8 +102,9 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
                     exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(world.getBlockState(pos).get(FACING).asRotation()));
                 }
 
-                if (world.getTime() % 5 == 0 && world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity) {
-                    var alpha = blockEntity.getLinkedTardis().getState().getExteriorAlpha(blockEntity.getLinkedTardis());
+                if (world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity) {
+                    byte alpha = (byte) MathHelper.clamp(blockEntity.getLinkedTardis().getState()
+                            .getExteriorAlpha(blockEntity.getLinkedTardis()), -1, 15);
                     if (alpha != currentAlpha) {
                         exteriorElement.setItem(PolymerModels.getStack(alpha < 0 ? PolymerModels.TARDIS : PolymerModels.TARDIS_ALPHA[alpha]));
                         currentAlpha = alpha;

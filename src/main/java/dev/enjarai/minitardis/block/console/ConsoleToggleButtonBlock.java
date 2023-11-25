@@ -28,7 +28,6 @@ public class ConsoleToggleButtonBlock extends ConsoleButtonBlock {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         var isPowered = !state.get(POWERED);
-        world.setBlockState(pos, state.with(POWERED, isPowered));
 
         if (!isPowered) {
             playClickSound(player, world, pos, false);
@@ -36,6 +35,8 @@ public class ConsoleToggleButtonBlock extends ConsoleButtonBlock {
 
         if (!getTardis(world).map(tardis -> controlInput.apply(tardis.getControls(), isPowered)).orElse(false)) {
             inputFailure(world, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_OPEN, 0);
+        } else {
+            world.setBlockState(pos, state.with(POWERED, isPowered));
         }
 
         return ActionResult.SUCCESS;
@@ -45,9 +46,9 @@ public class ConsoleToggleButtonBlock extends ConsoleButtonBlock {
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         getTardis(world).ifPresent(tardis -> {
             var shouldBePowered = tardis.getControls().isDestinationLocked();
-            if (!shouldBePowered && state.get(POWERED)) {
-                world.setBlockState(pos, state.with(POWERED, false));
-                playClickSound(null, world, pos, false);
+            if (shouldBePowered != state.get(POWERED)) {
+                world.setBlockState(pos, state.with(POWERED, shouldBePowered));
+                playClickSound(null, world, pos, shouldBePowered);
             }
         });
         world.scheduleBlockTick(pos, this, 10);

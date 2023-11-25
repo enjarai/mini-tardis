@@ -4,10 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.enjarai.minitardis.component.flight.LandedState;
-import dev.enjarai.minitardis.component.flight.RefuelingState;
-import dev.enjarai.minitardis.component.flight.SearchingForLandingState;
-import dev.enjarai.minitardis.component.flight.TakingOffState;
+import dev.enjarai.minitardis.component.flight.*;
 import dev.enjarai.minitardis.component.screen.app.ScreenApp;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
@@ -111,6 +108,11 @@ public class TardisControl {
     }
 
     public boolean handbrake(boolean state) {
+        if (!state && tardis.getState() instanceof FlyingState && !isDestinationLocked()) {
+            return tardis.suggestStateTransition(new DriftingState());
+        } else if (state && tardis.getState() instanceof DriftingState) {
+            return tardis.suggestStateTransition(new FlyingState());
+        }
         return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState(false));
     }
 

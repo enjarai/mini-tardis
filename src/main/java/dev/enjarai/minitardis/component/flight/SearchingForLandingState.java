@@ -55,8 +55,8 @@ public class SearchingForLandingState implements FlightState {
         tickScreenShake(tardis, crashing ? 2 : 0.5f);
 
         var maybeDestination = tardis.getDestination();
-        if (maybeDestination.isPresent()) {
-            var destination = maybeDestination.get();
+        if (maybeDestination.isPresent() && (maybeDestination.get().worldKey().equals(tardis.getExteriorWorldKey()) || crashing)) {
+            var destination = crashing ? maybeDestination.get().with(tardis.getExteriorWorldKey()) : maybeDestination.get();
 
             if (searchIterator == null) {
                 // Shuffle the landing location if we're crashing

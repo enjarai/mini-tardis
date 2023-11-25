@@ -4,12 +4,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
+import dev.enjarai.minitardis.component.PartialTardisLocation;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisLocation;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
-
-import java.util.Optional;
 
 public class LandingState extends TransitionalFlightState {
     public static final Codec<LandingState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -38,9 +37,9 @@ public class LandingState extends TransitionalFlightState {
 
     @Override
     public FlightState tick(Tardis tardis) {
-        if (tardis.getCurrentLocation().map(tardis::canLandAt).orElse(false)) {
+        if (tardis.getCurrentLandedLocation().map(tardis::canLandAt).orElse(false)) {
             tardis.getControls().moderateMalfunction();
-            tardis.setCurrentLocation(Optional.empty());
+            tardis.setCurrentLocation(new PartialTardisLocation(tardis.getExteriorWorldKey()));
             return new FlyingState();
         }
 

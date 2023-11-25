@@ -90,7 +90,7 @@ public interface FlightState {
         tardis.getExteriorWorld().ifPresent(world -> {
             // We can safely assume currentLocation exists, because we wouldn't have an exterior world if it didn't.
             //noinspection OptionalGetWithoutIsPresent
-            world.playSound(null, tardis.getCurrentLocation().get().pos(), soundEvent, category, volume, pitch);
+            world.playSound(null, tardis.getCurrentLandedLocation().get().pos(), soundEvent, category, volume, pitch);
         });
     }
 

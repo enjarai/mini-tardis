@@ -4,11 +4,10 @@ import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.component.HistoryEntry;
+import dev.enjarai.minitardis.component.PartialTardisLocation;
 import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
-
-import java.util.Optional;
 
 public class TakingOffState extends TransitionalFlightState {
     public static final Codec<TakingOffState> CODEC = Codec.INT
@@ -30,16 +29,16 @@ public class TakingOffState extends TransitionalFlightState {
 
     @Override
     public void complete(Tardis tardis) {
-        tardis.getCurrentLocation().ifPresent(location -> tardis.addHistoryEntry(new HistoryEntry(location)));
-        tardis.setCurrentLocation(Optional.empty());
+        tardis.getCurrentLandedLocation().ifPresent(location -> tardis.addHistoryEntry(new HistoryEntry(location)));
+        tardis.setCurrentLocation(new PartialTardisLocation(tardis.getExteriorWorldKey()));
     }
 
     @Override
     public FlightState tick(Tardis tardis) {
         tickScreenShake(tardis, 1);
 
-        if (tardis.getStability() <= 0 && tardis.getCurrentLocation().isPresent()) {
-            return new CrashingState(tardis.getCurrentLocation().get());
+        if (tardis.getStability() <= 0 && tardis.getCurrentLandedLocation().isPresent()) {
+            return new CrashingState(tardis.getCurrentLandedLocation().get());
         }
 
         if (ticksPassed % 2 == 0 && !tardis.addOrDrainFuel(-1)) {

@@ -9,7 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-public record TardisLocation(RegistryKey<World> worldKey, BlockPos pos, Direction facing) {
+public record TardisLocation(RegistryKey<World> worldKey, BlockPos pos, Direction facing) implements LocationWithWorld {
     public static final Codec<TardisLocation> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             World.CODEC.fieldOf("world_key").forGetter(TardisLocation::worldKey),
             BlockPos.CODEC.fieldOf("pos").forGetter(TardisLocation::pos),

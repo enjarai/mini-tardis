@@ -53,12 +53,12 @@ public class TardisControl {
 
 
     public boolean resetDestination() {
-        if (tardis.getCurrentLocation().isEmpty()) {
+        if (tardis.getCurrentLandedLocation().isEmpty()) {
             minorMalfunction();
             return false;
         }
 
-        var success = tardis.setDestination(tardis.getCurrentLocation(), false);
+        var success = tardis.setDestination(tardis.getCurrentLandedLocation(), false);
 
         if (success) {
             destinationLocked = false;

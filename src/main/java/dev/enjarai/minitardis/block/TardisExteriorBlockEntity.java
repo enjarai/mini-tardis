@@ -30,7 +30,7 @@ public class TardisExteriorBlockEntity extends BlockEntity {
                     .ifPresentOrElse(t -> tardis = t, () -> world.setBlockState(pos, Blocks.AIR.getDefaultState()));
         } else {
             // If the tardis isn't present at this location, we should remove this exterior block.
-            if (!tardis.getCurrentLocation()
+            if (!tardis.getCurrentLandedLocation()
                     .map(l -> l.worldKey().equals(world.getRegistryKey()) && l.pos().equals(pos))
                     .orElse(false)) {
                 world.setBlockState(pos, Blocks.AIR.getDefaultState());

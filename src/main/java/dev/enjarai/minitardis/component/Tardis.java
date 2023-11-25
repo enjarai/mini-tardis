@@ -1,5 +1,6 @@
 package dev.enjarai.minitardis.component;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
@@ -28,6 +29,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.math.*;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.chunk.FlatChunkGenerator;
 import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
@@ -50,7 +52,7 @@ public class Tardis {
             Uuids.CODEC.fieldOf("uuid").forGetter(t -> t.uuid),
             Codec.BOOL.optionalFieldOf("interior_placed", false).forGetter(t -> t.interiorPlaced),
             Identifier.CODEC.optionalFieldOf("interior", DEFAULT_INTERIOR).forGetter(t -> t.interior),
-            TardisLocation.CODEC.optionalFieldOf("current_location").forGetter(t -> t.currentLocation),
+            Codec.either(TardisLocation.CODEC, PartialTardisLocation.CODEC).fieldOf("current_location").forGetter(t -> t.currentLocation),
             TardisLocation.CODEC.optionalFieldOf("destination").forGetter(t -> t.destination),
             BlockPos.CODEC.optionalFieldOf("interior_door_position", BlockPos.ORIGIN).forGetter(t -> t.interiorDoorPosition),
             TardisControl.CODEC.optionalFieldOf("controls", new TardisControl()).forGetter(t -> t.controls),
@@ -69,7 +71,7 @@ public class Tardis {
     private final UUID uuid;
     private boolean interiorPlaced;
     private Identifier interior;
-    private Optional<TardisLocation> currentLocation;
+    private Either<TardisLocation, PartialTardisLocation> currentLocation;
     private Optional<TardisLocation> destination;
     private BlockPos interiorDoorPosition;
     private final TardisControl controls;
@@ -78,7 +80,7 @@ public class Tardis {
     private int fuel;
     private final List<HistoryEntry> history;
 
-    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Optional<TardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability, int fuel, List<HistoryEntry> history) {
+    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Either<TardisLocation, PartialTardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability, int fuel, List<HistoryEntry> history) {
         this.uuid = uuid;
         this.interiorPlaced = interiorPlaced;
         this.interior = interior;
@@ -95,7 +97,14 @@ public class Tardis {
     }
 
     public Tardis(TardisHolder holder, @Nullable TardisLocation location) {
-        this(UUID.randomUUID(), false, DEFAULT_INTERIOR, Optional.ofNullable(location), Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(), new LandedState(), 1000, 500, List.of());
+        this(
+                UUID.randomUUID(), false, DEFAULT_INTERIOR,
+                location == null ?
+                        Either.right(new PartialTardisLocation(holder.getServer().getOverworld().getRegistryKey())) :
+                        Either.left(location),
+                Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(),
+                new LandedState(), 1000, 500, List.of()
+        );
 
         holder.addTardis(this);
 
@@ -143,7 +152,11 @@ public class Tardis {
     }
 
     public Optional<ServerWorld> getExteriorWorld() {
-        return currentLocation.map(l -> l.getWorld(holder.getServer()));
+        return Optional.of(currentLocation.map(l -> l.getWorld(holder.getServer()), p -> p.getWorld(holder.getServer())));
+    }
+
+    public RegistryKey<World> getExteriorWorldKey() {
+        return currentLocation.map(TardisLocation::worldKey, PartialTardisLocation::worldKey);
     }
 
     public Optional<ServerWorld> getDestinationWorld() {
@@ -192,7 +205,7 @@ public class Tardis {
     }
 
     public void buildExterior() {
-        currentLocation.ifPresent(location -> {
+        currentLocation.ifLeft(location -> {
             var world = location.getWorld(holder.getServer());
             var pos = location.pos();
 
@@ -241,7 +254,7 @@ public class Tardis {
 
     public void teleportEntityOut(Entity entity) {
         if (state.isSolid(this)) {
-            currentLocation.ifPresent(location -> {
+            currentLocation.ifLeft(location -> {
                 var world = location.getWorld(holder.getServer());
                 var pos = location.pos();
                 var blockEntity = world.getBlockEntity(pos);
@@ -305,15 +318,23 @@ public class Tardis {
         return Optional.ofNullable(MiniTardis.getInteriorManager().getInterior(interior));
     }
 
-    public void setCurrentLocation(@Nullable TardisLocation location) {
-        setCurrentLocation(Optional.ofNullable(location));
+    public void setCurrentLocation(TardisLocation location) {
+        setCurrentLocation(Either.left(location));
     }
 
-    public void setCurrentLocation(Optional<TardisLocation> location) {
+    public void setCurrentLocation(PartialTardisLocation location) {
+        setCurrentLocation(Either.right(location));
+    }
+
+    public void setCurrentLocation(Either<TardisLocation, PartialTardisLocation> location) {
         currentLocation = location;
     }
 
-    public Optional<TardisLocation> getCurrentLocation() {
+    public Optional<TardisLocation> getCurrentLandedLocation() {
+        return currentLocation.left();
+    }
+
+    public Either<TardisLocation, PartialTardisLocation> getCurrentLocation() {
         return currentLocation;
     }
 

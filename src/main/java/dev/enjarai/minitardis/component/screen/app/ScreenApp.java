@@ -19,14 +19,16 @@ public interface ScreenApp {
             GpsApp.ID, GpsApp.CODEC,
             BadAppleApp.ID, BadAppleApp.CODEC,
             StatusApp.ID, StatusApp.CODEC,
-            HistoryApp.ID, HistoryApp.CODEC
+            HistoryApp.ID, HistoryApp.CODEC,
+            DimensionsApp.ID, DimensionsApp.CODEC
     );
     Map<Identifier, Supplier<? extends ScreenApp>> CONSTRUCTORS = Map.of(
             ScannerApp.ID, ScannerApp::new,
             GpsApp.ID, GpsApp::new,
             BadAppleApp.ID, BadAppleApp::new,
             StatusApp.ID, StatusApp::new,
-            HistoryApp.ID, HistoryApp::new
+            HistoryApp.ID, HistoryApp::new,
+            DimensionsApp.ID, DimensionsApp::new
     );
     Codec<ScreenApp> CODEC = Identifier.CODEC.dispatch(ScreenApp::id, ALL::get);
 

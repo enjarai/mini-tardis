@@ -86,7 +86,10 @@ public class SearchingForLandingState implements FlightState {
             searchingTicks++;
         } else {
             tardis.getControls().minorMalfunction();
-            return new FlyingState();
+            var flyingState = new FlyingState();
+            flyingState.errorLoops = 2;
+            flyingState.flyingTicks = flyingTicks;
+            return flyingState;
         }
 
         return this;

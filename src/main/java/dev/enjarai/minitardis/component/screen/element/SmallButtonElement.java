@@ -1,26 +1,20 @@
 package dev.enjarai.minitardis.component.screen.element;
 
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ClickType;
 
 import java.util.function.Consumer;
 
-public class SmallButtonElement extends PlacedElement {
+public class SmallButtonElement extends ClickableElement {
     private String text;
-    private Consumer<TardisControl> clickCallback;
-    private int pressedFrames;
 
     public SmallButtonElement(int x, int y, String text, Consumer<TardisControl> clickCallback) {
-        super(x, y, 28, 14);
+        super(x, y, 28, 14, clickCallback);
         this.text = text;
-        this.clickCallback = clickCallback;
     }
 
     @Override
@@ -29,16 +23,5 @@ public class SmallButtonElement extends PlacedElement {
         DefaultFonts.VANILLA.drawText(canvas, text, 2, 4, 8, CanvasColor.WHITE_HIGH);
 
         if (pressedFrames > 0) pressedFrames--;
-    }
-
-    @Override
-    protected boolean onClickElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
-        if (type == ClickType.RIGHT) {
-            pressedFrames = 2;
-            clickCallback.accept(controls);
-            blockEntity.playClickSound(1);
-            return true;
-        }
-        return false;
     }
 }

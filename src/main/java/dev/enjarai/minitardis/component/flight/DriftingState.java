@@ -7,6 +7,7 @@ import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.component.PartialTardisLocation;
 import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 
 import static dev.enjarai.minitardis.component.flight.FlyingState.SOUND_LOOP_LENGTH;
@@ -18,7 +19,8 @@ public class DriftingState implements FlightState {
     public static final Identifier ID = MiniTardis.id("drifting");
     private static final int TRANSITION_POINT = 20 * 4;
 
-    private int flyingTicks;
+    int flyingTicks;
+    private int driftingTicks;
 
     DriftingState(int flyingTicks) {
         this.flyingTicks = flyingTicks;
@@ -31,7 +33,12 @@ public class DriftingState implements FlightState {
     @Override
     public FlightState tick(Tardis tardis) {
         flyingTicks++;
+        driftingTicks++;
         if (flyingTicks % SOUND_LOOP_LENGTH == 0) {
+            float errorPitch = tardis.getInteriorWorld().getRandom().nextFloat() - 0.5f;
+
+            playForInterior(tardis, ModSounds.TARDIS_FLY_LOOP_ERROR,
+                    SoundCategory.BLOCKS, 0.6f, errorPitch);
             playForInterior(tardis, ModSounds.TARDIS_FLY_LOOP,
                     SoundCategory.BLOCKS, 0.6f, 1);
         }
@@ -42,15 +49,13 @@ public class DriftingState implements FlightState {
             return new SearchingForLandingState(true);
         }
 
-        if (flyingTicks % 5 == 0 && !tardis.addOrDrainFuel(-1)) {
-            tardis.getControls().moderateMalfunction();
-            return this;
-        }
+        // Drifting actually refuels mid-flight
+        tardis.addOrDrainFuel(1);
+        tardis.destabilize(4);
 
-        tardis.destabilize(1);
-
-        if (flyingTicks == TRANSITION_POINT) {
+        if (driftingTicks == TRANSITION_POINT) {
             tardis.getControls().setDestinationLocked(true, true);
+            playForInterior(tardis, SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), SoundCategory.BLOCKS, 1, 1);
         }
 
         return this;
@@ -58,12 +63,13 @@ public class DriftingState implements FlightState {
 
     @Override
     public boolean suggestTransition(Tardis tardis, FlightState newState) {
-        if (newState instanceof FlyingState) {
+        if (newState instanceof FlyingState flyingState) {
             if (tardis.getControls().isDestinationLocked()) {
                 tardis.getDestination().ifPresent(destination -> {
                     tardis.setCurrentLocation(new PartialTardisLocation(destination.worldKey()));
                 });
             }
+            flyingState.flyingTicks = flyingTicks;
             return true;
         }
         tardis.getControls().moderateMalfunction();

@@ -16,6 +16,7 @@ public class ModCanvasUtils {
     public static final CanvasImage STATUS_BACKGROUND = loadImage("status_background.png");
     public static final CanvasImage GPS_BACKGROUND = loadImage("gps_background.png");
     public static final CanvasImage HISTORY_BACKGROUND = loadImage("history_background.png");
+    public static final CanvasImage DIMENSIONS_BACKGROUND = loadImage("dimensions_background.png");
     public static final CanvasImage SCREEN_SIDE_BUTTON = loadImage("screen_side_button.png");
     public static final CanvasImage SCREEN_SIDE_BUTTON_PRESSED = loadImage("screen_side_button_pressed.png");
     public static final CanvasImage COORD_WIDGET_X = loadImage("coord_widget_x.png");
@@ -30,11 +31,14 @@ public class ModCanvasUtils {
     public static final CanvasImage ENERGY_CONDUITS_ACTIVE = loadImage("energy_conduits_active.png");
     public static final CanvasImage ENERGY_CONDUITS_INACTIVE = loadImage("energy_conduits_inactive.png");
     public static final CanvasImage HISTORY_CURRENT_OUTLINE = loadImage("history_current_outline.png");
+    public static final CanvasImage DIMENSION_MARKER = loadImage("dimension_marker.png");
+    public static final CanvasImage DIMENSION_MARKER_SELECTED = loadImage("dimension_marker_selected.png");
     public static final CanvasImage SCANNER_APP = loadImage("app/scanner.png");
     public static final CanvasImage GPS_APP = loadImage("app/gps.png");
     public static final CanvasImage BAD_APPLE_APP = loadImage("app/bad_apple.png");
     public static final CanvasImage STATUS_APP = loadImage("app/status.png");
     public static final CanvasImage HISTORY_APP = loadImage("app/history.png");
+    public static final CanvasImage DIMENSIONS_APP = loadImage("app/dimensions.png");
 
     private static CanvasImage loadImage(String filename) {
         try (var stream = Files.newInputStream(FabricLoader.getInstance().getModContainer(MiniTardis.MOD_ID).orElseThrow()

@@ -6,8 +6,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.component.flight.*;
 import dev.enjarai.minitardis.component.screen.app.ScreenApp;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
 import java.util.*;
 
@@ -148,6 +150,15 @@ public class TardisControl {
 
     public boolean refuelToggle(boolean state) {
         return tardis.suggestStateTransition(state ? new RefuelingState() : new LandedState());
+    }
+
+    public boolean moveDestinationToDimension(RegistryKey<World> worldKey) {
+        var success = tardis.setDestination(tardis.getDestination().map(l -> l.with(worldKey)), false) &&
+                tardis.getDestination().isPresent();
+        if (success) {
+            destinationLocked = false;
+        }
+        return success;
     }
 
 

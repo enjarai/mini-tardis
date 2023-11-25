@@ -34,13 +34,13 @@ public class ScannerApp extends ElementHoldingApp {
                             case 1 -> CanvasColor.DEEPSLATE_GRAY_HIGH;
                             case 2 -> CanvasColor.BLUE_NORMAL;
                             case 3 -> CanvasColor.LIGHT_BLUE_NORMAL;
-                            case 4 -> CanvasColor.ORANGE_LOWEST;
+                            case 4 -> CanvasColor.ORANGE_HIGH;
                             default -> CanvasColor.WHITE_HIGH;
                         });
             }
         }
-        canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2, CanvasColor.ORANGE_HIGH);
-        canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2 - 1, CanvasColor.ORANGE_HIGH);
+        canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2, CanvasColor.ORANGE_NORMAL);
+        canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2 - 1, CanvasColor.ORANGE_NORMAL);
 
         CanvasUtils.draw(canvas, 96, 64, controls.getTardis().getDestinationScanner().isZAxis() ? ModCanvasUtils.COORD_WIDGET_Z : ModCanvasUtils.COORD_WIDGET_X);
         controls.getTardis().getDestination().ifPresent(destination -> {

@@ -14,6 +14,7 @@
   "mini_tardis.state.mini_tardis.searching_for_landing": "Searching...",
   "mini_tardis.state.mini_tardis.searching_for_landing.crashing": "WARNING: UNSTABLE TIME CONDUIT",
   "mini_tardis.state.mini_tardis.crashing": "ERROR ERROR WARNING ERROR ERROR ERROR ERROR",
+  "mini_tardis.state.mini_tardis.drifting": "CAUTION: Drifting",
 
   "dimension.minecraft.overworld": "Overworld",
   "dimension.minecraft.the_nether": "The Nether",

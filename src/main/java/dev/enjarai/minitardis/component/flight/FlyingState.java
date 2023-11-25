@@ -17,10 +17,11 @@ public class FlyingState implements FlightState {
     static final int SOUND_LOOP_LENGTH = 32;
     private static final int AFTERSHAKE_LENGTH = 80;
 
-    private int flyingTicks;
+    int flyingTicks;
+    int aftershakeTicks;
     public int errorLoops;
 
-    FlyingState(int flyingTicks, int errorLoops) {
+    private FlyingState(int flyingTicks, int errorLoops) {
         this.flyingTicks = flyingTicks;
         this.errorLoops = errorLoops;
     }
@@ -32,6 +33,7 @@ public class FlyingState implements FlightState {
     @Override
     public FlightState tick(Tardis tardis) {
         flyingTicks++;
+        aftershakeTicks++;
         if (flyingTicks % SOUND_LOOP_LENGTH == 0) {
             var isError = errorLoops > 0;
 
@@ -48,7 +50,7 @@ public class FlyingState implements FlightState {
                     SoundCategory.BLOCKS, 0.6f, 1);
         }
 
-        var shakeIntensity = (AFTERSHAKE_LENGTH - flyingTicks) / (float) AFTERSHAKE_LENGTH;
+        var shakeIntensity = (AFTERSHAKE_LENGTH - aftershakeTicks) / (float) AFTERSHAKE_LENGTH;
         if (shakeIntensity > 0) {
             tickScreenShake(tardis, shakeIntensity);
         }
@@ -68,12 +70,20 @@ public class FlyingState implements FlightState {
     @Override
     public boolean suggestTransition(Tardis tardis, FlightState newState) {
         if (newState instanceof SearchingForLandingState landingState) {
+            if (tardis.getDestination().map(destination -> tardis.getExteriorWorldKey().equals(destination.worldKey())).orElse(false)) {
+                tardis.getControls().minorMalfunction();
+                return false;
+            }
+
             if (!landingState.crashing && !tardis.getControls().isDestinationLocked()) {
                 tardis.getControls().moderateMalfunction();
                 return false;
             }
 
             landingState.flyingTicks = flyingTicks;
+            return true;
+        } else if (newState instanceof DriftingState driftingState) {
+            driftingState.flyingTicks = flyingTicks;
             return true;
         } else if (newState instanceof TakingOffState) {
             return false;

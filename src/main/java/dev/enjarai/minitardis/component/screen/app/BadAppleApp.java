@@ -26,18 +26,7 @@ public class BadAppleApp implements ScreenApp {
         var frame = MathHelper.clamp(blockEntity.badAppleFrameCounter, 0, BadApple.getFrameCount());
         for (int x = 0; x < BadApple.width; x++) {
             for (int y = 0; y < BadApple.height; y++) {
-                var pixel = BadApple.getPixel(frame, x, y);
-                var color = switch (pixel) {
-                    case 0 -> CanvasColor.BLACK_LOWEST;
-                    case 1 -> CanvasColor.BLACK_LOW;
-                    case 2 -> CanvasColor.BLACK_NORMAL;
-                    case 3 -> CanvasColor.BLACK_HIGH;
-                    case 4 -> CanvasColor.WHITE_LOWEST;
-                    case 5 -> CanvasColor.WHITE_LOW;
-                    case 6 -> CanvasColor.WHITE_NORMAL;
-                    case 7 -> CanvasColor.WHITE_HIGH;
-                    default -> CanvasColor.WHITE_HIGH;
-                };
+                var color = getCanvasColor(frame, x, y);
                 canvas.set((int) (x * BadApple.width / 128.0f), (int) (y * BadApple.height / 96.0f), color);
             }
         }
@@ -47,6 +36,20 @@ public class BadAppleApp implements ScreenApp {
         if (blockEntity.badAppleFrameCounter > BadApple.getFrameCount()) {
             blockEntity.badAppleFrameCounter = 0;
         }
+    }
+
+    private static CanvasColor getCanvasColor(int frame, int x, int y) {
+        var pixel = BadApple.getPixel(frame, x, y);
+        return switch (pixel) {
+            case 0 -> CanvasColor.BLACK_LOWEST;
+            case 1 -> CanvasColor.BLACK_LOW;
+            case 2 -> CanvasColor.BLACK_NORMAL;
+            case 3 -> CanvasColor.BLACK_HIGH;
+            case 4 -> CanvasColor.WHITE_LOWEST;
+            case 5 -> CanvasColor.WHITE_LOW;
+            case 6 -> CanvasColor.WHITE_NORMAL;
+            default -> CanvasColor.WHITE_HIGH;
+        };
     }
 
     @Override

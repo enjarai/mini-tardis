@@ -87,6 +87,12 @@ public class DriftingState implements FlightState {
     }
 
     @Override
+    public boolean isInteriorLightEnabled(int order) {
+        order--;
+        return flyingTicks / 5 % 2 == order / 6;
+    }
+
+    @Override
     public Identifier id() {
         return ID;
     }

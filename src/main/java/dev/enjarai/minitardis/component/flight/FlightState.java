@@ -79,6 +79,10 @@ public interface FlightState {
         return -1;
     }
 
+    default boolean isInteriorLightEnabled(int order) {
+        return true;
+    }
+
     default void playForInterior(Tardis tardis, SoundEvent soundEvent, SoundCategory category, float volume, float pitch) {
         var world = tardis.getInteriorWorld();
         for (var player : world.getPlayers()) {

@@ -25,6 +25,8 @@ import net.minecraft.world.poi.PointOfInterestType;
 import java.util.Arrays;
 import java.util.List;
 
+import static net.minecraft.block.Blocks.createLightLevelFromLitBlockState;
+
 public class ModBlocks {
     public static final TardisExteriorBlock TARDIS_EXTERIOR =
             register("tardis_exterior", new TardisExteriorBlock(FabricBlockSettings.create()
@@ -46,7 +48,8 @@ public class ModBlocks {
                     .requiresTool()
                     .strength(50.0F, 1200.0F), Blocks.DEAD_BRAIN_CORAL_BLOCK));
     public static final InteriorDoorBlock INTERIOR_DOOR =
-            register("interior_door", new InteriorDoorBlock(FabricBlockSettings.create()));
+            register("interior_door", new InteriorDoorBlock(FabricBlockSettings.create()
+                    .nonOpaque()));
     public static final ConsoleLeverBlock HANDBRAKE =
             register("handbrake", new ConsoleLeverBlock(FabricBlockSettings.create(),
                     TardisControl::handbrake, null));
@@ -86,6 +89,10 @@ public class ModBlocks {
     public static final ConsoleLeverBlock REFUEL_TOGGLE =
             register("refuel_toggle", new ConsoleLeverBlock(FabricBlockSettings.create(),
                     TardisControl::refuelToggle, (controls, currentState) -> controls.getTardis().getState() instanceof RefuelingState));
+    public static final InteriorLightBlock INTERIOR_LIGHT =
+            register("interior_light", new InteriorLightBlock(FabricBlockSettings.create()
+                    .luminance(createLightLevelFromLitBlockState(15))
+                    .strength(0.3F)));
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);
@@ -103,7 +110,7 @@ public class ModBlocks {
             RESET_DESTINATION_BUTTON, NUDGE_DESTINATION_BUTTON_1, NUDGE_DESTINATION_BUTTON_2,
             COORDINATE_SCALE_SELECTOR, ROTATION_SELECTOR, STATE_COMPARATOR,
             VERTICAL_NUDGE_DESTINATION_BUTTON, FUEL_CONTROL, COORDINATE_LOCK,
-            REFUEL_TOGGLE
+            REFUEL_TOGGLE, INTERIOR_LIGHT
     );
 
     public static final TagKey<Block> TARDIS_EXTERIOR_PARTS =

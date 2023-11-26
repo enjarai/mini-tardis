@@ -89,6 +89,11 @@ public class CrashingState extends TransitionalFlightState {
     }
 
     @Override
+    public boolean isInteriorLightEnabled(int order) {
+        return ticksPassed / 5 % 2 == 0;
+    }
+
+    @Override
     public Identifier id() {
         return ID;
     }

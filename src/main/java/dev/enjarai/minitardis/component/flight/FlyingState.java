@@ -70,7 +70,7 @@ public class FlyingState implements FlightState {
     @Override
     public boolean suggestTransition(Tardis tardis, FlightState newState) {
         if (newState instanceof SearchingForLandingState landingState) {
-            if (tardis.getDestination().map(destination -> tardis.getExteriorWorldKey().equals(destination.worldKey())).orElse(false)) {
+            if (!tardis.getDestination().map(destination -> tardis.getExteriorWorldKey().equals(destination.worldKey())).orElse(false)) {
                 tardis.getControls().minorMalfunction();
                 return false;
             }
@@ -95,6 +95,23 @@ public class FlyingState implements FlightState {
     @Override
     public boolean isSolid(Tardis tardis) {
         return false;
+    }
+
+    @Override
+    public boolean isInteriorLightEnabled(int order) {
+        return spinnyLighting(order, flyingTicks);
+    }
+
+    public static boolean spinnyLighting(int order, int flyingTicks) {
+        if (order == 0) {
+            return true;
+        }
+        order--;
+        var pointInCycle = flyingTicks / 5 % 12;
+        var pointInCycleOffset = (flyingTicks / 5 + 4) % 12;
+        return pointInCycle < pointInCycleOffset
+                ? order % 12 >= pointInCycle && order % 12 < pointInCycleOffset
+                : order % 12 >= pointInCycle || order % 12 < pointInCycleOffset;
     }
 
     @Override

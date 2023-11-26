@@ -16,6 +16,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class HistoryApp extends ElementHoldingApp {
     public static final Codec<HistoryApp> CODEC = Codec.INT.xmap(HistoryApp::new, a -> a.currentPage).fieldOf("current_page").codec();
@@ -25,12 +26,9 @@ public class HistoryApp extends ElementHoldingApp {
     private int currentPage;
 
     private final List<SmallButtonElement> shownEntryButtons = List.of(
-            new SmallButtonElement(98, 28, "Set", controls -> controls.getTardis()
-                    .setDestination(controls.getTardis().getHistory().get(currentPage * ENTRIES_PER_PAGE).location(), false)),
-            new SmallButtonElement(98, 54, "Set", controls -> controls.getTardis()
-                    .setDestination(controls.getTardis().getHistory().get(currentPage * ENTRIES_PER_PAGE + 1).location(), false)),
-            new SmallButtonElement(98, 80, "Set", controls -> controls.getTardis()
-                    .setDestination(controls.getTardis().getHistory().get(currentPage * ENTRIES_PER_PAGE + 2).location(), false))
+            new SmallButtonElement(98, 28, "Set", selectVisibleEntry(0)),
+            new SmallButtonElement(98, 54, "Set", selectVisibleEntry(1)),
+            new SmallButtonElement(98, 80, "Set", selectVisibleEntry(2))
     );
 
     private HistoryApp(int currentPage) {
@@ -70,6 +68,14 @@ public class HistoryApp extends ElementHoldingApp {
         }
 
         super.draw(controls, blockEntity, canvas);
+    }
+
+    private Consumer<TardisControl> selectVisibleEntry(int index) {
+        return controls -> {
+            if (controls.getTardis().setDestination(controls.getTardis().getHistory().get(currentPage * ENTRIES_PER_PAGE + index).location(), false)) {
+                controls.setDestinationLocked(false, true);
+            }
+        };
     }
 
     @Override

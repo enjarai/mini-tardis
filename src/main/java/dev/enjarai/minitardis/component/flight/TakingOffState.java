@@ -81,6 +81,11 @@ public class TakingOffState extends TransitionalFlightState {
     }
 
     @Override
+    public boolean isInteriorLightEnabled(int order) {
+        return FlyingState.spinnyLighting(order, ticksPassed);
+    }
+
+    @Override
     public Identifier id() {
         return ID;
     }

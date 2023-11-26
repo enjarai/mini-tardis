@@ -112,6 +112,15 @@ public class SearchingForLandingState implements FlightState {
     }
 
     @Override
+    public boolean isInteriorLightEnabled(int order) {
+        if (crashing) {
+            order--;
+            return flyingTicks / 5 % 3 == order / 4;
+        }
+        return FlyingState.spinnyLighting(order, flyingTicks);
+    }
+
+    @Override
     public Text getName() {
         return crashing ? Text.translatable("mini_tardis.state.mini_tardis.searching_for_landing.crashing") : FlightState.super.getName();
     }

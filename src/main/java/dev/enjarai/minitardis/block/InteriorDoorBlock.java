@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
@@ -80,6 +81,11 @@ public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, Tard
     }
 
     @Override
+    public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
+        return true;
+    }
+
+    @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING, HALF);
     }
@@ -95,7 +101,6 @@ public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, Tard
             var exteriorElement = new ItemDisplayElement();
             exteriorElement.setItem(PolymerModels.getStack(PolymerModels.INTERIOR_DOOR));
             exteriorElement.setOffset(new Vec3d(0, 1, 0));
-            exteriorElement.setBrightness(Brightness.FULL);
             exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(initialBlockState.get(FACING).asRotation()));
 
             return new ElementHolder() {{

@@ -9,6 +9,7 @@ import dev.enjarai.minitardis.block.InteriorDoorBlock;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisExteriorBlock;
 import dev.enjarai.minitardis.block.TardisExteriorBlockEntity;
+import dev.enjarai.minitardis.component.flight.DisabledState;
 import dev.enjarai.minitardis.component.flight.FlightState;
 import dev.enjarai.minitardis.component.flight.FlyingState;
 import dev.enjarai.minitardis.component.flight.LandedState;
@@ -44,7 +45,7 @@ import java.util.*;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Tardis {
-    public static final Identifier DEFAULT_INTERIOR = MiniTardis.id("debug");
+    public static final Identifier DEFAULT_INTERIOR = MiniTardis.id("wooden_coral");
     public static final BlockPos INTERIOR_CENTER = new BlockPos(0, 64, 0);
     public static final ChunkTicketType<BlockPos> INTERIOR_TICKET_TYPE =
             ChunkTicketType.create("tardis_interior", Vec3i::compareTo, 20);
@@ -103,7 +104,7 @@ public class Tardis {
                         Either.right(new PartialTardisLocation(holder.getServer().getOverworld().getRegistryKey())) :
                         Either.left(location),
                 Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(),
-                new LandedState(), 1000, 500, List.of()
+                new DisabledState(), 1000, 500, List.of()
         );
 
         holder.addTardis(this);
@@ -127,7 +128,7 @@ public class Tardis {
         }
 
         // Interior hum
-        if (world.getTime() % (20 * 12) == 0) {
+        if (!(state instanceof DisabledState) && world.getTime() % (20 * 12) == 0) {
             state.playForInterior(this, ModSounds.CORAL_HUM, SoundCategory.AMBIENT, 0.3f, 1);
         }
 
@@ -196,7 +197,10 @@ public class Tardis {
             var structure = interior.getStructure(holder.getServer().getStructureTemplateManager());
             var world = getInteriorWorld();
             var size = structure.getSize();
-            var placementPos = INTERIOR_CENTER.add(-size.getX() / 2, 0, -size.getZ() / 2);
+            var centerOffset = interior.templateCenter();
+            var placementPos = centerOffset.equals(Vec3i.ZERO)
+                    ? INTERIOR_CENTER.add(-size.getX() / 2, 0, -size.getZ() / 2)
+                    : INTERIOR_CENTER.add(centerOffset.multiply(-1));
 
             structure.place(world, placementPos, BlockPos.ORIGIN, new StructurePlacementData(), world.getRandom(), 2);
 

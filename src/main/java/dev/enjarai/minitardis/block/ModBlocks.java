@@ -93,6 +93,11 @@ public class ModBlocks {
             register("interior_light", new InteriorLightBlock(FabricBlockSettings.create()
                     .luminance(createLightLevelFromLitBlockState(15))
                     .strength(0.3F)));
+    public static final InteriorVentBlock INTERIOR_VENT = // ඞ
+            register("interior_vent", new InteriorVentBlock(FabricBlockSettings.create()
+                    .nonOpaque()));
+    public static final ConsoleCircuitryBlock POWER_COUPLING =
+            register("power_coupling", new ConsoleCircuitryBlock(FabricBlockSettings.create(), TardisControl::toggleDisabledState));
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);
@@ -110,7 +115,7 @@ public class ModBlocks {
             RESET_DESTINATION_BUTTON, NUDGE_DESTINATION_BUTTON_1, NUDGE_DESTINATION_BUTTON_2,
             COORDINATE_SCALE_SELECTOR, ROTATION_SELECTOR, STATE_COMPARATOR,
             VERTICAL_NUDGE_DESTINATION_BUTTON, FUEL_CONTROL, COORDINATE_LOCK,
-            REFUEL_TOGGLE, INTERIOR_LIGHT
+            REFUEL_TOGGLE, INTERIOR_LIGHT, INTERIOR_VENT, POWER_COUPLING
     );
 
     public static final TagKey<Block> TARDIS_EXTERIOR_PARTS =

@@ -161,6 +161,10 @@ public class TardisControl {
         return success;
     }
 
+    public boolean toggleDisabledState() {
+        return tardis.suggestStateTransition(tardis.getState() instanceof DisabledState ? new LandedState() : new DisabledState());
+    }
+
 
     public void minorMalfunction() {
         tardis.destabilize(10);

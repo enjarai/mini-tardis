@@ -29,6 +29,10 @@ public class LandedState implements FlightState {
             return true;
         }
 
+        if (newState instanceof DisabledState) {
+            return true;
+        }
+
         return newState instanceof RefuelingState && !tardis.getControls().areEnergyConduitsUnlocked();
     }
 

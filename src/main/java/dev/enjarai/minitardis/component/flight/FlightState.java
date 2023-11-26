@@ -19,7 +19,8 @@ public interface FlightState {
             SearchingForLandingState.ID, SearchingForLandingState.CODEC,
             CrashingState.ID, CrashingState.CODEC,
             RefuelingState.ID, RefuelingState.CODEC,
-            DriftingState.ID, DriftingState.CODEC
+            DriftingState.ID, DriftingState.CODEC,
+            DisabledState.ID, DisabledState.CODEC
     );
     Codec<FlightState> CODEC = Identifier.CODEC.dispatch(FlightState::id, ALL::get);
 

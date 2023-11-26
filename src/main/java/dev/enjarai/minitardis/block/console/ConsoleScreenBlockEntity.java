@@ -6,6 +6,7 @@ import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.Tardis;
+import dev.enjarai.minitardis.component.flight.DisabledState;
 import dev.enjarai.minitardis.component.screen.TardisScreenView;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -79,7 +80,8 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
     public void tick(World world, BlockPos pos, BlockState state) {
         if (world instanceof ServerWorld serverWorld) {
-            var nearbyPlayers = serverWorld.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
+            var isDisabled = getTardis(world).map(t -> t.getState() instanceof DisabledState).orElse(true);
+            var nearbyPlayers = isDisabled ? List.of() : serverWorld.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
 
             if (addedPlayers.isEmpty() && nearbyPlayers.isEmpty() && threadFuture != null) {
                 threadFuture.cancel(true);

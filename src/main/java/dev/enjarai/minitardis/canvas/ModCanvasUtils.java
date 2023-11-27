@@ -39,6 +39,7 @@ public class ModCanvasUtils {
     public static final CanvasImage STATUS_APP = loadImage("app/status.png");
     public static final CanvasImage HISTORY_APP = loadImage("app/history.png");
     public static final CanvasImage DIMENSIONS_APP = loadImage("app/dimensions.png");
+    public static final CanvasImage PACKAGE_MANAGER_APP = loadImage("app/package_manager.png");
 
     private static CanvasImage loadImage(String filename) {
         try (var stream = Files.newInputStream(FabricLoader.getInstance().getModContainer(MiniTardis.MOD_ID).orElseThrow()

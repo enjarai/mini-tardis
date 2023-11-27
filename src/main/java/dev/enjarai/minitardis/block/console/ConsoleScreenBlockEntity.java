@@ -16,7 +16,9 @@ import eu.pb4.mapcanvas.api.utils.VirtualDisplay;
 import eu.pb4.mapcanvas.impl.view.SubView;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -51,6 +53,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
     @Nullable
     Identifier selectedApp;
+    SimpleInventory inventory = new SimpleInventory(1);
 
     public ConsoleScreenBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.CONSOLE_SCREEN_ENTITY, pos, state);
@@ -69,12 +72,18 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         if (selectedApp != null) {
             nbt.putString("selectedApp", selectedApp.toString());
         }
+
+        nbt.put("inventory", inventory.toNbtList());
     }
 
     @Override
     public void readNbt(NbtCompound nbt) {
         if (nbt.contains("selectedApp")) {
             selectedApp = new Identifier(nbt.getString("selectedApp"));
+        }
+
+        if (nbt.contains("inventory")) {
+            inventory.readNbtList(nbt.getList("inventory", NbtElement.COMPOUND_TYPE));
         }
     }
 
@@ -123,7 +132,8 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     }
 
     private void refreshPlayers(ServerWorld world) {
-        var nearbyPlayers = world.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
+        var isDisabled = getTardis(world).map(t -> t.getState() instanceof DisabledState).orElse(true);
+        List<ServerPlayerEntity> nearbyPlayers = isDisabled ? List.of() : world.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
 
         addedPlayers.removeIf(player -> {
             if (!nearbyPlayers.contains(player)) {

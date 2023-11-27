@@ -10,10 +10,10 @@ import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.Nullable;
 
-public class FezItem extends Item implements PolymerItem {
-    public static final PolymerModelData MODEL = PolymerResourcePackUtils.requestModel(Items.RED_DYE, MiniTardis.id("item/fez"));
+public class FloppyItem extends Item implements PolymerItem {
+    public static final PolymerModelData MODEL = PolymerResourcePackUtils.requestModel(Items.IRON_INGOT, MiniTardis.id("item/floppy"));
 
-    public FezItem(Settings settings) {
+    public FloppyItem(Settings settings) {
         super(settings);
     }
 

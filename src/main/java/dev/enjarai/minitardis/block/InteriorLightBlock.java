@@ -64,7 +64,8 @@ public class InteriorLightBlock extends RedstoneLampBlock implements PolymerBloc
         getTardis(world).ifPresent(tardis -> {
             var lit = tardis.getState().isInteriorLightEnabled(state.get(ORDER));
             if (lit != state.get(LIT)) {
-                world.setBlockState(pos, state.with(LIT, lit));
+                world.setBlockState(pos, state.with(LIT, lit), Block.NOTIFY_LISTENERS);
+                world.updateNeighbors(pos, this);
             }
         });
         world.scheduleBlockTick(pos, this, 1);

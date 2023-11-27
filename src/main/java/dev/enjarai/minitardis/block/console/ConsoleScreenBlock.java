@@ -2,10 +2,13 @@ package dev.enjarai.minitardis.block.console;
 
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
+import dev.enjarai.minitardis.item.FloppyItem;
+import dev.enjarai.minitardis.item.ModItems;
 import dev.enjarai.minitardis.item.PolymerModels;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
+import eu.pb4.polymer.virtualentity.api.attachment.BlockBoundAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
@@ -16,6 +19,7 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -23,26 +27,25 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 
 @SuppressWarnings("deprecation")
 public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock, TardisAware, BlockWithElementHolder, ConsoleInput {
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
+    public static final BooleanProperty HAS_FLOPPY = BooleanProperty.of("has_floppy");
 
     public ConsoleScreenBlock(Settings settings) {
         super(settings);
-        setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH));
+        setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(HAS_FLOPPY, false));
     }
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+        builder.add(FACING, HAS_FLOPPY);
     }
 
     @Nullable
@@ -79,6 +82,7 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
 
                 if (world.getBlockEntity(pos) instanceof ConsoleScreenBlockEntity oldEntity && world.getBlockEntity(newPos) instanceof ConsoleScreenBlockEntity newEntity) {
                     newEntity.selectedApp = oldEntity.selectedApp;
+                    newEntity.inventory = oldEntity.inventory;
                 }
 
                 world.setBlockState(pos, Blocks.AIR.getDefaultState());
@@ -86,6 +90,21 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
             }
 
             return ActionResult.SUCCESS;
+        } else if (hand == Hand.MAIN_HAND && hitSide == Direction.DOWN && world.getBlockEntity(pos) instanceof ConsoleScreenBlockEntity blockEntity) {
+            var handStack = player.getStackInHand(hand);
+            var blockStack = blockEntity.inventory.getStack(0);
+            @SuppressWarnings("DataFlowIssue")
+            var elementHolder = (ConsoleScreenElementHolder) BlockBoundAttachment.get(world, pos).holder();
+
+            if (handStack.isOf(ModItems.FLOPPY) && blockStack.isEmpty()) {
+                blockEntity.inventory.setStack(0, handStack.split(1));
+                world.setBlockState(pos, state.with(HAS_FLOPPY, true));
+                elementHolder.setFloppyVisible(true);
+            } else if (handStack.isEmpty() && !blockStack.isEmpty()) {
+                player.setStackInHand(hand, blockStack.split(1));
+                world.setBlockState(pos, state.with(HAS_FLOPPY, false));
+                elementHolder.setFloppyVisible(false);
+            }
         }
 
         return super.onUse(state, world, pos, player, hand, hit);
@@ -130,17 +149,6 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
         return Blocks.BARRIER;
     }
 
-//    @Override
-//    public BlockState getPolymerBlockState(BlockState state) {
-//        return getPolymerBlock(state).getDefaultState().with(LightBlock.LEVEL_15, 3);
-//    }
-
-//    @Override
-//    public boolean tickElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-//        return true;
-//    }
-
-
     @Override
     public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
         return true;
@@ -148,17 +156,35 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
 
     @Override
     public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        var facing = initialBlockState.get(FACING);
+        return new ConsoleScreenElementHolder(initialBlockState);
+    }
 
-        var exteriorElement = new ItemDisplayElement();
-        exteriorElement.setItem(PolymerModels.getStack(PolymerModels.ROTATING_MONITOR));
-//        var matrix = new Matrix4f();
-//        matrix.translate();
-        exteriorElement.setTranslation(facing.getOpposite().getUnitVector().mul(0.5f));
-        exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
+    private static class ConsoleScreenElementHolder extends ElementHolder {
+        final ItemDisplayElement floppyElement;
 
-        return new ElementHolder() {{
-                addElement(exteriorElement);
-        }};
+        ConsoleScreenElementHolder(BlockState initialBlockState) {
+            var facing = initialBlockState.get(FACING);
+
+            var exteriorElement = new ItemDisplayElement();
+            exteriorElement.setItem(PolymerModels.getStack(PolymerModels.ROTATING_MONITOR));
+            exteriorElement.setTranslation(facing.getOpposite().getUnitVector().mul(0.5f));
+            exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
+
+            floppyElement = new ItemDisplayElement();
+            floppyElement.setItem(PolymerModels.getStack(FloppyItem.MODEL));
+
+            addElement(exteriorElement);
+            if (initialBlockState.get(HAS_FLOPPY)) {
+                addElement(floppyElement);
+            }
+        }
+
+        void setFloppyVisible(boolean visible) {
+            if (visible) {
+                addElement(floppyElement);
+            } else {
+                removeElement(floppyElement);
+            }
+        }
     }
 }

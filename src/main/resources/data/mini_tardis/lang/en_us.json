@@ -5,6 +5,7 @@
   "block.mini_tardis.console_screen": "Console Screen",
 
   "item.mini_tardis.fez": "Fez",
+  "item.mini_tardis.floppy": "Floppy",
 
   "mini_tardis.state.mini_tardis.landed": "Landed",
   "mini_tardis.state.mini_tardis.refueling": "Refueling",
@@ -15,17 +16,11 @@
   "mini_tardis.state.mini_tardis.searching_for_landing.crashing": "WARNING: UNSTABLE TIME CONDUIT",
   "mini_tardis.state.mini_tardis.crashing": "ERROR ERROR WARNING ERROR ERROR ERROR ERROR",
   "mini_tardis.state.mini_tardis.drifting": "CAUTION: Drifting",
+  "mini_tardis.state.mini_tardis.disabled": "Powered Off",
 
   "dimension.minecraft.overworld": "Overworld",
   "dimension.minecraft.the_nether": "The Nether",
   "dimension.minecraft.the_end": "The End",
-
-  "sound.mini_tardis.cloister_bell": "Cloister Bell Chimes",
-  "sound.mini_tardis.tardis_landing": "Tardis Landing",
-  "sound.mini_tardis.tardis_takeoff": "Tardis Taking Off",
-  "sound.mini_tardis.tardis_fly_loop": "Tardis Flying",
-  "sound.mini_tardis.coral_hum": "Tardis Breathes",
-  "sound.mini_tardis.bad_apple": "Bad Apple Playing",
 
   "mini_tardis.item_group": "Mini Tardis Items"
 }

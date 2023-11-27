@@ -20,7 +20,7 @@ public class DisabledState implements FlightState {
     @Override
     public void init(Tardis tardis) {
         playForInterior(tardis, SoundEvents.BLOCK_BEACON_DEACTIVATE, SoundCategory.BLOCKS, 1, 0);
-        // TODO stop hum
+        stopPlayingForInterior(tardis, ModSounds.CORAL_HUM);
     }
 
     @Override

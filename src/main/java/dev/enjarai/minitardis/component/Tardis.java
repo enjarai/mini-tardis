@@ -9,10 +9,7 @@ import dev.enjarai.minitardis.block.InteriorDoorBlock;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisExteriorBlock;
 import dev.enjarai.minitardis.block.TardisExteriorBlockEntity;
-import dev.enjarai.minitardis.component.flight.DisabledState;
-import dev.enjarai.minitardis.component.flight.FlightState;
-import dev.enjarai.minitardis.component.flight.FlyingState;
-import dev.enjarai.minitardis.component.flight.LandedState;
+import dev.enjarai.minitardis.component.flight.*;
 import net.minecraft.block.FacingBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
@@ -104,7 +101,8 @@ public class Tardis {
                         Either.right(new PartialTardisLocation(holder.getServer().getOverworld().getRegistryKey())) :
                         Either.left(location),
                 Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(),
-                new DisabledState(), 1000, 500, List.of()
+                location == null ? new DisabledState() : new LandingState(location, true),
+                1000, 500, List.of()
         );
 
         holder.addTardis(this);
@@ -250,7 +248,7 @@ public class Tardis {
             entity.teleport(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), Set.of(), yaw, 0);
 
             // Play a loop of hum to the player the moment they enter to ensure a seamless experience™
-            if (entity instanceof PlayerEntity player) {
+            if (!(state instanceof DisabledState) && entity instanceof PlayerEntity player) {
                 world.playSoundFromEntity(null, player, ModSounds.CORAL_HUM, SoundCategory.AMBIENT, 0.3f, 1);
             }
         }

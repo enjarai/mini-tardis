@@ -1,8 +1,11 @@
 package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
+import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
+import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
@@ -98,6 +101,14 @@ public interface FlightState {
             //noinspection OptionalGetWithoutIsPresent
             world.playSound(null, tardis.getCurrentLandedLocation().get().pos(), soundEvent, category, volume, pitch);
         });
+    }
+
+    default void stopPlayingForInterior(Tardis tardis, SoundEvent soundEvent) {
+        StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(soundEvent.getId(), null);
+
+        for (var player : tardis.getInteriorWorld().getPlayers()) {
+            player.networkHandler.sendPacket(stopSoundS2CPacket);
+        }
     }
 
     default void tickScreenShake(Tardis tardis, float intensity) {

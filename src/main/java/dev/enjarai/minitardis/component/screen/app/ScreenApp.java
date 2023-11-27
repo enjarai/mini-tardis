@@ -20,7 +20,8 @@ public interface ScreenApp {
             BadAppleApp.ID, BadAppleApp.CODEC,
             StatusApp.ID, StatusApp.CODEC,
             HistoryApp.ID, HistoryApp.CODEC,
-            DimensionsApp.ID, DimensionsApp.CODEC
+            DimensionsApp.ID, DimensionsApp.CODEC,
+            PackageManagerApp.ID, PackageManagerApp.CODEC
     );
     Map<Identifier, Supplier<? extends ScreenApp>> CONSTRUCTORS = Map.of(
             ScannerApp.ID, ScannerApp::new,
@@ -28,7 +29,8 @@ public interface ScreenApp {
             BadAppleApp.ID, BadAppleApp::new,
             StatusApp.ID, StatusApp::new,
             HistoryApp.ID, HistoryApp::new,
-            DimensionsApp.ID, DimensionsApp::new
+            DimensionsApp.ID, DimensionsApp::new,
+            PackageManagerApp.ID, PackageManagerApp::new
     );
     Codec<ScreenApp> CODEC = Identifier.CODEC.dispatch(ScreenApp::id, ALL::get);
 
@@ -72,6 +74,10 @@ public interface ScreenApp {
      * Keep in mind multiple screens can display the same app, and will share the app's state.
      */
     default void screenClose(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+    }
+
+    default boolean canBeUninstalled() {
+        return true;
     }
 
     Identifier id();

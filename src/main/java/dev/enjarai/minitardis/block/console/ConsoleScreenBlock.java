@@ -17,6 +17,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
@@ -32,6 +33,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 @SuppressWarnings("deprecation")
 public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock, TardisAware, BlockWithElementHolder, ConsoleInput {
@@ -100,10 +102,16 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
                 blockEntity.inventory.setStack(0, handStack.split(1));
                 world.setBlockState(pos, state.with(HAS_FLOPPY, true));
                 elementHolder.setFloppyVisible(true);
+
+                world.playSound(null, pos, SoundEvents.BLOCK_DISPENSER_DISPENSE, SoundCategory.BLOCKS, 1, 2);
+                return ActionResult.SUCCESS;
             } else if (handStack.isEmpty() && !blockStack.isEmpty()) {
                 player.setStackInHand(hand, blockStack.split(1));
                 world.setBlockState(pos, state.with(HAS_FLOPPY, false));
                 elementHolder.setFloppyVisible(false);
+
+                world.playSound(null, pos, SoundEvents.BLOCK_DISPENSER_FAIL, SoundCategory.BLOCKS, 1, 1.5f);
+                return ActionResult.SUCCESS;
             }
         }
 
@@ -172,6 +180,9 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
 
             floppyElement = new ItemDisplayElement();
             floppyElement.setItem(PolymerModels.getStack(FloppyItem.MODEL));
+            floppyElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
+            floppyElement.setScale(new Vector3f(0.6f));
+            floppyElement.setTranslation(facing.getUnitVector().mul(0.4f).add(0, -0.3f, 0));
 
             addElement(exteriorElement);
             if (initialBlockState.get(HAS_FLOPPY)) {

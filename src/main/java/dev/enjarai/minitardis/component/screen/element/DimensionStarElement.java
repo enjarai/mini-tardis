@@ -1,13 +1,12 @@
 package dev.enjarai.minitardis.component.screen.element;
 
+import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.World;
-
-import java.util.function.Consumer;
 
 public class DimensionStarElement extends ClickableElement {
     private final RegistryKey<World> worldKey;
@@ -18,7 +17,7 @@ public class DimensionStarElement extends ClickableElement {
     }
 
     @Override
-    protected void drawElement(TardisControl controls, DrawableCanvas canvas) {
+    protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         var isSelected = controls.getTardis().getDestination().map(l -> l.worldKey().equals(worldKey)).orElse(false);
         CanvasUtils.draw(canvas, 0, 0, isSelected ? ModCanvasUtils.DIMENSION_MARKER_SELECTED : ModCanvasUtils.DIMENSION_MARKER);
     }

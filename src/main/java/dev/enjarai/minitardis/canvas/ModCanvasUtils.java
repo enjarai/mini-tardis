@@ -1,8 +1,10 @@
 package dev.enjarai.minitardis.canvas;
 
 import dev.enjarai.minitardis.MiniTardis;
+import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
+import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import net.fabricmc.loader.api.FabricLoader;
 
 import javax.imageio.ImageIO;
@@ -17,6 +19,7 @@ public class ModCanvasUtils {
     public static final CanvasImage GPS_BACKGROUND = loadImage("gps_background.png");
     public static final CanvasImage HISTORY_BACKGROUND = loadImage("history_background.png");
     public static final CanvasImage DIMENSIONS_BACKGROUND = loadImage("dimensions_background.png");
+    public static final CanvasImage PACKAGE_MANAGER_BACKGROUND = loadImage("package_manager_background.png");
     public static final CanvasImage SCREEN_SIDE_BUTTON = loadImage("screen_side_button.png");
     public static final CanvasImage SCREEN_SIDE_BUTTON_PRESSED = loadImage("screen_side_button_pressed.png");
     public static final CanvasImage COORD_WIDGET_X = loadImage("coord_widget_x.png");
@@ -33,6 +36,8 @@ public class ModCanvasUtils {
     public static final CanvasImage HISTORY_CURRENT_OUTLINE = loadImage("history_current_outline.png");
     public static final CanvasImage DIMENSION_MARKER = loadImage("dimension_marker.png");
     public static final CanvasImage DIMENSION_MARKER_SELECTED = loadImage("dimension_marker_selected.png");
+    public static final CanvasImage SCROLL_BUTTON_UP = loadImage("scroll_button_up.png");
+    public static final CanvasImage SCROLL_BUTTON_DOWN = loadImage("scroll_button_down.png");
     public static final CanvasImage SCANNER_APP = loadImage("app/scanner.png");
     public static final CanvasImage GPS_APP = loadImage("app/gps.png");
     public static final CanvasImage BAD_APPLE_APP = loadImage("app/bad_apple.png");
@@ -49,6 +54,11 @@ public class ModCanvasUtils {
             MiniTardis.LOGGER.error("Failed to load canvas image " + filename, e);
             return new CanvasImage(16, 16);
         }
+    }
+
+    public static void drawCenteredText(DrawableCanvas canvas, String text, int x, int y, CanvasColor color) {
+        var width = DefaultFonts.VANILLA.getTextWidth(text, 8);
+        DefaultFonts.VANILLA.drawText(canvas, text, x - width / 2, y, 8, color);
     }
 
     public static void load() {

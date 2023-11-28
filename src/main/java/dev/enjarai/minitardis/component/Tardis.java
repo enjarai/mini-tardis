@@ -107,6 +107,8 @@ public class Tardis {
 
         holder.addTardis(this);
 
+        state.init(this);
+
         buildExterior();
         getInteriorWorld();
     }

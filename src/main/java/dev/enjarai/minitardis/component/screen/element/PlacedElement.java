@@ -21,11 +21,11 @@ public abstract class PlacedElement implements AppElement {
     }
 
     @Override
-    public void draw(TardisControl controls, DrawableCanvas canvas) {
-        drawElement(controls, new SubView(canvas, x, y, width, height));
+    public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        drawElement(controls, blockEntity, new SubView(canvas, x, y, width, height));
     }
 
-    protected abstract void drawElement(TardisControl controls, DrawableCanvas canvas);
+    protected abstract void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas);
 
     @Override
     public boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {

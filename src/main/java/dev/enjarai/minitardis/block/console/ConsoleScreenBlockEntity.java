@@ -50,10 +50,11 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     @Nullable
     private ScheduledFuture<?> threadFuture;
     public int badAppleFrameCounter;
+    public boolean loaded;
 
     @Nullable
     Identifier selectedApp;
-    SimpleInventory inventory = new SimpleInventory(1);
+    public SimpleInventory inventory = new SimpleInventory(1);
 
     public ConsoleScreenBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.CONSOLE_SCREEN_ENTITY, pos, state);
@@ -89,6 +90,12 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
     public void tick(World world, BlockPos pos, BlockState state) {
         if (world instanceof ServerWorld serverWorld) {
+            if (!loaded) {
+                getTardis(world).ifPresent(tardis -> tardis.getControls().getScreenApp(selectedApp)
+                        .ifPresent(app -> app.screenOpen(tardis.getControls(), this)));
+                loaded = true;
+            }
+
             var isDisabled = getTardis(world).map(t -> t.getState() instanceof DisabledState).orElse(true);
             var nearbyPlayers = isDisabled ? List.of() : serverWorld.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
 

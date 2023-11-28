@@ -17,8 +17,8 @@ public class PackageManagerApp implements ScreenApp {
     public static final Identifier ID = MiniTardis.id("package_manager");
 
     @Override
-    public AppView getView(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
-        return new ElementHoldingView(controls, blockEntity) {
+    public AppView getView(TardisControl controls) {
+        return new ElementHoldingView(controls) {
             private final ScrollableContainerElement leftElement;
             private final ScrollableContainerElement rightElement;
 
@@ -30,18 +30,18 @@ public class PackageManagerApp implements ScreenApp {
             }
 
             @Override
-            public void draw(DrawableCanvas canvas) {
+            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 if (blockEntity.inventory.getStack(0).isEmpty()) {
                     ModCanvasUtils.drawCenteredText(canvas, "Insert", 2 + 26, 30, CanvasColor.WHITE_HIGH);
                     ModCanvasUtils.drawCenteredText(canvas, "Floppy", 2 + 26, 40, CanvasColor.WHITE_HIGH);
                 } else if (leftElement.elements.isEmpty()) {
                     ModCanvasUtils.drawCenteredText(canvas, "Empty", 2 + 26, 30, CanvasColor.LIGHT_GRAY_HIGH);
                 }
-                super.draw(canvas);
+                super.draw(blockEntity, canvas);
             }
 
             @Override
-            public void screenOpen() {
+            public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
                 leftElement.elements.clear();
                 rightElement.elements.clear();
                 leftElement.scrolledness = 0;
@@ -60,7 +60,7 @@ public class PackageManagerApp implements ScreenApp {
             }
 
             @Override
-            public void drawBackground(DrawableCanvas canvas) {
+            public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.PACKAGE_MANAGER_BACKGROUND);
             }
         };

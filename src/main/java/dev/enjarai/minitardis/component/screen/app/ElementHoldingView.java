@@ -12,13 +12,11 @@ import java.util.List;
 
 public class ElementHoldingView implements AppView {
     protected final TardisControl controls;
-    protected final ConsoleScreenBlockEntity blockEntity;
 
     protected final List<AppElement> children = new ArrayList<>();
 
-    public ElementHoldingView(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+    public ElementHoldingView(TardisControl controls) {
         this.controls = controls;
-        this.blockEntity = blockEntity;
     }
 
     public <T extends AppElement> T addElement(T element) {
@@ -26,18 +24,18 @@ public class ElementHoldingView implements AppView {
         return element;
     }
 
-    public Iterable<AppElement> children(TardisControl controls) {
+    public Iterable<AppElement> children() {
         return children;
     }
 
     @Override
-    public void draw(DrawableCanvas canvas) {
-        children(controls).forEach(el -> el.draw(controls, blockEntity, canvas));
+    public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        children().forEach(el -> el.draw(controls, blockEntity, canvas));
     }
 
     @Override
-    public boolean onClick(ServerPlayerEntity player, ClickType type, int x, int y) {
-        for (var element : children(controls)) {
+    public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+        for (var element : children()) {
             if (element.onClick(controls, blockEntity, player, type, x, y)) {
                 return true;
             }

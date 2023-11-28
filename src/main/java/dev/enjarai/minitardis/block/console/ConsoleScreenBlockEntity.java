@@ -34,7 +34,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -93,8 +92,8 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         if (world instanceof ServerWorld serverWorld) {
             if (selectedApp != null && currentView == null) {
                 getTardis(world).ifPresent(tardis -> tardis.getControls().getScreenApp(selectedApp).ifPresent(app -> {
-                    currentView = app.getView(tardis.getControls(), this);
-                    currentView.screenOpen();
+                    currentView = app.getView(tardis.getControls());
+                    currentView.screenOpen(this);
                 }));
             }
 
@@ -119,7 +118,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
             }
 
             if (!nearbyPlayers.isEmpty() && currentView != null) {
-                currentView.screenTick();
+                currentView.screenTick(this);
             }
         }
     }
@@ -133,7 +132,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
         // If we have an app selected, close it properly
         if (currentView != null) {
-            currentView.screenClose();
+            currentView.screenClose(this);
         }
     }
 
@@ -163,8 +162,8 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
         var controls = tardis.getControls();
         if (currentView != null) {
-            currentView.drawBackground(canvas);
-            currentView.draw(canvas);
+            currentView.drawBackground(this, canvas);
+            currentView.draw(this, canvas);
             CanvasUtils.draw(canvas, 96 + 2, 2, ModCanvasUtils.SCREEN_SIDE_BUTTON);
             DefaultFonts.VANILLA.drawText(canvas, "Menu", 96 + 2 + 2, 2 + 4, 8, CanvasColor.WHITE_HIGH);
         } else {
@@ -192,12 +191,12 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
             var controls = tardis.getControls();
             if (currentView != null) {
                 if (type == ClickType.RIGHT && x >= 96 + 2 && x < 96 + 2 + 28 && y >= 16 + 2 && y < 16 + 2 + 14) {
-                    currentView.screenClose();
+                    currentView.screenClose(this);
                     selectedApp = null;
                     currentView = null;
                     playClickSound(0.8f);
                 } else {
-                    currentView.onClick(player, type, x, y - 16);
+                    currentView.onClick(this, player, type, x, y - 16);
                 }
             } else {
                 var apps = controls.getAllApps();
@@ -209,8 +208,8 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                         if (x >= appX && x < appX + 24 && y >= appY && y < appY + 24) {
                             var app = apps.get(i);
                             selectedApp = app.id();
-                            currentView = app.getView(controls, this);
-                            currentView.screenOpen();
+                            currentView = app.getView(controls);
+                            currentView.screenOpen(this);
                             playClickSound(1.5f);
                         }
                     }

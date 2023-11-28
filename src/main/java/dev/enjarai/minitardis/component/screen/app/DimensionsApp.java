@@ -23,12 +23,12 @@ public class DimensionsApp implements ScreenApp {
     public static final Identifier ID = MiniTardis.id("dimensions");
 
     @Override
-    public AppView getView(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
-        return new ElementHoldingView(controls, blockEntity) {
+    public AppView getView(TardisControl controls) {
+        return new ElementHoldingView(controls) {
             private final Random deterministicRandom = new LocalRandom(69420);
 
             @Override
-            public void draw(DrawableCanvas canvas) {
+            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 controls.getTardis().getDestination().ifPresentOrElse(destination -> {
                     var worldId = destination.worldKey().getValue();
                     DefaultFonts.VANILLA.drawText(
@@ -40,11 +40,11 @@ public class DimensionsApp implements ScreenApp {
                 });
 
 
-                super.draw(canvas);
+                super.draw(blockEntity, canvas);
             }
 
             @Override
-            public void screenOpen() {
+            public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
                 if (children.isEmpty()) {
                     controls.getTardis().getServer().getWorldRegistryKeys().stream()
                             .filter(key -> !key.getValue().getPath().startsWith("tardis/"))
@@ -58,7 +58,7 @@ public class DimensionsApp implements ScreenApp {
             }
 
             @Override
-            public void drawBackground(DrawableCanvas canvas) {
+            public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.DIMENSIONS_BACKGROUND);
             }
         };

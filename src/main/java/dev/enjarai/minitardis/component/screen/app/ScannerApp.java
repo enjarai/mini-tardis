@@ -18,15 +18,15 @@ public class ScannerApp implements ScreenApp {
     public static final Identifier ID = MiniTardis.id("scanner");
 
     @Override
-    public AppView getView(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
-        return new ElementHoldingView(controls, blockEntity) {
+    public AppView getView(TardisControl controls) {
+        return new ElementHoldingView(controls) {
             {
                 addElement(new SmallButtonElement(96 + 2, 2 + 14, "XAxis", controls -> controls.getTardis().getDestinationScanner().useXAxis()));
                 addElement(new SmallButtonElement(96 + 2, 2 + 14 + 14, "ZAxis", controls -> controls.getTardis().getDestinationScanner().useZAxis()));
             }
 
             @Override
-            public void draw(DrawableCanvas canvas) {
+            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 for (int x = 0; x < DestinationScanner.RANGE; x++) {
                     for (int y = 0; y < DestinationScanner.RANGE; y++) {
                         byte value = controls.getTardis().getDestinationScanner().getFor(x, y);
@@ -54,11 +54,11 @@ public class ScannerApp implements ScreenApp {
                     CanvasUtils.draw(canvas, 96, 64, view);
                 });
 
-                super.draw(canvas);
+                super.draw(blockEntity, canvas);
             }
 
             @Override
-            public void screenTick() {
+            public void screenTick(ConsoleScreenBlockEntity blockEntity) {
                 controls.getTardis().getDestinationScanner().shouldScanNextTick();
             }
         };

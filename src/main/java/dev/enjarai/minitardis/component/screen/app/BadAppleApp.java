@@ -22,12 +22,12 @@ public class BadAppleApp implements ScreenApp {
     public static final Identifier ID = MiniTardis.id("bad_apple");
 
     @Override
-    public AppView getView(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+    public AppView getView(TardisControl controls) {
         return new AppView() {
             int badAppleFrameCounter;
 
             @Override
-            public void draw(DrawableCanvas canvas) {
+            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var frame = MathHelper.clamp(badAppleFrameCounter, 0, BadApple.getFrameCount());
                 for (int x = 0; x < BadApple.width; x++) {
                     for (int y = 0; y < BadApple.height; y++) {
@@ -44,7 +44,7 @@ public class BadAppleApp implements ScreenApp {
             }
 
             @Override
-            public void screenOpen() {
+            public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
                 badAppleFrameCounter = -5; // temporary fix for apple grab beat drop sync, we go out of sync as song goes on though, gotta fix that
                 var pos = blockEntity.getPos();
                 //noinspection DataFlowIssue
@@ -52,7 +52,7 @@ public class BadAppleApp implements ScreenApp {
             }
 
             @Override
-            public void screenClose() {
+            public void screenClose(ConsoleScreenBlockEntity blockEntity) {
                 badAppleFrameCounter = 0;
                 StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(ModSounds.BAD_APPLE.getId(), SoundCategory.RECORDS);
 
@@ -65,7 +65,7 @@ public class BadAppleApp implements ScreenApp {
             }
 
             @Override
-            public boolean onClick(ServerPlayerEntity player, ClickType type, int x, int y) {
+            public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
                 return false;
             }
         };

@@ -4,16 +4,13 @@ import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
-import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisControl;
-import dev.enjarai.minitardis.component.flight.FlightState;
 import dev.enjarai.minitardis.component.flight.RefuelingState;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import eu.pb4.mapcanvas.impl.view.RotatedView;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 import net.minecraft.util.Identifier;
@@ -23,10 +20,10 @@ public class StatusApp implements ScreenApp {
     public static final Identifier ID = MiniTardis.id("status");
 
     @Override
-    public AppView getView(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+    public AppView getView(TardisControl controls) {
         return new AppView() {
             @Override
-            public void draw(DrawableCanvas canvas) {
+            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var tardis = controls.getTardis();
 
                 DefaultFonts.VANILLA.drawText(canvas, tardis.getState().getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
@@ -49,12 +46,12 @@ public class StatusApp implements ScreenApp {
             }
 
             @Override
-            public void drawBackground(DrawableCanvas canvas) {
+            public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.STATUS_BACKGROUND);
             }
 
             @Override
-            public boolean onClick(ServerPlayerEntity player, ClickType type, int x, int y) {
+            public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
                 return false;
             }
         };

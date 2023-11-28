@@ -24,8 +24,8 @@ public class HistoryApp implements ScreenApp {
     private static final int ENTRIES_PER_PAGE = 3;
 
     @Override
-    public AppView getView(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
-        return new ElementHoldingView(controls, blockEntity) {
+    public AppView getView(TardisControl controls) {
+        return new ElementHoldingView(controls) {
             private int currentPage;
 
             private final List<SmallButtonElement> shownEntryButtons = List.of(
@@ -40,12 +40,12 @@ public class HistoryApp implements ScreenApp {
             }
 
             @Override
-            public Iterable<AppElement> children(TardisControl controls) {
-                return Iterables.concat(super.children(controls), shownEntryButtons.subList(0, Math.min(controls.getTardis().getHistory().size() - currentPage * ENTRIES_PER_PAGE, 3)));
+            public Iterable<AppElement> children() {
+                return Iterables.concat(super.children(), shownEntryButtons.subList(0, Math.min(controls.getTardis().getHistory().size() - currentPage * ENTRIES_PER_PAGE, 3)));
             }
 
             @Override
-            public void draw(DrawableCanvas canvas) {
+            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var history = controls.getTardis().getHistory();
 
                 DefaultFonts.VANILLA.drawText(canvas, this.currentPage + 1 + "/" + ((history.size() - 1) / ENTRIES_PER_PAGE + 1), 62, 7, 8, CanvasColor.WHITE_HIGH);
@@ -64,7 +64,7 @@ public class HistoryApp implements ScreenApp {
                     GpsApp.drawLocation(Optional.of(entry.location()), canvas, 4 + numWidth + 4, 20 + 26 * relativeIndex);
                 }
 
-                super.draw(canvas);
+                super.draw(blockEntity, canvas);
             }
 
             private Consumer<TardisControl> selectVisibleEntry(int index) {
@@ -76,7 +76,7 @@ public class HistoryApp implements ScreenApp {
             }
 
             @Override
-            public void drawBackground(DrawableCanvas canvas) {
+            public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.HISTORY_BACKGROUND);
             }
         };

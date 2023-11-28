@@ -25,10 +25,10 @@ public class GpsApp implements ScreenApp {
     public static final Identifier ID = MiniTardis.id("gps");
 
     @Override
-    public AppView getView(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+    public AppView getView(TardisControl controls) {
         return new AppView() {
             @Override
-            public void draw(DrawableCanvas canvas) {
+            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var current = controls.getTardis().getCurrentLocation();
                 DefaultFonts.VANILLA.drawText(canvas, "Current Location", 3, 4, 8, CanvasColor.WHITE_HIGH);
                 drawLocation(current, canvas, 3, 4 + 20);
@@ -46,12 +46,12 @@ public class GpsApp implements ScreenApp {
             }
 
             @Override
-            public void drawBackground(DrawableCanvas canvas) {
+            public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.GPS_BACKGROUND);
             }
 
             @Override
-            public boolean onClick(ServerPlayerEntity player, ClickType type, int x, int y) {
+            public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
                 return false;
             }
         };

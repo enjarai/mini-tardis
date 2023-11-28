@@ -85,6 +85,7 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
                 if (world.getBlockEntity(pos) instanceof ConsoleScreenBlockEntity oldEntity && world.getBlockEntity(newPos) instanceof ConsoleScreenBlockEntity newEntity) {
                     newEntity.selectedApp = oldEntity.selectedApp;
                     newEntity.inventory = oldEntity.inventory;
+                    newEntity.currentView = oldEntity.currentView;
                 }
 
                 world.setBlockState(pos, Blocks.AIR.getDefaultState());

@@ -50,7 +50,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     @Nullable
     private ScheduledFuture<?> threadFuture;
     @Nullable
-    private AppView currentView;
+    AppView currentView;
 
     @Nullable
     Identifier selectedApp;

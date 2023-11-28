@@ -10,8 +10,16 @@ import net.minecraft.util.ClickType;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ElementHoldingApp implements ScreenApp {
+public class ElementHoldingView implements AppView {
+    protected final TardisControl controls;
+    protected final ConsoleScreenBlockEntity blockEntity;
+
     protected final List<AppElement> children = new ArrayList<>();
+
+    public ElementHoldingView(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+        this.controls = controls;
+        this.blockEntity = blockEntity;
+    }
 
     public <T extends AppElement> T addElement(T element) {
         children.add(element);
@@ -23,12 +31,12 @@ public abstract class ElementHoldingApp implements ScreenApp {
     }
 
     @Override
-    public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    public void draw(DrawableCanvas canvas) {
         children(controls).forEach(el -> el.draw(controls, blockEntity, canvas));
     }
 
     @Override
-    public boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+    public boolean onClick(ServerPlayerEntity player, ClickType type, int x, int y) {
         for (var element : children(controls)) {
             if (element.onClick(controls, blockEntity, player, type, x, y)) {
                 return true;

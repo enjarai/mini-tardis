@@ -23,26 +23,41 @@ public class StatusApp implements ScreenApp {
     public static final Identifier ID = MiniTardis.id("status");
 
     @Override
-    public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        var tardis = controls.getTardis();
+    public AppView getView(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+        return new AppView() {
+            @Override
+            public void draw(DrawableCanvas canvas) {
+                var tardis = controls.getTardis();
 
-        DefaultFonts.VANILLA.drawText(canvas, tardis.getState().getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
+                DefaultFonts.VANILLA.drawText(canvas, tardis.getState().getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
 
-        var random = blockEntity.drawRandom;
-        var state = tardis.getState();
-        var isSolid = state.isSolid(tardis);
-        var stutterOffsetStability = isSolid ? 0 : random.nextBetween(-1, 1);
-        drawVerticalBar(canvas, tardis.getStability() * 480 / 10000 + stutterOffsetStability, 96, 16, ModCanvasUtils.VERTICAL_BAR_ORANGE, "STB");
-        var stutterOffsetFuel = isSolid || (state instanceof RefuelingState && tardis.getFuel() < 1000) ? 0 : random.nextBetween(-1, 1);
-        drawVerticalBar(canvas, tardis.getFuel() * 480 / 10000 + stutterOffsetFuel, 72, 16, ModCanvasUtils.VERTICAL_BAR_BLUE, "ART");
+                var random = blockEntity.drawRandom;
+                var state = tardis.getState();
+                var isSolid = state.isSolid(tardis);
+                var stutterOffsetStability = isSolid ? 0 : random.nextBetween(-1, 1);
+                drawVerticalBar(canvas, tardis.getStability() * 480 / 10000 + stutterOffsetStability, 96, 16, ModCanvasUtils.VERTICAL_BAR_ORANGE, "STB");
+                var stutterOffsetFuel = isSolid || (state instanceof RefuelingState && tardis.getFuel() < 1000) ? 0 : random.nextBetween(-1, 1);
+                drawVerticalBar(canvas, tardis.getFuel() * 480 / 10000 + stutterOffsetFuel, 72, 16, ModCanvasUtils.VERTICAL_BAR_BLUE, "ART");
 
-        var conduitsUnlocked = controls.areEnergyConduitsUnlocked();
-        CanvasUtils.draw(canvas, 24, 48, conduitsUnlocked ? ModCanvasUtils.ENERGY_CONDUITS_ACTIVE : ModCanvasUtils.ENERGY_CONDUITS_INACTIVE);
-        DefaultFonts.VANILLA.drawText(canvas, "CND", 24 + 7, 80, 8, CanvasColor.WHITE_HIGH);
+                var conduitsUnlocked = controls.areEnergyConduitsUnlocked();
+                CanvasUtils.draw(canvas, 24, 48, conduitsUnlocked ? ModCanvasUtils.ENERGY_CONDUITS_ACTIVE : ModCanvasUtils.ENERGY_CONDUITS_INACTIVE);
+                DefaultFonts.VANILLA.drawText(canvas, "CND", 24 + 7, 80, 8, CanvasColor.WHITE_HIGH);
 
-        var destinationLocked = controls.isDestinationLocked();
-        CanvasUtils.draw(canvas, 0, 48, destinationLocked ? ModCanvasUtils.LOCK_ICON_LOCKED : ModCanvasUtils.LOCK_ICON_UNLOCKED);
-        DefaultFonts.VANILLA.drawText(canvas, "LCK", 7, 80, 8, CanvasColor.WHITE_HIGH);
+                var destinationLocked = controls.isDestinationLocked();
+                CanvasUtils.draw(canvas, 0, 48, destinationLocked ? ModCanvasUtils.LOCK_ICON_LOCKED : ModCanvasUtils.LOCK_ICON_UNLOCKED);
+                DefaultFonts.VANILLA.drawText(canvas, "LCK", 7, 80, 8, CanvasColor.WHITE_HIGH);
+            }
+
+            @Override
+            public void drawBackground(DrawableCanvas canvas) {
+                CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.STATUS_BACKGROUND);
+            }
+
+            @Override
+            public boolean onClick(ServerPlayerEntity player, ClickType type, int x, int y) {
+                return false;
+            }
+        };
     }
 
     private void drawVerticalBar(DrawableCanvas canvas, int value, int x, int y, CanvasImage barType, String label) {
@@ -59,16 +74,6 @@ public class StatusApp implements ScreenApp {
 
         var labelWidth = DefaultFonts.VANILLA.getTextWidth(label, 8);
         DefaultFonts.VANILLA.drawText(canvas, label, x + 15 - labelWidth / 2, y + 64, 8, CanvasColor.WHITE_HIGH);
-    }
-
-    @Override
-    public void drawBackground(TardisControl control, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.STATUS_BACKGROUND);
-    }
-
-    @Override
-    public boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
-        return false;
     }
 
     @Override

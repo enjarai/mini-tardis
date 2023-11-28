@@ -8,6 +8,7 @@ import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.flight.DisabledState;
 import dev.enjarai.minitardis.component.screen.TardisScreenView;
+import dev.enjarai.minitardis.component.screen.app.AppView;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
@@ -49,8 +50,8 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     private final List<ServerPlayerEntity> addedPlayers = new ArrayList<>();
     @Nullable
     private ScheduledFuture<?> threadFuture;
-    public int badAppleFrameCounter;
-    public boolean loaded;
+    @Nullable
+    private AppView currentView;
 
     @Nullable
     Identifier selectedApp;
@@ -90,10 +91,11 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
     public void tick(World world, BlockPos pos, BlockState state) {
         if (world instanceof ServerWorld serverWorld) {
-            if (!loaded) {
-                getTardis(world).ifPresent(tardis -> tardis.getControls().getScreenApp(selectedApp)
-                        .ifPresent(app -> app.screenOpen(tardis.getControls(), this)));
-                loaded = true;
+            if (selectedApp != null && currentView == null) {
+                getTardis(world).ifPresent(tardis -> tardis.getControls().getScreenApp(selectedApp).ifPresent(app -> {
+                    currentView = app.getView(tardis.getControls(), this);
+                    currentView.screenOpen();
+                }));
             }
 
             var isDisabled = getTardis(world).map(t -> t.getState() instanceof DisabledState).orElse(true);
@@ -116,9 +118,8 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                 }, 0, 1000 / 30, TimeUnit.MILLISECONDS));
             }
 
-            if (!nearbyPlayers.isEmpty() && selectedApp != null) {
-                getTardis(world).ifPresent(tardis -> tardis.getControls().getScreenApp(selectedApp)
-                        .ifPresent(app -> app.screenTick(tardis.getControls(), this)));
+            if (!nearbyPlayers.isEmpty() && currentView != null) {
+                currentView.screenTick();
             }
         }
     }
@@ -131,10 +132,8 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         }
 
         // If we have an app selected, close it properly
-        if (selectedApp != null) {
-            //noinspection DataFlowIssue
-            getTardis(getWorld()).ifPresent(tardis -> tardis.getControls().getScreenApp(selectedApp)
-                    .ifPresent(app -> app.screenClose(tardis.getControls(), this)));
+        if (currentView != null) {
+            currentView.screenClose();
         }
     }
 
@@ -163,12 +162,12 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         CanvasUtils.fill(canvas, 0, 0, canvas.getWidth(), canvas.getHeight(), CanvasColor.TERRACOTTA_BLUE_LOWEST);
 
         var controls = tardis.getControls();
-        Optional.ofNullable(selectedApp).flatMap(controls::getScreenApp).ifPresentOrElse(app -> {
-            app.drawBackground(controls, this, canvas);
-            app.draw(controls, this, canvas);
+        if (currentView != null) {
+            currentView.drawBackground(canvas);
+            currentView.draw(canvas);
             CanvasUtils.draw(canvas, 96 + 2, 2, ModCanvasUtils.SCREEN_SIDE_BUTTON);
             DefaultFonts.VANILLA.drawText(canvas, "Menu", 96 + 2 + 2, 2 + 4, 8, CanvasColor.WHITE_HIGH);
-        }, () -> {
+        } else {
             CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SCREEN_BACKGROUND);
 
             var apps = controls.getAllApps();
@@ -176,7 +175,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                 var app = apps.get(i);
                 app.drawIcon(controls, this, new SubView(canvas, getAppX(i), getAppY(i), 24, 24)); // TODO wrapping
             }
-        });
+        }
 
         var stability = tardis.getStability();
         if (drawRandom.nextBetween(0, 2000) < 50 - stability) {
@@ -191,15 +190,16 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         //noinspection DataFlowIssue
         getTardis(getWorld()).ifPresent(tardis -> {
             var controls = tardis.getControls();
-            Optional.ofNullable(selectedApp).flatMap(controls::getScreenApp).ifPresentOrElse(app -> {
+            if (currentView != null) {
                 if (type == ClickType.RIGHT && x >= 96 + 2 && x < 96 + 2 + 28 && y >= 16 + 2 && y < 16 + 2 + 14) {
-                    app.screenClose(controls, this);
+                    currentView.screenClose();
                     selectedApp = null;
+                    currentView = null;
                     playClickSound(0.8f);
                 } else {
-                    app.onClick(controls, this, player, type, x, y - 16);
+                    currentView.onClick(player, type, x, y - 16);
                 }
-            }, () -> {
+            } else {
                 var apps = controls.getAllApps();
                 if (type == ClickType.RIGHT) {
                     for (int i = 0; i < apps.size(); i++) {
@@ -209,12 +209,13 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                         if (x >= appX && x < appX + 24 && y >= appY && y < appY + 24) {
                             var app = apps.get(i);
                             selectedApp = app.id();
-                            app.screenOpen(controls, this);
+                            currentView = app.getView(controls, this);
+                            currentView.screenOpen();
                             playClickSound(1.5f);
                         }
                     }
                 }
-            });
+            }
         });
     }
 

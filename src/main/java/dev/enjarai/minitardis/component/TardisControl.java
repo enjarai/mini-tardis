@@ -10,6 +10,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -183,7 +184,7 @@ public class TardisControl {
         return tardis;
     }
 
-    public Optional<ScreenApp> getScreenApp(Identifier id) {
+    public Optional<ScreenApp> getScreenApp(@Nullable Identifier id) {
         return Optional.ofNullable(screenApps.get(id));
     }
 

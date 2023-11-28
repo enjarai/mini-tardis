@@ -25,21 +25,36 @@ public class GpsApp implements ScreenApp {
     public static final Identifier ID = MiniTardis.id("gps");
 
     @Override
-    public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        var current = controls.getTardis().getCurrentLocation();
-        DefaultFonts.VANILLA.drawText(canvas, "Current Location", 3, 4, 8, CanvasColor.WHITE_HIGH);
-        drawLocation(current, canvas, 3, 4 + 20);
+    public AppView getView(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+        return new AppView() {
+            @Override
+            public void draw(DrawableCanvas canvas) {
+                var current = controls.getTardis().getCurrentLocation();
+                DefaultFonts.VANILLA.drawText(canvas, "Current Location", 3, 4, 8, CanvasColor.WHITE_HIGH);
+                drawLocation(current, canvas, 3, 4 + 20);
 
-        var destination = controls.getTardis().getDestination();
-        DefaultFonts.VANILLA.drawText(canvas, "Destination", 3, 4 + 41, 8, CanvasColor.WHITE_HIGH);
-        drawLocation(destination, canvas, 3, 4 + 61);
+                var destination = controls.getTardis().getDestination();
+                DefaultFonts.VANILLA.drawText(canvas, "Destination", 3, 4 + 41, 8, CanvasColor.WHITE_HIGH);
+                drawLocation(destination, canvas, 3, 4 + 61);
 
-        var isLocked = controls.isDestinationLocked();
-        var color = isLocked ? CanvasColor.LIME_HIGH : CanvasColor.RED_HIGH;
+                var isLocked = controls.isDestinationLocked();
+                var color = isLocked ? CanvasColor.LIME_HIGH : CanvasColor.RED_HIGH;
 //        CanvasUtils.fill(canvas, 2, 84, 126, 94, color);
-        var lockedText = isLocked ? ">> Locked <<" : "|| Unlocked ||";
-        var lockedWidth = DefaultFonts.VANILLA.getTextWidth(lockedText, 8);
-        DefaultFonts.VANILLA.drawText(canvas, lockedText, 64 - lockedWidth / 2, 86, 8, color);
+                var lockedText = isLocked ? ">> Locked <<" : "|| Unlocked ||";
+                var lockedWidth = DefaultFonts.VANILLA.getTextWidth(lockedText, 8);
+                DefaultFonts.VANILLA.drawText(canvas, lockedText, 64 - lockedWidth / 2, 86, 8, color);
+            }
+
+            @Override
+            public void drawBackground(DrawableCanvas canvas) {
+                CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.GPS_BACKGROUND);
+            }
+
+            @Override
+            public boolean onClick(ServerPlayerEntity player, ClickType type, int x, int y) {
+                return false;
+            }
+        };
     }
 
     public static void drawLocation(Optional<TardisLocation> optionalLocation, DrawableCanvas canvas, int x, int y) {
@@ -82,16 +97,6 @@ public class GpsApp implements ScreenApp {
                 canvas, Text.translatable("dimension." + worldId.getNamespace() + "." + worldId.getPath()).getString(),
                 x, y + 9, 8, CanvasColor.LIGHT_GRAY_HIGH
         );
-    }
-
-    @Override
-    public void drawBackground(TardisControl control, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.GPS_BACKGROUND);
-    }
-
-    @Override
-    public boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
-        return false;
     }
 
     @Override

@@ -22,20 +22,53 @@ public class BadAppleApp implements ScreenApp {
     public static final Identifier ID = MiniTardis.id("bad_apple");
 
     @Override
-    public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        var frame = MathHelper.clamp(blockEntity.badAppleFrameCounter, 0, BadApple.getFrameCount());
-        for (int x = 0; x < BadApple.width; x++) {
-            for (int y = 0; y < BadApple.height; y++) {
-                var color = getCanvasColor(frame, x, y);
-                canvas.set((int) (x * BadApple.width / 128.0f), (int) (y * BadApple.height / 96.0f), color);
-            }
-        }
+    public AppView getView(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+        return new AppView() {
+            int badAppleFrameCounter;
 
-        blockEntity.badAppleFrameCounter++;
-        
-        if (blockEntity.badAppleFrameCounter > BadApple.getFrameCount()) {
-            blockEntity.badAppleFrameCounter = 0;
-        }
+            @Override
+            public void draw(DrawableCanvas canvas) {
+                var frame = MathHelper.clamp(badAppleFrameCounter, 0, BadApple.getFrameCount());
+                for (int x = 0; x < BadApple.width; x++) {
+                    for (int y = 0; y < BadApple.height; y++) {
+                        var color = getCanvasColor(frame, x, y);
+                        canvas.set((int) (x * BadApple.width / 128.0f), (int) (y * BadApple.height / 96.0f), color);
+                    }
+                }
+
+                badAppleFrameCounter++;
+
+                if (badAppleFrameCounter > BadApple.getFrameCount()) {
+                    badAppleFrameCounter = 0;
+                }
+            }
+
+            @Override
+            public void screenOpen() {
+                badAppleFrameCounter = -5; // temporary fix for apple grab beat drop sync, we go out of sync as song goes on though, gotta fix that
+                var pos = blockEntity.getPos();
+                //noinspection DataFlowIssue
+                blockEntity.getWorld().playSound(null, pos, ModSounds.BAD_APPLE, SoundCategory.RECORDS, 1, 1);
+            }
+
+            @Override
+            public void screenClose() {
+                badAppleFrameCounter = 0;
+                StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(ModSounds.BAD_APPLE.getId(), SoundCategory.RECORDS);
+
+                //noinspection DataFlowIssue
+                for (var player : blockEntity.getWorld().getPlayers()) {
+                    if (player instanceof ServerPlayerEntity serverPlayer) {
+                        serverPlayer.networkHandler.sendPacket(stopSoundS2CPacket);
+                    }
+                }
+            }
+
+            @Override
+            public boolean onClick(ServerPlayerEntity player, ClickType type, int x, int y) {
+                return false;
+            }
+        };
     }
 
     private static CanvasColor getCanvasColor(int frame, int x, int y) {
@@ -50,32 +83,6 @@ public class BadAppleApp implements ScreenApp {
             case 6 -> CanvasColor.WHITE_NORMAL;
             default -> CanvasColor.WHITE_HIGH;
         };
-    }
-
-    @Override
-    public void screenOpen(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
-        blockEntity.badAppleFrameCounter = -5; // temporary fix for apple grab beat drop sync, we go out of sync as song goes on though, gotta fix that
-        var pos = blockEntity.getPos();
-        //noinspection DataFlowIssue
-        blockEntity.getWorld().playSound(null, pos, ModSounds.BAD_APPLE, SoundCategory.RECORDS, 1, 1);
-    }
-
-    @Override
-    public void screenClose(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
-        blockEntity.badAppleFrameCounter = 0;
-        StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(ModSounds.BAD_APPLE.getId(), SoundCategory.RECORDS);
-
-        //noinspection DataFlowIssue
-        for (var player : blockEntity.getWorld().getPlayers()) {
-            if (player instanceof ServerPlayerEntity serverPlayer) {
-                serverPlayer.networkHandler.sendPacket(stopSoundS2CPacket);
-            }
-        }
-    }
-
-    @Override
-    public boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
-        return false;
     }
 
     @Override

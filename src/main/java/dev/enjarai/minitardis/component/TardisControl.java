@@ -34,10 +34,9 @@ public class TardisControl {
 
     private TardisControl(int coordinateScale, Collection<ScreenApp> screenApps, boolean destinationLocked, boolean energyConduitsUnlocked) {
         this.coordinateScale = coordinateScale;
-        var builder = ImmutableMap.<Identifier, ScreenApp>builder();
-        ScreenApp.CONSTRUCTORS.forEach((key, value) -> builder.put(key, value.get()));
-        screenApps.forEach(app -> builder.put(app.id(), app));
-        this.screenApps = builder.buildKeepingLast();
+        this.screenApps = new HashMap<>();
+//        ScreenApp.CONSTRUCTORS.forEach((key, value) -> builder.put(key, value.get()));
+        screenApps.forEach(app -> this.screenApps.put(app.id(), app));
         this.destinationLocked = destinationLocked;
         this.energyConduitsUnlocked = energyConduitsUnlocked;
     }
@@ -190,5 +189,25 @@ public class TardisControl {
 
     public List<ScreenApp> getAllApps() {
         return screenApps.values().stream().sorted(Comparator.comparing(ScreenApp::id)).toList();
+    }
+
+    public boolean canUninstallApp(Identifier id) {
+        return screenApps.containsKey(id) && screenApps.get(id).canBeUninstalled();
+    }
+
+    public Optional<ScreenApp> uninstallApp(Identifier id) {
+        return Optional.ofNullable(screenApps.remove(id));
+    }
+
+    public boolean canInstallApp(ScreenApp app) {
+        return !screenApps.containsKey(app.id());
+    }
+
+    public boolean installApp(ScreenApp app) {
+        if (!screenApps.containsKey(app.id())) {
+            screenApps.put(app.id(), app);
+            return true;
+        }
+        return false;
     }
 }

@@ -11,8 +11,8 @@ import net.minecraft.util.ClickType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScrollableContainerElement extends PlacedElement {
-    public final List<PlacedElement> elements = new ArrayList<>();
+public class ScrollableContainerElement<T extends PlacedElement> extends PlacedElement {
+    private final List<T> elements = new ArrayList<>();
     public int scrolledness;
 
     public ScrollableContainerElement(int x, int y, int width, int height) {
@@ -47,6 +47,22 @@ public class ScrollableContainerElement extends PlacedElement {
             }
         }
         return false;
+    }
+
+    public void addElement(T element) {
+        elements.add(element);
+    }
+
+    public void removeElement(T element) {
+        elements.remove(element);
+    }
+
+    public List<T> getElements() {
+        return elements;
+    }
+
+    public void clearElements() {
+        elements.clear();
     }
 
     public int getScrollableHeight() {

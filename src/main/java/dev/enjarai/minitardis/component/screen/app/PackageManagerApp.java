@@ -5,11 +5,13 @@ import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.screen.element.AppSelectorElement;
 import dev.enjarai.minitardis.component.screen.element.InstallableAppElement;
-import dev.enjarai.minitardis.component.screen.element.ScrollableContainerElement;
+import dev.enjarai.minitardis.item.FloppyItem;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 public class PackageManagerApp implements ScreenApp {
@@ -19,22 +21,23 @@ public class PackageManagerApp implements ScreenApp {
     @Override
     public AppView getView(TardisControl controls) {
         return new ElementHoldingView(controls) {
-            private final ScrollableContainerElement leftElement;
-            private final ScrollableContainerElement rightElement;
+            private final AppSelectorElement leftElement;
+            private final AppSelectorElement rightElement;
+            private boolean floppyInserted;
 
             {
-                leftElement = new ScrollableContainerElement(2, 18, 61, 76);
-                rightElement = new ScrollableContainerElement(65, 18, 61, 76);
+                leftElement = new AppSelectorElement(2, 18);
+                rightElement = new AppSelectorElement(65, 18);
                 addElement(leftElement);
                 addElement(rightElement);
             }
 
             @Override
             public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                if (blockEntity.inventory.getStack(0).isEmpty()) {
+                if (!floppyInserted) {
                     ModCanvasUtils.drawCenteredText(canvas, "Insert", 2 + 26, 30, CanvasColor.WHITE_HIGH);
                     ModCanvasUtils.drawCenteredText(canvas, "Floppy", 2 + 26, 40, CanvasColor.WHITE_HIGH);
-                } else if (leftElement.elements.isEmpty()) {
+                } else if (leftElement.getElements().isEmpty()) {
                     ModCanvasUtils.drawCenteredText(canvas, "Empty", 2 + 26, 30, CanvasColor.LIGHT_GRAY_HIGH);
                 }
                 super.draw(blockEntity, canvas);
@@ -42,21 +45,72 @@ public class PackageManagerApp implements ScreenApp {
 
             @Override
             public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
-                leftElement.elements.clear();
-                rightElement.elements.clear();
-                leftElement.scrolledness = 0;
-                rightElement.scrolledness = 0;
+                updateInstalledApps();
+            }
+
+            @Override
+            public void screenTick(ConsoleScreenBlockEntity blockEntity) {
+                var floppyStack = blockEntity.inventory.getStack(0);
+                var newFloppyState = !floppyStack.isEmpty();
+                if (floppyInserted != newFloppyState) {
+                    updateSourceApps(floppyStack);
+                    floppyInserted = newFloppyState;
+                }
+            }
+
+            private void updateSourceApps(ItemStack floppyStack) {
+                leftElement.clearElements();
+
+                var apps = FloppyItem.getApps(floppyStack);
+                for (int i = 0; i < apps.size(); i++) {
+                    var app = apps.get(i);
+
+                    leftElement.addElement(new InstallableAppElement(i % 2 * 26, i / 2 * 26, app, false, leftElement, this::installApp));
+                }
+            }
+
+            private void updateInstalledApps() {
+                rightElement.clearElements();
 
                 var apps = controls.getAllApps().stream().filter(ScreenApp::canBeUninstalled).toList();
                 for (int i = 0; i < apps.size(); i++) {
                     var app = apps.get(i);
 
-                    rightElement.elements.add(new InstallableAppElement(i % 2 * 26, i / 2 * 26, app.id(), true));
+                    rightElement.addElement(new InstallableAppElement(i % 2 * 26, i / 2 * 26, app, true, rightElement, this::uninstallApp));
                 }
             }
 
-            private void updateSourceApps() {
+            private boolean installApp(ConsoleScreenBlockEntity blockEntity, InstallableAppElement element) {
+                var i = leftElement.getElements().indexOf(element);
+                var floppyStack = blockEntity.inventory.getStack(0);
 
+                if (controls.canInstallApp(element.app) && FloppyItem.removeApp(floppyStack, i)) {
+                    controls.installApp(element.app);
+
+                    updateInstalledApps();
+                    updateSourceApps(floppyStack);
+
+                    return true;
+                }
+
+                return false;
+            }
+
+            private boolean uninstallApp(ConsoleScreenBlockEntity blockEntity, InstallableAppElement element) {
+                if (floppyInserted) {
+                    var floppyStack = blockEntity.inventory.getStack(0);
+
+                    if (controls.canUninstallApp(element.app.id())) {
+                        FloppyItem.addApp(floppyStack, element.app);
+                        controls.uninstallApp(element.app.id());
+
+                        updateInstalledApps();
+                        updateSourceApps(floppyStack);
+
+                        return true;
+                    }
+                }
+                return false;
             }
 
             @Override

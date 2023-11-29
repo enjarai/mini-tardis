@@ -38,6 +38,7 @@ public class ModCanvasUtils {
     public static final CanvasImage DIMENSION_MARKER_SELECTED = loadImage("dimension_marker_selected.png");
     public static final CanvasImage SCROLL_BUTTON_UP = loadImage("scroll_button_up.png");
     public static final CanvasImage SCROLL_BUTTON_DOWN = loadImage("scroll_button_down.png");
+    public static final CanvasImage APP_SELECTED = loadImage("app_selected.png");
     public static final CanvasImage SCANNER_APP = loadImage("app/scanner.png");
     public static final CanvasImage GPS_APP = loadImage("app/gps.png");
     public static final CanvasImage BAD_APPLE_APP = loadImage("app/bad_apple.png");

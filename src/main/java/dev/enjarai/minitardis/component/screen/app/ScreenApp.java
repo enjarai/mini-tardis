@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
@@ -40,6 +41,10 @@ public interface ScreenApp {
 
     default boolean canBeUninstalled() {
         return true;
+    }
+
+    default Text getName() {
+        return Text.translatable("mini_tardis.app." + id().getNamespace() + "." + id().getPath());
     }
 
     Identifier id();

@@ -10,6 +10,7 @@ import dev.enjarai.minitardis.component.screen.element.InstallableAppElement;
 import dev.enjarai.minitardis.item.FloppyItem;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
+import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -34,12 +35,18 @@ public class PackageManagerApp implements ScreenApp {
 
             @Override
             public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+                var selected = leftElement.selected == null ? rightElement.selected : leftElement.selected;
+                if (selected != null) {
+                    DefaultFonts.VANILLA.drawText(canvas, selected.app.getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
+                }
+
                 if (!floppyInserted) {
                     ModCanvasUtils.drawCenteredText(canvas, "Insert", 2 + 26, 30, CanvasColor.WHITE_HIGH);
                     ModCanvasUtils.drawCenteredText(canvas, "Floppy", 2 + 26, 40, CanvasColor.WHITE_HIGH);
                 } else if (leftElement.getElements().isEmpty()) {
                     ModCanvasUtils.drawCenteredText(canvas, "Empty", 2 + 26, 30, CanvasColor.LIGHT_GRAY_HIGH);
                 }
+
                 super.draw(blockEntity, canvas);
             }
 
@@ -65,7 +72,10 @@ public class PackageManagerApp implements ScreenApp {
                 for (int i = 0; i < apps.size(); i++) {
                     var app = apps.get(i);
 
-                    leftElement.addElement(new InstallableAppElement(i % 2 * 26, i / 2 * 26, app, false, leftElement, this::installApp));
+                    leftElement.addElement(new InstallableAppElement(
+                            i % 2 * 26, i / 2 * 26, app, false,
+                            leftElement, el -> rightElement.selected = null, this::installApp
+                    ));
                 }
             }
 
@@ -76,7 +86,10 @@ public class PackageManagerApp implements ScreenApp {
                 for (int i = 0; i < apps.size(); i++) {
                     var app = apps.get(i);
 
-                    rightElement.addElement(new InstallableAppElement(i % 2 * 26, i / 2 * 26, app, true, rightElement, this::uninstallApp));
+                    rightElement.addElement(new InstallableAppElement(
+                            i % 2 * 26, i / 2 * 26, app, true,
+                            rightElement, el -> leftElement.selected = null, this::uninstallApp
+                    ));
                 }
             }
 

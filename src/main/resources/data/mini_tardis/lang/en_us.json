@@ -18,6 +18,14 @@
   "mini_tardis.state.mini_tardis.drifting": "CAUTION: Drifting",
   "mini_tardis.state.mini_tardis.disabled": "Powered Off",
 
+  "mini_tardis.app.mini_tardis.bad_apple": "Bad Apple",
+  "mini_tardis.app.mini_tardis.dimensions": "Dimensions",
+  "mini_tardis.app.mini_tardis.gps": "GPS",
+  "mini_tardis.app.mini_tardis.history": "Past Locations",
+  "mini_tardis.app.mini_tardis.package_manager": "Packages",
+  "mini_tardis.app.mini_tardis.scanner": "Terrain Scanner",
+  "mini_tardis.app.mini_tardis.status": "Status",
+
   "dimension.minecraft.overworld": "Overworld",
   "dimension.minecraft.the_nether": "The Nether",
   "dimension.minecraft.the_end": "The End",

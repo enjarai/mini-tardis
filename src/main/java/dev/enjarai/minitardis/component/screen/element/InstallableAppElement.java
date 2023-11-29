@@ -10,7 +10,6 @@ import eu.pb4.mapcanvas.impl.view.SubView;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -18,13 +17,15 @@ public class InstallableAppElement extends PlacedElement {
     public final ScreenApp app;
     public final boolean installed;
     private final AppSelectorElement parent;
+    private final Consumer<InstallableAppElement> onSelect;
     private final BiFunction<ConsoleScreenBlockEntity, InstallableAppElement, Boolean> moveExecutor;
 
-    public InstallableAppElement(int x, int y, ScreenApp app, boolean installed, AppSelectorElement parent, BiFunction<ConsoleScreenBlockEntity, InstallableAppElement, Boolean> moveExecutor) {
+    public InstallableAppElement(int x, int y, ScreenApp app, boolean installed, AppSelectorElement parent, Consumer<InstallableAppElement> onSelect, BiFunction<ConsoleScreenBlockEntity, InstallableAppElement, Boolean> moveExecutor) {
         super(x, y, 26, 26);
         this.app = app;
         this.installed = installed;
         this.parent = parent;
+        this.onSelect = onSelect;
         this.moveExecutor = moveExecutor;
     }
 
@@ -40,6 +41,7 @@ public class InstallableAppElement extends PlacedElement {
     protected boolean onClickElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
         if (!isSelected()) {
             parent.selected = this;
+            onSelect.accept(this);
             blockEntity.playClickSound(1.6f);
         } else {
             if (moveExecutor.apply(blockEntity, this)) {

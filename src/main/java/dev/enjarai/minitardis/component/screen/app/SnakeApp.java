@@ -26,7 +26,6 @@ public class SnakeApp implements ScreenApp {
     @Override
     public AppView getView(TardisControl controls) {
         return new ElementHoldingView(controls) {
-            private final Random deterministicRandom = new LocalRandom(69420);
 
             @Override
             public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
@@ -36,7 +35,7 @@ public class SnakeApp implements ScreenApp {
             @Override
             public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
                 if (children.isEmpty()) {
-                    addElement(new SnakeElement(0, 0, 0, 0));
+                    addElement(new SnakeElement());
                 }
             }
 
@@ -49,7 +48,7 @@ public class SnakeApp implements ScreenApp {
 
     @Override
     public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.DIMENSIONS_APP);
+        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SNAKE_APP);
     }
 
     @Override

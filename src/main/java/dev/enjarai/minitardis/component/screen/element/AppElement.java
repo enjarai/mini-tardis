@@ -9,5 +9,7 @@ import net.minecraft.util.ClickType;
 public interface AppElement {
     void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas);
 
+    void tick(TardisControl controls, ConsoleScreenBlockEntity blockEntity);
+
     boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y);
 }

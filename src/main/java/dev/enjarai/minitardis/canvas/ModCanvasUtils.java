@@ -38,13 +38,13 @@ public class ModCanvasUtils {
     public static final CanvasImage DIMENSION_MARKER_SELECTED = loadImage("dimension_marker_selected.png");
     public static final CanvasImage SCROLL_BUTTON_UP = loadImage("scroll_button_up.png");
     public static final CanvasImage SCROLL_BUTTON_DOWN = loadImage("scroll_button_down.png");
+    public static final CanvasImage SNAKE = loadImage("snake.png");
     public static final CanvasImage APP_SELECTED = loadImage("app_selected.png");
     public static final CanvasImage SCANNER_APP = loadImage("app/scanner.png");
     public static final CanvasImage GPS_APP = loadImage("app/gps.png");
     public static final CanvasImage BAD_APPLE_APP = loadImage("app/bad_apple.png");
     public static final CanvasImage STATUS_APP = loadImage("app/status.png");
     public static final CanvasImage SNAKE_APP = loadImage("app/snake.png");
-    public static final CanvasImage SNAKE = loadImage("app/snake.png");
     public static final CanvasImage HISTORY_APP = loadImage("app/history.png");
     public static final CanvasImage DIMENSIONS_APP = loadImage("app/dimensions.png");
     public static final CanvasImage PACKAGE_MANAGER_APP = loadImage("app/package_manager.png");

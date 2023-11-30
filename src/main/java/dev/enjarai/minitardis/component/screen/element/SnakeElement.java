@@ -9,17 +9,50 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 
 public class SnakeElement extends PlacedElement {
-    public SnakeElement(int x, int y, int width, int height) {
-        super(x, y, 11, 11);
+    int tickCount;
+
+    public SnakeElement() {
+        super(1, 9, 5, 13);
     }
 
     @Override
     protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SNAKE_APP);
+        CanvasUtils.draw(canvas, x, y, ModCanvasUtils.SNAKE);
     }
 
     @Override
     protected boolean onClickElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
         return false;
+    }
+
+    @Override
+    public void tick(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+        tickCount++;
+        if (tickCount % 4 == 0) {
+            move(0, 1);
+            if(!isInBounds(getRelativeX(), getRelativeY())) {
+                blockEntity.closeApp();
+                return;
+            }
+        }
+    }
+
+    public boolean isInBounds(int relativeX, int relativeY) {
+        return relativeX >= 0 && relativeX <= 60 && relativeY >= 0 && relativeY <= 36;
+    }
+
+    public void move(int x, int y) {
+        this.x += x;
+        this.width += x;
+        this.y += y;
+        this.height += y;
+    }
+
+    public int getRelativeX() {
+        return x - 1;
+    }
+
+    public int getRelativeY() {
+        return y - 9;
     }
 }

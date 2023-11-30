@@ -12,24 +12,24 @@ import java.util.function.Supplier;
 
 public interface ScreenApp {
     Map<Identifier, Codec<? extends ScreenApp>> ALL = Map.of(
+            SnakeApp.ID, SnakeApp.CODEC,
             ScannerApp.ID, ScannerApp.CODEC,
             GpsApp.ID, GpsApp.CODEC,
             BadAppleApp.ID, BadAppleApp.CODEC,
             StatusApp.ID, StatusApp.CODEC,
             HistoryApp.ID, HistoryApp.CODEC,
             DimensionsApp.ID, DimensionsApp.CODEC,
-            PackageManagerApp.ID, PackageManagerApp.CODEC,
-            SnakeApp.ID, SnakeApp.CODEC
+            PackageManagerApp.ID, PackageManagerApp.CODEC
     );
     Map<Identifier, Supplier<? extends ScreenApp>> CONSTRUCTORS = Map.of(
+            SnakeApp.ID, SnakeApp::new,
             ScannerApp.ID, ScannerApp::new,
             GpsApp.ID, GpsApp::new,
             BadAppleApp.ID, BadAppleApp::new,
             StatusApp.ID, StatusApp::new,
             HistoryApp.ID, HistoryApp::new,
             DimensionsApp.ID, DimensionsApp::new,
-            PackageManagerApp.ID, PackageManagerApp::new,
-            SnakeApp.ID, SnakeApp::new
+            PackageManagerApp.ID, PackageManagerApp::new
     );
     Codec<ScreenApp> CODEC = Identifier.CODEC.dispatch(ScreenApp::id, ALL::get);
 

@@ -191,9 +191,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
             var controls = tardis.getControls();
             if (currentView != null) {
                 if (type == ClickType.RIGHT && x >= 96 + 2 && x < 96 + 2 + 28 && y >= 16 + 2 && y < 16 + 2 + 14) {
-                    currentView.screenClose(this);
-                    selectedApp = null;
-                    currentView = null;
+                    closeApp();
                     playClickSound(0.8f);
                 } else {
                     currentView.onClick(this, player, type, x, y - 16);
@@ -224,6 +222,16 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
     private int getAppY(int i) {
         return i / 4 * 30 + 6;
+    }
+
+    public void closeApp() {
+        if(currentView == null) {
+            MiniTardis.LOGGER.error("Tried to close app while currentView is null!");
+            return;
+        }
+        currentView.screenClose(this);
+        selectedApp = null;
+        currentView = null;
     }
 
     public void playClickSound(float pitch) {

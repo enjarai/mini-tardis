@@ -12,12 +12,18 @@ import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.ClickType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
+import org.joml.Vector2i;
 
 import java.util.Comparator;
+
+import static java.lang.Math.abs;
 
 public class SnakeApp implements ScreenApp {
     public static final Codec<SnakeApp> CODEC = Codec.unit(SnakeApp::new);
@@ -26,6 +32,7 @@ public class SnakeApp implements ScreenApp {
     @Override
     public AppView getView(TardisControl controls) {
         return new ElementHoldingView(controls) {
+            public final SnakeElement snake = new SnakeElement();
 
             @Override
             public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
@@ -34,9 +41,23 @@ public class SnakeApp implements ScreenApp {
 
             @Override
             public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
-                if (children.isEmpty()) {
-                    addElement(new SnakeElement());
+                this.addElement(snake);
+            }
+
+            @Override
+            public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+                Vector2i clickPos = new Vector2i(x, y);
+                Vector2i snakePos = new Vector2i(snake.x, snake.y);
+                Vector2i resultVector = clickPos.sub(snakePos);
+                //System.out.println(resultVector.x + " " + resultVector.y);
+                if(abs(resultVector.x) > abs(resultVector.y)) {
+                    if(resultVector.x > 0)snake.setMovement(SnakeElement.SnakeMove.RIGHT);
+                    else snake.setMovement(SnakeElement.SnakeMove.LEFT);
+                } else {
+                    if(resultVector.y > 0)snake.setMovement(SnakeElement.SnakeMove.UP);
+                    else snake.setMovement(SnakeElement.SnakeMove.DOWN);
                 }
+                return super.onClick(blockEntity, player, type, x, y);
             }
 
             @Override

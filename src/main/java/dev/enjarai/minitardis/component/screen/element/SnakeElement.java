@@ -10,14 +10,15 @@ import net.minecraft.util.ClickType;
 
 public class SnakeElement extends PlacedElement {
     int tickCount;
+    private SnakeMove snakeMove = SnakeMove.RIGHT;
 
     public SnakeElement() {
-        super(1, 9, 5, 13);
+        super(2, 18, 4, 4);
     }
 
     @Override
     protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, x, y, ModCanvasUtils.SNAKE);
+        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SNAKE);
     }
 
     @Override
@@ -29,7 +30,7 @@ public class SnakeElement extends PlacedElement {
     public void tick(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
         tickCount++;
         if (tickCount % 4 == 0) {
-            move(0, 1);
+            move(this.snakeMove);
             if(!isInBounds(getRelativeX(), getRelativeY())) {
                 blockEntity.closeApp();
                 return;
@@ -37,22 +38,43 @@ public class SnakeElement extends PlacedElement {
         }
     }
 
-    public boolean isInBounds(int relativeX, int relativeY) {
-        return relativeX >= 0 && relativeX <= 60 && relativeY >= 0 && relativeY <= 36;
+    public static boolean isInBounds(int relativeX, int relativeY) {
+        return relativeX >= 0 && relativeX <= 120 && relativeY >= 0 && relativeY <= 72;
     }
 
-    public void move(int x, int y) {
-        this.x += x;
-        this.width += x;
-        this.y += y;
-        this.height += y;
+    public void move(SnakeMove snakeMove) {
+        this.x += snakeMove.x;
+        //this.width += snakeMove.x;
+        this.y += snakeMove.y;
+        //this.height += snakeMove.y;
     }
 
     public int getRelativeX() {
-        return x - 1;
+        return x - 2;
     }
 
     public int getRelativeY() {
-        return y - 9;
+        return y - 18;
+    }
+
+    public void setMovement(SnakeMove snakeMove) {
+        this.snakeMove = snakeMove;
+    }
+
+    public enum SnakeMove {
+        UP(0, 4),
+        DOWN(0, -4),
+        LEFT(-4, 0),
+        RIGHT(4, 0);
+
+
+        final int x;
+        final int y;
+
+        SnakeMove(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
     }
 }

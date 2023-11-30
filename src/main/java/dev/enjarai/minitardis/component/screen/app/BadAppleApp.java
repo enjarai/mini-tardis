@@ -29,6 +29,9 @@ public class BadAppleApp implements ScreenApp {
             @Override
             public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var frame = MathHelper.clamp(badAppleFrameCounter, 0, BadApple.getFrameCount());
+
+                //System.out.println(badAppleFrameCounter);
+                //System.out.println(BadApple.getFrameCount());
                 for (int x = 0; x < BadApple.width; x++) {
                     for (int y = 0; y < BadApple.height; y++) {
                         var color = getCanvasColor(frame, x, y);
@@ -38,8 +41,8 @@ public class BadAppleApp implements ScreenApp {
 
                 badAppleFrameCounter++;
 
-                if (badAppleFrameCounter > BadApple.getFrameCount()) {
-                    badAppleFrameCounter = 0;
+                if (badAppleFrameCounter >= BadApple.getFrameCount()) {
+                    blockEntity.closeApp();
                 }
             }
 

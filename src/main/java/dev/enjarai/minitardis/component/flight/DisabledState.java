@@ -19,19 +19,14 @@ public class DisabledState implements FlightState {
 
     @Override
     public void init(Tardis tardis) {
-        playForInterior(tardis, SoundEvents.BLOCK_BEACON_DEACTIVATE, SoundCategory.BLOCKS, 1, 0);
+        playForInterior(tardis, SoundEvents.BLOCK_RESPAWN_ANCHOR_DEPLETE.value(), SoundCategory.BLOCKS, 2, 0);
+        playForInterior(tardis, SoundEvents.BLOCK_BEACON_DEACTIVATE, SoundCategory.BLOCKS, 2, 0);
         stopPlayingForInterior(tardis, ModSounds.CORAL_HUM);
     }
 
     @Override
-    public void complete(Tardis tardis) {
-        playForInterior(tardis, SoundEvents.BLOCK_BEACON_ACTIVATE, SoundCategory.BLOCKS, 1, 0);
-        playForInterior(tardis, ModSounds.CORAL_HUM, SoundCategory.AMBIENT, 0.3f, 1);
-    }
-
-    @Override
     public boolean suggestTransition(Tardis tardis, FlightState newState) {
-        return newState instanceof LandedState;
+        return newState instanceof BootingUpState;
     }
 
     @Override
@@ -41,6 +36,11 @@ public class DisabledState implements FlightState {
 
     @Override
     public boolean tryChangeCourse(Tardis tardis) {
+        return false;
+    }
+
+    @Override
+    public boolean isPowered(Tardis tardis) {
         return false;
     }
 

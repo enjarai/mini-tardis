@@ -162,7 +162,7 @@ public class TardisControl {
     }
 
     public boolean toggleDisabledState() {
-        return tardis.suggestStateTransition(tardis.getState() instanceof DisabledState ? new LandedState() : new DisabledState());
+        return tardis.suggestStateTransition(tardis.getState() instanceof DisabledState ? new BootingUpState() : new DisabledState());
     }
 
 

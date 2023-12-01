@@ -23,7 +23,8 @@ public interface FlightState {
             CrashingState.ID, CrashingState.CODEC,
             RefuelingState.ID, RefuelingState.CODEC,
             DriftingState.ID, DriftingState.CODEC,
-            DisabledState.ID, DisabledState.CODEC
+            DisabledState.ID, DisabledState.CODEC,
+            BootingUpState.ID, BootingUpState.CODEC
     );
     Codec<FlightState> CODEC = Identifier.CODEC.dispatch(FlightState::id, ALL::get);
 
@@ -64,6 +65,13 @@ public interface FlightState {
      * Whether the destination of the Tardis can be changed during this state.
      */
     default boolean tryChangeCourse(Tardis tardis) {
+        return true;
+    }
+
+    /**
+     * Whether this state should count as the Tardis being powered on. Controls effects like interior hum.
+     */
+    default boolean isPowered(Tardis tardis) {
         return true;
     }
 

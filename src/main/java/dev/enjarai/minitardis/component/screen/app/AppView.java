@@ -8,7 +8,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 
 /**
- * Holds transient, screen specific state for an app.
+ * Responsible for drawing the app and handling click interactions. Can hold transient, screen specific state.
  */
 public interface AppView {
     /**
@@ -27,22 +27,19 @@ public interface AppView {
     boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y);
 
     /**
-     * Called every tick for every screen displaying this app.
-     * Keep in mind multiple screens can display the same app, and will share the app's state.
+     * Called every tick that this view is displayed.
      */
     default void screenTick(ConsoleScreenBlockEntity blockEntity) {
     }
 
     /**
-     * Called when a screen opens this app.
-     * Keep in mind multiple screens can display the same app, and will share the app's state.
+     * Called once when a screen creates and opens this view.
      */
     default void screenOpen(ConsoleScreenBlockEntity blockEntity) {
     }
 
     /**
-     * Called when a screen closes this app.
-     * Keep in mind multiple screens can display the same app, and will share the app's state.
+     * Called once when a screen closes and discards this view.
      */
     default void screenClose(ConsoleScreenBlockEntity blockEntity) {
     }

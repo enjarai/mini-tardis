@@ -128,7 +128,7 @@ public class Tardis {
         }
 
         // Interior hum
-        if (!(state instanceof DisabledState) && world.getTime() % (20 * 12) == 0) {
+        if (state.isPowered(this) && world.getTime() % (20 * 12) == 0) {
             state.playForInterior(this, ModSounds.CORAL_HUM, SoundCategory.AMBIENT, 0.3f, 1);
         }
 

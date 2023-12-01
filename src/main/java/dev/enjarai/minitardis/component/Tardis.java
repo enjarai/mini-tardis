@@ -133,12 +133,12 @@ public class Tardis {
         }
 
         // Sparks
-        if (sparksQueued > 0 && world.getRandom().nextBetween(0, 20) == 0) {
+        if (sparksQueued > 0 && state.isPowered(this) && world.getRandom().nextBetween(0, 20) == 0) {
             createInteriorSparks(false); // todo when exploding sparks?
             sparksQueued--;
         }
 
-        if (stability < 200 && world.getRandom().nextBetween(0, 20000) < 800 - stability * 4 && sparksQueued < 10) {
+        if (stability < 200 && world.getRandom().nextBetween(0, 20000) < 800 - stability * 4 && sparksQueued < 5) {
             sparksQueued++;
         }
 
@@ -390,8 +390,8 @@ public class Tardis {
     public void setStability(int stability) {
         if (stability < this.stability) {
             getState(FlyingState.class).ifPresent(state -> state.errorLoops = 2);
-            if (sparksQueued < 10) {
-                sparksQueued += (this.stability - stability) / getInteriorWorld().getRandom().nextBetween(50, 150);
+            if (sparksQueued < 5) {
+                sparksQueued = Math.min(5, sparksQueued + (this.stability - stability) / getInteriorWorld().getRandom().nextBetween(50, 150));
             }
         }
         this.stability = stability;

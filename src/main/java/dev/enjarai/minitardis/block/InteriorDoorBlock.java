@@ -2,6 +2,7 @@ package dev.enjarai.minitardis.block;
 
 import dev.enjarai.minitardis.item.PolymerModels;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
+import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
@@ -12,6 +13,7 @@ import net.minecraft.entity.decoration.Brightness;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
@@ -93,6 +95,11 @@ public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, Tard
     @Override
     public Block getPolymerBlock(BlockState state) {
         return Blocks.BARRIER;
+    }
+
+    @Override
+    public Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
+        return PolymerResourcePackUtils.hasPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.QUARTZ_BLOCK;
     }
 
     @Override

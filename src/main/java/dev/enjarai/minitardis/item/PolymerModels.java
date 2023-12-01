@@ -11,9 +11,10 @@ public class PolymerModels {
     public static final PolymerModelData[] TARDIS_ALPHA = new PolymerModelData[16];
     public static final PolymerModelData INTERIOR_DOOR = get("item/interior_door");
     public static final PolymerModelData ROTATING_MONITOR = get("item/rotating_monitor");
+    public static final PolymerModelData ROTATING_MONITOR_PACKED = get("item/rotating_monitor_packed");
 
     private static PolymerModelData get(String modelPath) {
-        return PolymerResourcePackUtils.requestModel(Items.LAPIS_LAZULI, MiniTardis.id(modelPath));
+        return PolymerResourcePackUtils.requestModel(Items.BARRIER, MiniTardis.id(modelPath));
     }
 
     public static ItemStack getStack(PolymerModelData model) {

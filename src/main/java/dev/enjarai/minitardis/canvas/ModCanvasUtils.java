@@ -39,6 +39,8 @@ public class ModCanvasUtils {
     public static final CanvasImage SCROLL_BUTTON_UP = loadImage("scroll_button_up.png");
     public static final CanvasImage SCROLL_BUTTON_DOWN = loadImage("scroll_button_down.png");
     public static final CanvasImage SNAKE = loadImage("snake.png");
+    public static final CanvasImage SNAKE_TAIL = loadImage("snake_tail.png");
+    public static final CanvasImage APPLE = loadImage("apple.png");
     public static final CanvasImage APP_SELECTED = loadImage("app_selected.png");
     public static final CanvasImage SCANNER_APP = loadImage("app/scanner.png");
     public static final CanvasImage GPS_APP = loadImage("app/gps.png");

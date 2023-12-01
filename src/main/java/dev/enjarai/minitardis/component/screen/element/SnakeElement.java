@@ -3,17 +3,38 @@ package dev.enjarai.minitardis.component.screen.element;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.screen.app.SnakeApp;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import eu.pb4.mapcanvas.impl.view.SubView;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
+import org.jetbrains.annotations.Nullable;
 
 public class SnakeElement extends PlacedElement {
+    private final SnakeApp.SnakeAppView snakeAppView;
     int tickCount;
+    int tailLength;
     private SnakeMove snakeMove = SnakeMove.RIGHT;
+    @Nullable
+    private SnakeTailElement snakeTail = null;
 
-    public SnakeElement() {
+    public SnakeElement(SnakeApp.SnakeAppView snakeAppView) {
         super(2, 18, 4, 4);
+        this.snakeAppView = snakeAppView;
+    }
+
+    @Override
+    public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        super.draw(controls, blockEntity, canvas);
+        if(snakeTail != null) {
+            this.snakeTail.drawAndPush(
+                    controls,
+                    blockEntity,
+                    new SubView(canvas, snakeTail.x, snakeTail.y, snakeTail.width, snakeTail.height),
+                    canvas
+            );
+        }
     }
 
     @Override
@@ -43,6 +64,10 @@ public class SnakeElement extends PlacedElement {
     }
 
     public void move(SnakeMove snakeMove) {
+        if(snakeTail != null) {
+            this.snakeTail.moveToAndPush(this.x, this.y, 1);
+        }
+
         this.x += snakeMove.x;
         //this.width += snakeMove.x;
         this.y += snakeMove.y;
@@ -61,6 +86,13 @@ public class SnakeElement extends PlacedElement {
         this.snakeMove = snakeMove;
     }
 
+    public void ateApple() {
+        if(this.snakeTail == null) {
+            this.snakeTail = new SnakeTailElement(this);
+        }
+        this.tailLength++;
+    }
+
     public enum SnakeMove {
         UP(0, 4),
         DOWN(0, -4),
@@ -75,6 +107,5 @@ public class SnakeElement extends PlacedElement {
             this.x = x;
             this.y = y;
         }
-
     }
 }

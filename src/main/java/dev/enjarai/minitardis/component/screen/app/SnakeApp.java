@@ -5,6 +5,7 @@ import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.screen.element.AppleElement;
 import dev.enjarai.minitardis.component.screen.element.DimensionStarElement;
 import dev.enjarai.minitardis.component.screen.element.SnakeElement;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
@@ -31,40 +32,7 @@ public class SnakeApp implements ScreenApp {
 
     @Override
     public AppView getView(TardisControl controls) {
-        return new ElementHoldingView(controls) {
-            public final SnakeElement snake = new SnakeElement();
-
-            @Override
-            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                super.draw(blockEntity, canvas);
-            }
-
-            @Override
-            public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
-                this.addElement(snake);
-            }
-
-            @Override
-            public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
-                Vector2i clickPos = new Vector2i(x, y);
-                Vector2i snakePos = new Vector2i(snake.x, snake.y);
-                Vector2i resultVector = clickPos.sub(snakePos);
-                //System.out.println(resultVector.x + " " + resultVector.y);
-                if(abs(resultVector.x) > abs(resultVector.y)) {
-                    if(resultVector.x > 0)snake.setMovement(SnakeElement.SnakeMove.RIGHT);
-                    else snake.setMovement(SnakeElement.SnakeMove.LEFT);
-                } else {
-                    if(resultVector.y > 0)snake.setMovement(SnakeElement.SnakeMove.UP);
-                    else snake.setMovement(SnakeElement.SnakeMove.DOWN);
-                }
-                return super.onClick(blockEntity, player, type, x, y);
-            }
-
-            @Override
-            public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.DIMENSIONS_BACKGROUND);
-            }
-        };
+        return new SnakeAppView(controls);
     }
 
     @Override
@@ -76,4 +44,47 @@ public class SnakeApp implements ScreenApp {
     public Identifier id() {
         return ID;
     }
+
+    public static class SnakeAppView implements AppView {
+        public final SnakeElement snake = new SnakeElement(this);
+        public final AppleElement apple = new AppleElement(this);
+
+        private final TardisControl tardisControl;
+        public SnakeAppView(TardisControl tardisControl) {
+            this.tardisControl = tardisControl;
+        }
+
+        @Override
+        public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            snake.draw(tardisControl, blockEntity, canvas);
+            apple.draw(tardisControl, blockEntity, canvas);
+        }
+
+        @Override
+        public void screenTick(ConsoleScreenBlockEntity blockEntity) {
+            snake.tick(tardisControl, blockEntity);
+            apple.tick(tardisControl, blockEntity);
+        }
+
+        @Override
+        public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+            Vector2i clickPos = new Vector2i(x, y);
+            Vector2i snakePos = new Vector2i(snake.x, snake.y);
+            Vector2i resultVector = clickPos.sub(snakePos);
+            if(abs(resultVector.x) > abs(resultVector.y)) {
+                if(resultVector.x > 0)snake.setMovement(SnakeElement.SnakeMove.RIGHT);
+                else snake.setMovement(SnakeElement.SnakeMove.LEFT);
+            } else {
+                if(resultVector.y > 0)snake.setMovement(SnakeElement.SnakeMove.UP);
+                else snake.setMovement(SnakeElement.SnakeMove.DOWN);
+            }
+            return false;
+        }
+
+        @Override
+        public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.DIMENSIONS_BACKGROUND);
+        }
+    }
+
 }

@@ -66,11 +66,6 @@ public class AppleElement extends PlacedElement {
         return relativeX >= 0 && relativeX <= 122 && relativeY >= 0 && relativeY <= 72;
     }
 
-    public void move(int x, int y) {
-        this.x += x;
-        this.y += y;
-    }
-
     public int getRelativeX() {
         return x - 2;
     }

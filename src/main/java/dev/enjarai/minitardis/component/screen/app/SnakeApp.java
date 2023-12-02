@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.canvas.BadApple;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.element.AppleElement;
@@ -12,11 +13,13 @@ import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ClickType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
 import org.joml.Vector2i;
@@ -48,7 +51,7 @@ public class SnakeApp implements ScreenApp {
         public final AppleElement apple = new AppleElement(this);
 
 
-        private TardisControl tardisControl;
+        private final TardisControl tardisControl;
         private boolean died = false;
         private int ticksDead = 0;
         private boolean isPaused = false;
@@ -117,7 +120,7 @@ public class SnakeApp implements ScreenApp {
         }
 
         public void snakeDied(ConsoleScreenBlockEntity blockEntity) {
-            blockEntity.getWorld().playSound(null, blockEntity.getPos(), ModSounds.DIE_SNAKE, SoundCategory.AMBIENT, 0.3f, 1);
+            blockEntity.getWorld().playSound(null, blockEntity.getPos(), ModSounds.DIE_SNAKE, SoundCategory.AMBIENT, 1f, 1);
             this.died = true;
         }
 
@@ -131,5 +134,4 @@ public class SnakeApp implements ScreenApp {
             blockEntity.getWorld().playSound(null, blockEntity.getPos(), ModSounds.EAT_APPLE, SoundCategory.AMBIENT, 0.3f, 1);
         }
     }
-
 }

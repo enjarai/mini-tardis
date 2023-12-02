@@ -56,7 +56,6 @@ public class SnakeElement extends PlacedElement {
         if (tickCount % getGameSpeed() == 0) {
             this.snakeAppView.deterministicRandom.skip(this.snakeMove.ordinal());
             this.move(this.snakeMove);
-            System.out.println(this.x);
             if(snakeTail != null && snakeTail.doesCollide(this.x, this.y)) {
                 this.killedByTail(blockEntity);
                 return;

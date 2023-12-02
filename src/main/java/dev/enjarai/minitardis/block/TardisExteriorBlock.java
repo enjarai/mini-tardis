@@ -109,7 +109,7 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
                     exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(world.getBlockState(pos).get(FACING).asRotation()));
                 }
 
-                if (world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity) {
+                if (world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity && blockEntity.getLinkedTardis() != null) {
                     byte alpha = (byte) MathHelper.clamp(blockEntity.getLinkedTardis().getState()
                             .getExteriorAlpha(blockEntity.getLinkedTardis()), -1, 15);
                     if (alpha != currentAlpha) {

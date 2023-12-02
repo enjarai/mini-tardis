@@ -50,5 +50,14 @@
         "stream": true
       }
     ]
+  },
+  "move_snake": {
+    "subtitle": "sound.mini_tardis.move_snake",
+    "sounds": [
+      {
+        "name": "mini_tardis:move_snake",
+        "stream": true
+      }
+    ]
   }
 }

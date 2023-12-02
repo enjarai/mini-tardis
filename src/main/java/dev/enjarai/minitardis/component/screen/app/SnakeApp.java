@@ -2,6 +2,7 @@ package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
+import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
@@ -12,8 +13,10 @@ import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import net.minecraft.entity.Entity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.ClickType;
 import net.minecraft.util.Identifier;
@@ -50,40 +53,57 @@ public class SnakeApp implements ScreenApp {
         public final AppleElement apple = new AppleElement(this);
 
         private final TardisControl tardisControl;
+        private boolean died = false;
+        private int ticksDead = 0;
         public SnakeAppView(TardisControl tardisControl) {
             this.tardisControl = tardisControl;
         }
 
         @Override
         public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            //if(died)return;
             snake.draw(tardisControl, blockEntity, canvas);
             apple.draw(tardisControl, blockEntity, canvas);
         }
 
         @Override
         public void screenTick(ConsoleScreenBlockEntity blockEntity) {
+            if(died) {
+                ticksDead++;
+                if(ticksDead > 40)blockEntity.closeApp();
+                return;
+            }
             snake.tick(tardisControl, blockEntity);
             apple.tick(tardisControl, blockEntity);
         }
 
         @Override
         public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+            if(this.died)return false;
             Vector2i clickPos = new Vector2i(x, y);
             Vector2i snakePos = new Vector2i(snake.x, snake.y);
             Vector2i resultVector = clickPos.sub(snakePos);
-            if(abs(resultVector.x) > abs(resultVector.y)) {
+            snake.snakeMove = snake.snakeMove.getSnakeMove(resultVector);
+            /*if(abs(resultVector.x) > abs(resultVector.y)) {
                 if(resultVector.x > 0)snake.setMovement(SnakeElement.SnakeMove.RIGHT);
                 else snake.setMovement(SnakeElement.SnakeMove.LEFT);
             } else {
                 if(resultVector.y > 0)snake.setMovement(SnakeElement.SnakeMove.UP);
                 else snake.setMovement(SnakeElement.SnakeMove.DOWN);
-            }
+            }*/
+            blockEntity.getWorld().playSound(null, blockEntity.getPos(), ModSounds.SNAKE_MOVE, SoundCategory.AMBIENT, 0.3f, 1);
+
+
             return false;
         }
 
         @Override
         public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
             CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.DIMENSIONS_BACKGROUND);
+        }
+
+        public void snakeDied() {
+            this.died = true;
         }
     }
 

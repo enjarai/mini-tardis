@@ -3,6 +3,7 @@ package dev.enjarai.minitardis.component.screen.element;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
+import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import eu.pb4.mapcanvas.impl.view.SubView;
@@ -13,11 +14,12 @@ import org.jetbrains.annotations.Nullable;
 public class SnakeTailElement extends PlacedElement {
     private final SnakeElement snake;
     int tickCount;
+    boolean isInitialized = false;
     @Nullable
     SnakeTailElement nextSnailTail = null;
 
     public SnakeTailElement(SnakeElement snake) {
-        super(-1, -1, 4, 4);
+        super(0, 0, 4, 4);
         this.snake = snake;
     }
 
@@ -27,7 +29,7 @@ public class SnakeTailElement extends PlacedElement {
     }
 
     public void drawAndPush(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas, DrawableCanvas original) {
-        this.drawElement(controls, blockEntity, canvas);
+        if(isInitialized) this.drawElement(controls, blockEntity, canvas);
         if(nextSnailTail != null) {
             nextSnailTail.drawAndPush(
                     controls,
@@ -41,8 +43,6 @@ public class SnakeTailElement extends PlacedElement {
     public void moveToAndPush(int x, int y, int length) {
         if(nextSnailTail == null) {
             if(length < snake.tailLength) {
-                System.out.println("length: " + length);
-                System.out.println("tailLength: " + snake.tailLength);
                 nextSnailTail = new SnakeTailElement(snake);
             }
         } else {
@@ -51,15 +51,25 @@ public class SnakeTailElement extends PlacedElement {
         moveToAndPush(x, y);
     }
 
+
     public void moveToAndPush(int x, int y) {
         this.x = x;
         this.y = y;
+        if(!isInitialized)isInitialized = true;
     }
 
 
 
     @Override
     protected boolean onClickElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+        return false;
+    }
+
+    public boolean doesCollide(int x, int y) {
+        if(this.snake.x == this.x && this.snake.y == this.y) return true;
+        if(nextSnailTail != null) {
+            return nextSnailTail.doesCollide(x, y);
+        }
         return false;
     }
 }

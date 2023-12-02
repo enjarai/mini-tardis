@@ -10,12 +10,15 @@ import eu.pb4.mapcanvas.impl.view.SubView;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2i;
+
+import static java.lang.Math.*;
 
 public class SnakeElement extends PlacedElement {
     private final SnakeApp.SnakeAppView snakeAppView;
     int tickCount;
     int tailLength;
-    private SnakeMove snakeMove = SnakeMove.RIGHT;
+    public SnakeMove snakeMove = SnakeMove.RIGHT;
     @Nullable
     private SnakeTailElement snakeTail = null;
 
@@ -50,14 +53,23 @@ public class SnakeElement extends PlacedElement {
     @Override
     public void tick(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
         tickCount++;
-        if (tickCount % 4 == 0) {
-            move(this.snakeMove);
+        if (tickCount % getGameSpeed() == 0) {
+            this.move(this.snakeMove);
+            if(snakeTail != null && snakeTail.doesCollide(this.x, this.y)) {
+                this.killedByTail();
+                return;
+            }
             if(!isInBounds(getRelativeX(), getRelativeY())) {
-                blockEntity.closeApp();
+                this.killedByWall();
                 return;
             }
         }
     }
+
+    public int getGameSpeed() {
+        return max(round(5f - this.tailLength/10f), 2);
+    }
+
 
     public static boolean isInBounds(int relativeX, int relativeY) {
         return relativeX >= 0 && relativeX <= 120 && relativeY >= 0 && relativeY <= 72;
@@ -67,7 +79,6 @@ public class SnakeElement extends PlacedElement {
         if(snakeTail != null) {
             this.snakeTail.moveToAndPush(this.x, this.y, 1);
         }
-
         this.x += snakeMove.x;
         //this.width += snakeMove.x;
         this.y += snakeMove.y;
@@ -82,10 +93,6 @@ public class SnakeElement extends PlacedElement {
         return y - 18;
     }
 
-    public void setMovement(SnakeMove snakeMove) {
-        this.snakeMove = snakeMove;
-    }
-
     public void ateApple() {
         if(this.snakeTail == null) {
             this.snakeTail = new SnakeTailElement(this);
@@ -93,19 +100,42 @@ public class SnakeElement extends PlacedElement {
         this.tailLength++;
     }
 
+    public void killedByWall() {
+        this.snakeAppView.snakeDied();
+    }
+
+    public void killedByTail() {
+        this.snakeAppView.snakeDied();
+    }
+
     public enum SnakeMove {
-        UP(0, 4),
-        DOWN(0, -4),
-        LEFT(-4, 0),
-        RIGHT(4, 0);
+        UP(0, 4, MoveType.HORIZONTAL),
+        DOWN(0, -4, MoveType.HORIZONTAL),
+        LEFT(-4, 0, MoveType.VERTICAL),
+        RIGHT(4, 0, MoveType.VERTICAL);
 
 
         final int x;
         final int y;
+        final MoveType moveType;
 
-        SnakeMove(int x, int y) {
+        SnakeMove(int x, int y, MoveType moveType) {
             this.x = x;
             this.y = y;
+            this.moveType = moveType;
+        }
+
+        public SnakeMove getSnakeMove(Vector2i vector2i) {
+            //Get Larger vector component and keep data if it is x or y
+            return switch (this.moveType) {
+                case HORIZONTAL -> vector2i.x > 0 ? RIGHT : LEFT;
+                case VERTICAL -> vector2i.y > 0 ? UP : DOWN;
+            };
+        }
+
+        public enum MoveType {
+            HORIZONTAL,
+            VERTICAL
         }
     }
 }

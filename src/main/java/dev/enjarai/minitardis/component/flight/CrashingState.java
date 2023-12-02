@@ -51,6 +51,10 @@ public class CrashingState extends TransitionalFlightState {
             playForInteriorAndExterior(tardis, ModSounds.TARDIS_CRASH_LAND, SoundCategory.BLOCKS, 1, 1);
         }
 
+        if (ticksPassed % 100 == 0) {
+            playForInteriorAndExterior(tardis, ModSounds.CLOISTER_BELL, SoundCategory.BLOCKS, 1, 1);
+        }
+
         tickScreenShake(tardis, 2);
         return super.tick(tardis);
     }
@@ -63,7 +67,7 @@ public class CrashingState extends TransitionalFlightState {
 
     @Override
     public FlightState getNextState(Tardis tardis) {
-        return new LandedState();
+        return new CrashedState();
     }
 
     @Override

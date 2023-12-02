@@ -1,11 +1,9 @@
 package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
@@ -14,16 +12,18 @@ import net.minecraft.util.Identifier;
 import java.util.Map;
 
 public interface FlightState {
-    Map<Identifier, Codec<? extends FlightState>> ALL = Map.of(
-            LandedState.ID, LandedState.CODEC,
-            TakingOffState.ID, TakingOffState.CODEC,
-            FlyingState.ID, FlyingState.CODEC,
-            LandingState.ID, LandingState.CODEC,
-            SearchingForLandingState.ID, SearchingForLandingState.CODEC,
-            CrashingState.ID, CrashingState.CODEC,
-            RefuelingState.ID, RefuelingState.CODEC,
-            DriftingState.ID, DriftingState.CODEC,
-            DisabledState.ID, DisabledState.CODEC
+    Map<Identifier, Codec<? extends FlightState>> ALL = Map.ofEntries(
+            Map.entry(LandedState.ID, LandedState.CODEC),
+            Map.entry(TakingOffState.ID, TakingOffState.CODEC),
+            Map.entry(FlyingState.ID, FlyingState.CODEC),
+            Map.entry(LandingState.ID, LandingState.CODEC),
+            Map.entry(SearchingForLandingState.ID, SearchingForLandingState.CODEC),
+            Map.entry(CrashingState.ID, CrashingState.CODEC),
+            Map.entry(RefuelingState.ID, RefuelingState.CODEC),
+            Map.entry(DriftingState.ID, DriftingState.CODEC),
+            Map.entry(DisabledState.ID, DisabledState.CODEC),
+            Map.entry(BootingUpState.ID, BootingUpState.CODEC),
+            Map.entry(CrashedState.ID, CrashedState.CODEC)
     );
     Codec<FlightState> CODEC = Identifier.CODEC.dispatch(FlightState::id, ALL::get);
 
@@ -64,6 +64,13 @@ public interface FlightState {
      * Whether the destination of the Tardis can be changed during this state.
      */
     default boolean tryChangeCourse(Tardis tardis) {
+        return true;
+    }
+
+    /**
+     * Whether this state should count as the Tardis being powered on. Controls effects like interior hum.
+     */
+    default boolean isPowered(Tardis tardis) {
         return true;
     }
 

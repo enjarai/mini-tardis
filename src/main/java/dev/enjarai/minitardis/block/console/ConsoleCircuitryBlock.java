@@ -42,11 +42,6 @@ public class ConsoleCircuitryBlock extends Block implements PolymerBlock, Tardis
 
     @Override
     public Block getPolymerBlock(BlockState state) {
-        return Blocks.COMMAND_BLOCK;
-    }
-
-    @Override
-    public BlockState getPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).getDefaultState().with(CommandBlock.FACING, Direction.UP);
+        return Blocks.DRIPSTONE_BLOCK;
     }
 }

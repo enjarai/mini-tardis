@@ -19,7 +19,8 @@ public interface ScreenApp {
             StatusApp.ID, StatusApp.CODEC,
             HistoryApp.ID, HistoryApp.CODEC,
             DimensionsApp.ID, DimensionsApp.CODEC,
-            PackageManagerApp.ID, PackageManagerApp.CODEC
+            PackageManagerApp.ID, PackageManagerApp.CODEC,
+            WaypointsApp.ID, WaypointsApp.CODEC
     );
     Map<Identifier, Supplier<? extends ScreenApp>> CONSTRUCTORS = Map.of(
             SnakeApp.ID, SnakeApp::new,
@@ -29,7 +30,8 @@ public interface ScreenApp {
             StatusApp.ID, StatusApp::new,
             HistoryApp.ID, HistoryApp::new,
             DimensionsApp.ID, DimensionsApp::new,
-            PackageManagerApp.ID, PackageManagerApp::new
+            PackageManagerApp.ID, PackageManagerApp::new,
+            WaypointsApp.ID, WaypointsApp::new
     );
     Codec<ScreenApp> CODEC = Identifier.CODEC.dispatch(ScreenApp::id, ALL::get);
 

@@ -97,7 +97,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                 }));
             }
 
-            var isDisabled = getTardis(world).map(t -> t.getState() instanceof DisabledState).orElse(true);
+            var isDisabled = getTardis(world).map(t -> !t.getState().isPowered(t)).orElse(true);
             var nearbyPlayers = isDisabled ? List.of() : serverWorld.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
 
             if (addedPlayers.isEmpty() && nearbyPlayers.isEmpty() && threadFuture != null) {
@@ -137,7 +137,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     }
 
     private void refreshPlayers(ServerWorld world) {
-        var isDisabled = getTardis(world).map(t -> t.getState() instanceof DisabledState).orElse(true);
+        var isDisabled = getTardis(world).map(t -> !t.getState().isPowered(t)).orElse(true);
         List<ServerPlayerEntity> nearbyPlayers = isDisabled ? List.of() : world.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
 
         addedPlayers.removeIf(player -> {

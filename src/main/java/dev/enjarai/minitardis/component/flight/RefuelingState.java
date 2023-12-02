@@ -27,7 +27,7 @@ public class RefuelingState implements FlightState {
             tardis.setStability(stability + 1);
         }
 
-        if (refuelingCounter > 10) {
+        if (refuelingCounter > 20) {
             refuelingCounter = 0;
 
             if (!tardis.addOrDrainFuel(1)) {

@@ -5,7 +5,10 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.component.flight.*;
+import dev.enjarai.minitardis.component.screen.app.GpsApp;
+import dev.enjarai.minitardis.component.screen.app.PackageManagerApp;
 import dev.enjarai.minitardis.component.screen.app.ScreenApp;
+import dev.enjarai.minitardis.component.screen.app.StatusApp;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
@@ -47,7 +50,7 @@ public class TardisControl {
     }
 
     public TardisControl() {
-        this(1, List.of(), false, false);
+        this(1, List.of(new PackageManagerApp(), new StatusApp(), new GpsApp()), false, false);
     }
 
 
@@ -162,7 +165,7 @@ public class TardisControl {
     }
 
     public boolean toggleDisabledState() {
-        return tardis.suggestStateTransition(tardis.getState() instanceof DisabledState ? new LandedState() : new DisabledState());
+        return tardis.suggestStateTransition(tardis.getState() instanceof DisabledState ? new BootingUpState() : new DisabledState());
     }
 
 

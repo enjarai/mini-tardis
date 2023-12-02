@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "mini_tardis:interior_door",
+    "mini_tardis:reset_destination_button",
+    "mini_tardis:nudge_destination_button_1",
+    "mini_tardis:nudge_destination_button_2",
+    "mini_tardis:vertical_nudge_destination_button",
+    "mini_tardis:fuel_control"
+  ]
+}

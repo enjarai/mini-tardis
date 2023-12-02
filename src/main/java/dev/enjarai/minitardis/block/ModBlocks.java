@@ -91,17 +91,17 @@ public class ModBlocks {
                     TardisControl::nudgeDestination));
     public static final ConsoleRepeaterBlock COORDINATE_SCALE_SELECTOR =
             register("coordinate_scale_selector", new ConsoleRepeaterBlock(FabricBlockSettings.create()
-                    .strength(0.5F)
+                    .breakInstantly()
                     .pistonBehavior(PistonBehavior.DESTROY),
                     (controls, value) -> controls.updateCoordinateScale((int) Math.pow(10, value) / 10)));
     public static final ConsoleRepeaterBlock ROTATION_SELECTOR =
             register("rotation_selector", new ConsoleRepeaterBlock(FabricBlockSettings.create()
-                    .strength(0.5F)
+                    .breakInstantly()
                     .pistonBehavior(PistonBehavior.DESTROY),
                     (controls, value) -> controls.rotateDestination(Direction.fromHorizontal(value))));
     public static final ConsoleComparatorBlock STATE_COMPARATOR =
             register("state_comparator", new ConsoleComparatorBlock(FabricBlockSettings.create()
-                    .strength(0.5F)
+                    .breakInstantly()
                     .pistonBehavior(PistonBehavior.DESTROY),
                     (controls, value) -> true));
     public static final ConsoleComparatorDependentBlock VERTICAL_NUDGE_DESTINATION_BUTTON =
@@ -135,7 +135,10 @@ public class ModBlocks {
 //            register("interior_vent", new InteriorVentBlock(FabricBlockSettings.create()
 //                    .nonOpaque()));
     public static final ConsoleCircuitryBlock POWER_COUPLING =
-            register("power_coupling", new ConsoleCircuitryBlock(FabricBlockSettings.create(), TardisControl::toggleDisabledState));
+            register("power_coupling", new ConsoleCircuitryBlock(FabricBlockSettings.create()
+                    .requiresTool()
+                    .strength(3.0F, 6.0F),
+                    TardisControl::toggleDisabledState));
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);

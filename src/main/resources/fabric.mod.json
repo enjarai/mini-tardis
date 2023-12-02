@@ -19,7 +19,7 @@
 			"dev.enjarai.minitardis.MiniTardis"
 		],
 		"fabric-datagen": [
-			"dev.enjarai.minitardis.MiniTardisDataGenerator"
+          "dev.enjarai.minitardis.datagen.MiniTardisDataGenerator"
 		],
 		"cardinal-components": [
 			"dev.enjarai.minitardis.component.ModComponents"

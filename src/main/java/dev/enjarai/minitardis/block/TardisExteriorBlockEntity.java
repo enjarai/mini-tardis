@@ -46,8 +46,10 @@ public class TardisExteriorBlockEntity extends BlockEntity {
 
     public void linkTardis(Tardis tardis) {
         this.tardis = tardis;
+        this.tardisUuid = tardis.uuid();
     }
 
+    @Nullable
     public Tardis getLinkedTardis() {
         return tardis;
     }

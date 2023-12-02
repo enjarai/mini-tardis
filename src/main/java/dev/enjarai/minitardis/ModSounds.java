@@ -12,6 +12,8 @@ public class ModSounds {
     public static SoundEvent CORAL_HUM = createSound("coral_hum");
     public static SoundEvent BAD_APPLE = createSound("bad_apple");
     public static SoundEvent SNAKE_MOVE = createSound("move_snake");
+    public static SoundEvent EAT_APPLE = createSound("eat_apple");
+    public static SoundEvent DIE_SNAKE = createSound("die_snake");
 
     private static SoundEvent createSound(String path) {
         return SoundEvent.of(MiniTardis.id(path));

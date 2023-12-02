@@ -30,8 +30,6 @@ public class BadAppleApp implements ScreenApp {
             public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var frame = MathHelper.clamp(badAppleFrameCounter, 0, BadApple.getFrameCount());
 
-                //System.out.println(badAppleFrameCounter);
-                //System.out.println(BadApple.getFrameCount());
                 for (int x = 0; x < BadApple.width; x++) {
                     for (int y = 0; y < BadApple.height; y++) {
                         var color = getCanvasColor(frame, x, y);
@@ -74,7 +72,7 @@ public class BadAppleApp implements ScreenApp {
         };
     }
 
-    private static CanvasColor getCanvasColor(int frame, int x, int y) {
+    public static CanvasColor getCanvasColor(int frame, int x, int y) {
         var pixel = BadApple.getPixel(frame, x, y);
         return switch (pixel) {
             case 0 -> CanvasColor.BLACK_LOWEST;

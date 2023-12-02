@@ -19,6 +19,7 @@ public class ModCanvasUtils {
     public static final CanvasImage GPS_BACKGROUND = loadImage("gps_background.png");
     public static final CanvasImage HISTORY_BACKGROUND = loadImage("history_background.png");
     public static final CanvasImage DIMENSIONS_BACKGROUND = loadImage("dimensions_background.png");
+    public static final CanvasImage SNAKE_OVERLAY = loadImage("snake_overlay.png");
     public static final CanvasImage PACKAGE_MANAGER_BACKGROUND = loadImage("package_manager_background.png");
     public static final CanvasImage SCREEN_SIDE_BUTTON = loadImage("screen_side_button.png");
     public static final CanvasImage SCREEN_SIDE_BUTTON_PRESSED = loadImage("screen_side_button_pressed.png");
@@ -47,6 +48,7 @@ public class ModCanvasUtils {
     public static final CanvasImage BAD_APPLE_APP = loadImage("app/bad_apple.png");
     public static final CanvasImage STATUS_APP = loadImage("app/status.png");
     public static final CanvasImage SNAKE_APP = loadImage("app/snake.png");
+    public static final CanvasImage BAD_SNAKE_APP = loadImage("app/bad_snake.png");
     public static final CanvasImage HISTORY_APP = loadImage("app/history.png");
     public static final CanvasImage DIMENSIONS_APP = loadImage("app/dimensions.png");
     public static final CanvasImage PACKAGE_MANAGER_APP = loadImage("app/package_manager.png");

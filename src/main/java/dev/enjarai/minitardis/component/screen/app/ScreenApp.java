@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 public interface ScreenApp {
     Map<Identifier, Codec<? extends ScreenApp>> ALL = Map.of(
             SnakeApp.ID, SnakeApp.CODEC,
+            SnakeOnBadAppleApp.ID, SnakeOnBadAppleApp.CODEC,
             ScannerApp.ID, ScannerApp.CODEC,
             GpsApp.ID, GpsApp.CODEC,
             BadAppleApp.ID, BadAppleApp.CODEC,
@@ -24,6 +25,7 @@ public interface ScreenApp {
     );
     Map<Identifier, Supplier<? extends ScreenApp>> CONSTRUCTORS = Map.of(
             SnakeApp.ID, SnakeApp::new,
+            SnakeOnBadAppleApp.ID, SnakeOnBadAppleApp::new,
             ScannerApp.ID, ScannerApp::new,
             GpsApp.ID, GpsApp::new,
             BadAppleApp.ID, BadAppleApp::new,

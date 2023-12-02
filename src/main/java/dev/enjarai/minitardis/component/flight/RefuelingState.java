@@ -30,7 +30,7 @@ public class RefuelingState implements FlightState {
         if (refuelingCounter > 20) {
             refuelingCounter = 0;
 
-            if (!tardis.addOrDrainFuel(1)) {
+            if (!tardis.addOrDrainFuel(100)) {
                 return new LandedState(); // TODO sound
             }
         }

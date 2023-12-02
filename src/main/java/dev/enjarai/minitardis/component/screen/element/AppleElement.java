@@ -1,5 +1,6 @@
 package dev.enjarai.minitardis.component.screen.element;
 
+import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
@@ -7,7 +8,11 @@ import dev.enjarai.minitardis.component.screen.app.SnakeApp;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ClickType;
+import org.joml.Vector2i;
+
+import java.util.ArrayList;
 
 public class AppleElement extends PlacedElement {
     private final SnakeApp.SnakeAppView snakeAppView;
@@ -27,27 +32,43 @@ public class AppleElement extends PlacedElement {
         return false;
     }
 
+    private final ArrayList<Vector2i> freePoses = new ArrayList<>((19 * 30) - 2);
+
     @Override
     public void tick(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
         if(this.snakeAppView.snake.getRelativeX() == this.getRelativeX() && this.snakeAppView.snake.getRelativeY() == this.getRelativeY()) {
-            this.snakeAppView.snake.ateApple();
-            this.move(0, 4);
-            if(!isInBounds(getRelativeX(), getRelativeY())) {
-                this.x = 2;
-                this.y = 18;
+            this.snakeAppView.ateApple(blockEntity);
+
+            for (int x = 0; x < 30; x++) {
+                for (int y = 0; y < 19; y++) {
+                    if(x == this.x && y == this.y) continue;
+                    if(this.snakeAppView.snake.doesCollide(x, y)) continue;
+                    freePoses.add(new Vector2i(x, y));
+                }
+            }
+            if(freePoses.isEmpty()) {
+                this.snakeAppView.won(blockEntity);
+            }
+            var pos = freePoses.get(this.snakeAppView.deterministicRandom.nextBetween(0, freePoses.size() - 1));
+            this.x = pos.x * 4 + 2;
+            this.y = pos.y * 4 + 18;
+
+            if(!isInBounds()) {
+                this.x = 6;
+                this.y = 22;
             }
         }
     }
 
-    public static boolean isInBounds(int relativeX, int relativeY) {
-        return relativeX >= 0 && relativeX <= 120 && relativeY >= 0 && relativeY <= 72;
+    public boolean isInBounds() {
+        int relativeX = this.getRelativeX();
+        int relativeY = this.getRelativeY();
+        return relativeX >= 0 && relativeX <= 122 && relativeY >= 0 && relativeY <= 72;
     }
 
     public void move(int x, int y) {
         this.x += x;
-        //this.width += snakeMove.x;
         this.y += y;
-        //this.height += snakeMove.y;
     }
 
     public int getRelativeX() {

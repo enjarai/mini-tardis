@@ -17,10 +17,10 @@ import static java.lang.Math.*;
 public class SnakeElement extends PlacedElement {
     private final SnakeApp.SnakeAppView snakeAppView;
     int tickCount;
-    int tailLength;
+    public int tailLength;
     public SnakeMove snakeMove = SnakeMove.RIGHT;
     @Nullable
-    private SnakeTailElement snakeTail = null;
+    public SnakeTailElement snakeTail = null;
 
     public SnakeElement(SnakeApp.SnakeAppView snakeAppView) {
         super(2, 18, 4, 4);
@@ -54,16 +54,22 @@ public class SnakeElement extends PlacedElement {
     public void tick(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
         tickCount++;
         if (tickCount % getGameSpeed() == 0) {
+            this.snakeAppView.deterministicRandom.skip(this.snakeMove.ordinal());
             this.move(this.snakeMove);
+            System.out.println(this.x);
             if(snakeTail != null && snakeTail.doesCollide(this.x, this.y)) {
-                this.killedByTail();
+                this.killedByTail(blockEntity);
                 return;
             }
             if(!isInBounds(getRelativeX(), getRelativeY())) {
-                this.killedByWall();
+                this.killedByWall(blockEntity);
                 return;
             }
         }
+    }
+
+    public boolean doesCollide(int x, int y) {
+        return x == this.x && y == this.y || (snakeTail != null && snakeTail.doesCollide(x, y));
     }
 
     public int getGameSpeed() {
@@ -100,12 +106,12 @@ public class SnakeElement extends PlacedElement {
         this.tailLength++;
     }
 
-    public void killedByWall() {
-        this.snakeAppView.snakeDied();
+    public void killedByWall(ConsoleScreenBlockEntity blockEntity) {
+        this.snakeAppView.snakeDied(blockEntity);
     }
 
-    public void killedByTail() {
-        this.snakeAppView.snakeDied();
+    public void killedByTail(ConsoleScreenBlockEntity blockEntity) {
+        this.snakeAppView.snakeDied(blockEntity);
     }
 
     public enum SnakeMove {

@@ -20,7 +20,8 @@ public interface ScreenApp {
             HistoryApp.ID, HistoryApp.CODEC,
             DimensionsApp.ID, DimensionsApp.CODEC,
             PackageManagerApp.ID, PackageManagerApp.CODEC,
-            WaypointsApp.ID, WaypointsApp.CODEC
+            WaypointsApp.ID, WaypointsApp.CODEC,
+            DummyApp.ID, DummyApp.CODEC
     );
     Map<Identifier, Supplier<? extends ScreenApp>> CONSTRUCTORS = Map.of(
             SnakeApp.ID, SnakeApp::new,
@@ -31,9 +32,10 @@ public interface ScreenApp {
             HistoryApp.ID, HistoryApp::new,
             DimensionsApp.ID, DimensionsApp::new,
             PackageManagerApp.ID, PackageManagerApp::new,
-            WaypointsApp.ID, WaypointsApp::new
+            WaypointsApp.ID, WaypointsApp::new,
+            DummyApp.ID, DummyApp::new
     );
-    Codec<ScreenApp> CODEC = Identifier.CODEC.dispatch(ScreenApp::id, ALL::get);
+    Codec<ScreenApp> CODEC = Identifier.CODEC.dispatch(ScreenApp::id, key -> ALL.getOrDefault(key, DummyApp.CODEC));
 
     AppView getView(TardisControl controls);
 

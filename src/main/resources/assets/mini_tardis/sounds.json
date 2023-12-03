@@ -50,5 +50,29 @@
         "stream": true
       }
     ]
+  },
+  "move_snake": {
+    "subtitle": "sound.mini_tardis.move_snake",
+    "sounds": [
+      {
+        "name": "mini_tardis:move_snake"
+      }
+    ]
+  },
+  "eat_apple": {
+    "subtitle": "sound.mini_tardis.eat_apple",
+    "sounds": [
+      {
+        "name": "mini_tardis:eat_apple"
+      }
+    ]
+  },
+  "die_snake": {
+    "subtitle": "sound.mini_tardis.die_snake",
+    "sounds": [
+      {
+        "name": "mini_tardis:die_snake"
+      }
+    ]
   }
 }

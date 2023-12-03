@@ -23,58 +23,10 @@ public class BadAppleApp implements ScreenApp {
 
     @Override
     public AppView getView(TardisControl controls) {
-        return new AppView() {
-            int badAppleFrameCounter;
-
-            @Override
-            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                var frame = MathHelper.clamp(badAppleFrameCounter, 0, BadApple.getFrameCount());
-
-                //System.out.println(badAppleFrameCounter);
-                //System.out.println(BadApple.getFrameCount());
-                for (int x = 0; x < BadApple.width; x++) {
-                    for (int y = 0; y < BadApple.height; y++) {
-                        var color = getCanvasColor(frame, x, y);
-                        canvas.set((int) (x * BadApple.width / 128.0f), (int) (y * BadApple.height / 96.0f), color);
-                    }
-                }
-
-                badAppleFrameCounter++;
-
-                if (badAppleFrameCounter >= BadApple.getFrameCount()) {
-                    blockEntity.closeApp();
-                }
-            }
-
-            @Override
-            public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
-                badAppleFrameCounter = -5; // temporary fix for apple grab beat drop sync, we go out of sync as song goes on though, gotta fix that
-                var pos = blockEntity.getPos();
-                //noinspection DataFlowIssue
-                blockEntity.getWorld().playSound(null, pos, ModSounds.BAD_APPLE, SoundCategory.RECORDS, 1, 1);
-            }
-
-            @Override
-            public void screenClose(ConsoleScreenBlockEntity blockEntity) {
-                badAppleFrameCounter = 0;
-                StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(ModSounds.BAD_APPLE.getId(), SoundCategory.RECORDS);
-
-                //noinspection DataFlowIssue
-                for (var player : blockEntity.getWorld().getPlayers()) {
-                    if (player instanceof ServerPlayerEntity serverPlayer) {
-                        serverPlayer.networkHandler.sendPacket(stopSoundS2CPacket);
-                    }
-                }
-            }
-
-            @Override
-            public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
-                return false;
-            }
-        };
+        return new BadAppleView();
     }
 
-    private static CanvasColor getCanvasColor(int frame, int x, int y) {
+    public static CanvasColor getCanvasColor(int frame, int x, int y) {
         var pixel = BadApple.getPixel(frame, x, y);
         return switch (pixel) {
             case 0 -> CanvasColor.BLACK_LOWEST;
@@ -97,4 +49,56 @@ public class BadAppleApp implements ScreenApp {
     public Identifier id() {
         return ID;
     }
+
+    public static class BadAppleView implements AppView {
+        int badAppleFrameCounter;
+
+        @Override
+        public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            var frame = MathHelper.clamp(badAppleFrameCounter, 0, BadApple.getFrameCount());
+
+            for (int x = 0; x < BadApple.width; x++) {
+                for (int y = 0; y < BadApple.height; y++) {
+                    var color = getCanvasColor(frame, x, y);
+                    canvas.set((int) (x * BadApple.width / 128.0f), (int) (y * BadApple.height / 96.0f), color);
+                }
+            }
+
+            badAppleFrameCounter++;
+
+            if (badAppleFrameCounter >= BadApple.getFrameCount()) {
+                this.endAnimation(blockEntity);
+            }
+        }
+
+        @Override
+        public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
+            badAppleFrameCounter = -5; // temporary fix for apple grab beat drop sync, we go out of sync as song goes on though, gotta fix that
+            var pos = blockEntity.getPos();
+            //noinspection DataFlowIssue
+            blockEntity.getWorld().playSound(null, pos, ModSounds.BAD_APPLE, SoundCategory.RECORDS, 1, 1);
+        }
+
+        @Override
+        public void screenClose(ConsoleScreenBlockEntity blockEntity) {
+            badAppleFrameCounter = 0;
+            StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(ModSounds.BAD_APPLE.getId(), SoundCategory.RECORDS);
+
+            //noinspection DataFlowIssue
+            for (var player : blockEntity.getWorld().getPlayers()) {
+                if (player instanceof ServerPlayerEntity serverPlayer) {
+                    serverPlayer.networkHandler.sendPacket(stopSoundS2CPacket);
+                }
+            }
+        }
+
+        public void endAnimation(ConsoleScreenBlockEntity blockEntity) {
+            blockEntity.closeApp();
+        }
+
+        @Override
+        public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+            return false;
+        }
+    };
 }

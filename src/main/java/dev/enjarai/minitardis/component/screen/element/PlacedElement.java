@@ -25,6 +25,11 @@ public abstract class PlacedElement implements AppElement {
         drawElement(controls, blockEntity, new SubView(canvas, x, y, width, height));
     }
 
+    @Override
+    public void tick(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+
+    }
+
     protected abstract void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas);
 
     @Override

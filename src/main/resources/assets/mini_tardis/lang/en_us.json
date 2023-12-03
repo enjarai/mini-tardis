@@ -4,5 +4,8 @@
   "sound.mini_tardis.tardis_takeoff": "Tardis Taking Off",
   "sound.mini_tardis.tardis_fly_loop": "Tardis Flying",
   "sound.mini_tardis.coral_hum": "Tardis Breathes",
-  "sound.mini_tardis.bad_apple": "Bad Apple Playing"
+  "sound.mini_tardis.bad_apple": "Bad Apple Playing",
+  "sound.mini_tardis.move_sneak": "Snake Moving",
+  "sound.mini_tardis.eat_apple": "Snake eating Apple",
+  "sound.mini_tardis.die_snake": "Snake Dying"
 }

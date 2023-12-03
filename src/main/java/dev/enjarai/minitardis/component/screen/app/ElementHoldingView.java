@@ -34,6 +34,11 @@ public class ElementHoldingView implements AppView {
     }
 
     @Override
+    public void screenTick(ConsoleScreenBlockEntity blockEntity) {
+        children.forEach(appElement -> appElement.tick(controls, blockEntity));
+    }
+
+    @Override
     public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
         for (var element : children()) {
             if (element.onClick(controls, blockEntity, player, type, x, y)) {

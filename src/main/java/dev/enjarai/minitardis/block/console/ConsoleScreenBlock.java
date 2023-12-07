@@ -1,5 +1,6 @@
 package dev.enjarai.minitardis.block.console;
 
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.item.FloppyItem;
@@ -39,12 +40,18 @@ import org.joml.Vector3f;
 
 @SuppressWarnings("deprecation")
 public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock, TardisAware, BlockWithElementHolder, ConsoleInput {
+    public static final MapCodec<ConsoleScreenBlock> CODEC = createCodec(ConsoleScreenBlock::new);
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
     public static final BooleanProperty HAS_FLOPPY = BooleanProperty.of("has_floppy");
 
     public ConsoleScreenBlock(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(HAS_FLOPPY, false));
+    }
+
+    @Override
+    protected MapCodec<? extends BlockWithEntity> getCodec() {
+        return CODEC;
     }
 
     @Override
@@ -162,7 +169,7 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
 
     @Override
     public Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
-        return PolymerResourcePackUtils.hasPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.COAL_BLOCK;
+        return PolymerResourcePackUtils.hasMainPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.COAL_BLOCK;
     }
 
     @Override

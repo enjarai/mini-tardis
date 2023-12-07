@@ -19,8 +19,8 @@ public class ConsoleButtonBlock extends ButtonBlock implements PolymerBlock, Tar
     private final Block polymerBlock;
     private final BiFunction<TardisControl, Direction, Boolean> controlInput;
 
-    public ConsoleButtonBlock(Settings settings, BlockSetType buttonType, Block polymerBlock, boolean wooden, BiFunction<TardisControl, Direction, Boolean> controlInput) {
-        super(settings, buttonType, 2, wooden);
+    public ConsoleButtonBlock(Settings settings, BlockSetType buttonType, Block polymerBlock, BiFunction<TardisControl, Direction, Boolean> controlInput) {
+        super(buttonType, 2, settings);
         this.polymerBlock = polymerBlock;
         this.controlInput = controlInput;
     }

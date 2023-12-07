@@ -50,6 +50,6 @@ public class TardisExteriorExtensionBlock extends Block implements PolymerBlock 
 
     @Override
     public Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
-        return PolymerResourcePackUtils.hasPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.LAPIS_BLOCK;
+        return PolymerResourcePackUtils.hasMainPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.LAPIS_BLOCK;
     }
 }

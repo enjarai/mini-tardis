@@ -72,7 +72,8 @@ dependencies {
 	modImplementation include("eu.pb4:polymer-virtual-entity:${property('deps.polymer')}")
 	modImplementation include("eu.pb4:polymer-resource-pack:${property('deps.polymer')}")
 	modRuntimeOnly("eu.pb4:polymer-autohost:${property('deps.polymer')}")
-	include(implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${property('deps.mixin_extras')}")))
+	//Included in FLoader 0.15.0
+	//include(implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${property('deps.mixin_extras')}")))
 	modImplementation include("xyz.nucleoid:server-translations-api:${property('deps.server_translations_api')}")
 	include(modImplementation("me.lucko:fabric-permissions-api:${property('deps.permissions_api')}"))
 	modImplementation include("xyz.nucleoid:fantasy:${property('deps.fantasy')}")

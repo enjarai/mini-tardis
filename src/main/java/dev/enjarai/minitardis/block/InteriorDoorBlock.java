@@ -1,5 +1,6 @@
 package dev.enjarai.minitardis.block;
 
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.item.PolymerModels;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
@@ -33,11 +34,17 @@ import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
 public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, TardisAware, BlockWithElementHolder {
+    public static final MapCodec<InteriorDoorBlock> CODEC = createCodec(InteriorDoorBlock::new);
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
 
     protected InteriorDoorBlock(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(HALF, DoubleBlockHalf.LOWER));
+    }
+
+    @Override
+    protected MapCodec<? extends FacingBlock> getCodec() {
+        return CODEC;
     }
 
     @Nullable
@@ -99,7 +106,7 @@ public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, Tard
 
     @Override
     public Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
-        return PolymerResourcePackUtils.hasPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.QUARTZ_BLOCK;
+        return PolymerResourcePackUtils.hasMainPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.QUARTZ_BLOCK;
     }
 
     @Override

@@ -28,6 +28,20 @@ repositories {
 
 	// CCA
 	maven { url 'https://maven.ladysnake.org/releases' }
+
+	repositories {
+		exclusiveContent {
+			forRepository {
+				maven {
+					name = "Modrinth"
+					url = "https://api.modrinth.com/maven"
+				}
+			}
+			filter {
+				includeGroup "maven.modrinth"
+			}
+		}
+	}
 }
 
 loom {
@@ -64,8 +78,11 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}")
-	modImplementation include("dev.onyxstudios.cardinal-components-api:cardinal-components-level:${project.cca_version}")
+	modImplementation files('libs/cardinal-components-base-5.4.0.jar')
+	modImplementation files('libs/cardinal-components-level-5.4.0.jar')
+	modImplementation files('libs/cardinal-components-world-5.4.0.jar')
+	//modImplementation include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}")
+	//modImplementation include("dev.onyxstudios.cardinal-components-api:cardinal-components-level:${project.cca_version}")
 	//include modImplementation("dev.onyxstudios.cardinal-components-api:cardinal-components-world:${project.cca_version}")
 
 	modImplementation include("eu.pb4:polymer-core:${property('deps.polymer')}")

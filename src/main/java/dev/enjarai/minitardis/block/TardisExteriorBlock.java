@@ -1,15 +1,13 @@
 package dev.enjarai.minitardis.block;
 
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.item.PolymerModels;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -29,11 +27,17 @@ import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
 public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock, BlockWithElementHolder {
+    public static final MapCodec<TardisExteriorBlock> CODEC = createCodec(TardisExteriorBlock::new);
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
     protected TardisExteriorBlock(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH));
+    }
+
+    @Override
+    protected MapCodec<? extends BlockWithEntity> getCodec() {
+        return CODEC;
     }
 
     @Override
@@ -54,7 +58,7 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
 
     @Override
     public Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
-        return PolymerResourcePackUtils.hasPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.LAPIS_BLOCK;
+        return PolymerResourcePackUtils.hasMainPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.LAPIS_BLOCK;
     }
 
     @Override

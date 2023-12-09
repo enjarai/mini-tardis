@@ -2,7 +2,7 @@ package dev.enjarai.minitardis.item;
 
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.ModBlocks;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
+import eu.pb4.polymer.api.block.PolymerBlock;
 import eu.pb4.polymer.core.api.item.PolymerBlockItem;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;

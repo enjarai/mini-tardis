@@ -8,7 +8,7 @@ import dev.enjarai.minitardis.component.flight.RefuelingState;
 import dev.enjarai.minitardis.item.PolymerModels;
 import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
 import eu.pb4.polymer.core.api.block.SimplePolymerBlock;
-import eu.pb4.polymer.resourcepack.api.PolymerModelData;
+import eu.pb4.polymer.api.PolymerModelData;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;

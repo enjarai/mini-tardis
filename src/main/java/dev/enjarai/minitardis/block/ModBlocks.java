@@ -160,7 +160,7 @@ public class ModBlocks {
     static {
         var builder = ImmutableMap.<Block, Optional<PolymerModelData>>builder();
         builder.put(TARDIS_PLATING, Optional.empty());
-        builder.put(INTERIOR_DOOR, Optional.empty());
+        builder.put(INTERIOR_DOOR, Optional.of(PolymerModels.INTERIOR_DOOR_ITEM));
         builder.put(HANDBRAKE, Optional.empty());
         builder.put(CONSOLE_SCREEN, Optional.of(PolymerModels.ROTATING_MONITOR_PACKED));
         builder.put(RESET_DESTINATION_BUTTON, Optional.empty());

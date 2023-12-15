@@ -94,9 +94,9 @@ public class Tardis {
         this.controls.tardis = this;
     }
 
-    public Tardis(TardisHolder holder, @Nullable TardisLocation location) {
+    public Tardis(TardisHolder holder, @Nullable TardisLocation location, Identifier interior) {
         this(
-                UUID.randomUUID(), false, DEFAULT_INTERIOR,
+                UUID.randomUUID(), false, interior,
                 location == null ?
                         Either.right(new PartialTardisLocation(holder.getServer().getOverworld().getRegistryKey())) :
                         Either.left(location),
@@ -111,6 +111,24 @@ public class Tardis {
 
         buildExterior();
         getInteriorWorld();
+    }
+
+    public Tardis(TardisHolder holder, TardisLocation destination) {
+        this(
+                UUID.randomUUID(), false, DEFAULT_INTERIOR,
+                Either.right(new PartialTardisLocation(destination.worldKey())),
+                Optional.of(destination), BlockPos.ORIGIN, new TardisControl(),
+                new FlyingState(),
+                842, 567, List.of()
+        );
+
+        holder.addTardis(this);
+
+        state.init(this);
+
+        getInteriorWorld();
+
+        controls.setEnergyConduits(true);
     }
 
 

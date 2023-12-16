@@ -32,7 +32,7 @@ public class MakeshiftEngineBlock extends BlockWithEntity implements PolymerBloc
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return validateTicker(type, ModBlocks.MAKESHIFT_ENGINE_ENTITY, (world1, pos, state1, blockEntity) -> {
+        return checkType(type, ModBlocks.MAKESHIFT_ENGINE_ENTITY, (world1, pos, state1, blockEntity) -> {
             if (world1 instanceof ServerWorld serverWorld) {
                 blockEntity.tick(serverWorld, pos, state1);
             }

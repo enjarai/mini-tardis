@@ -17,6 +17,7 @@
   "block.mini_tardis.refuel_toggle": "Artron Scoop Activator",
   "block.mini_tardis.interior_light": "Interior Light",
   "block.mini_tardis.power_coupling": "Power Coupling",
+  "block.mini_tardis.makeshift_engine": "Makeshift Tardis Engine",
 
   "item.mini_tardis.fez": "Fez",
   "item.mini_tardis.floppy": "Floppy",
@@ -46,5 +47,5 @@
   "dimension.minecraft.the_nether": "The Nether",
   "dimension.minecraft.the_end": "The End",
 
-  "mini_tardis.item_group": "Mini Tardis Items"
+  "mini_tardis.item_group": "Mini Tardis"
 }

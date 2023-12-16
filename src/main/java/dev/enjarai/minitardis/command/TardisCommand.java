@@ -63,7 +63,7 @@ public class TardisCommand {
         var worldKey = context.getSource().getWorld().getRegistryKey();
         var location = new TardisLocation(worldKey, pos, Direction.NORTH);
 
-        new Tardis(holder, location);
+        new Tardis(holder, location, Tardis.DEFAULT_INTERIOR);
 
         return 1;
     }

@@ -10,6 +10,7 @@ public class PolymerModels {
     public static final PolymerModelData TARDIS = get("item/tardis");
     public static final PolymerModelData[] TARDIS_ALPHA = new PolymerModelData[16];
     public static final PolymerModelData INTERIOR_DOOR = get("item/interior_door");
+    public static final PolymerModelData INTERIOR_DOOR_ITEM = get("item/interior_door_item");
     public static final PolymerModelData ROTATING_MONITOR = get("item/rotating_monitor");
     public static final PolymerModelData ROTATING_MONITOR_PACKED = get("item/rotating_monitor_packed");
 

@@ -23,6 +23,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.poi.PointOfInterestType;
 
@@ -51,7 +52,12 @@ public class ModBlocks {
             register("tardis_plating", new SimplePolymerBlock(FabricBlockSettings.create()
                     .mapColor(MapColor.BLACK)
                     .requiresTool()
-                    .strength(3.0F, 6.0F), Blocks.DEAD_BRAIN_CORAL_BLOCK));
+                    .strength(3.0F, 6.0F), Blocks.DEAD_BRAIN_CORAL_BLOCK) {
+                @Override
+                public boolean canSynchronizeToPolymerClient(ServerPlayerEntity player) {
+                    return false;
+                }
+            });
     public static final InteriorDoorBlock INTERIOR_DOOR =
             register("interior_door", new InteriorDoorBlock(FabricBlockSettings.create()
                     .strength(3.0F)

@@ -43,9 +43,14 @@ public class DriftingState implements FlightState {
                     SoundCategory.BLOCKS, 0.6f, 1);
         }
 
-        tickScreenShake(tardis, 2);
+//        tickScreenShake(tardis, 2);
 
         if (tardis.getStability() <= 0) {
+            if (tardis.getControls().isDestinationLocked()) {
+                tardis.getDestination().ifPresent(destination -> {
+                    tardis.setCurrentLocation(new PartialTardisLocation(destination.worldKey()));
+                });
+            }
             return new SearchingForLandingState(true);
         }
 

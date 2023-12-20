@@ -12,6 +12,7 @@ import dev.enjarai.minitardis.component.screen.app.StatusApp;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,6 +93,13 @@ public class TardisControl {
     private TardisLocation snapLocationVertically(TardisLocation location, Direction direction) {
         var world = tardis.getDestinationWorld();
         if (world.isPresent()) {
+            if (!world.get().isInBuildLimit(location.pos())) {
+                location = location.with(location.pos().withY(MathHelper.clamp(
+                        location.pos().getY(),
+                        world.get().getBottomY(),
+                        world.get().getTopY()
+                )));
+            }
             for (var pos = location.pos().offset(direction); world.get().isInBuildLimit(pos); pos = pos.offset(direction)) {
                 var checkLocation = location.with(pos);
                 if (tardis.canSnapDestinationTo(checkLocation)) {

@@ -5,7 +5,9 @@ import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
+import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
+import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
@@ -16,6 +18,8 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
@@ -104,6 +108,35 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
         doorElement.setItem(PolymerModels.getStack(PolymerModels.EXTERIOR_DOOR_OPEN));
         doorElement.setOffset(new Vec3d(0, 1, 0).offset(facing, 1));
         doorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
+
+        var doorCloseInteractionHandler = new VirtualElement.InteractionHandler() {
+            @Override
+            public void interact(ServerPlayerEntity player, Hand hand) {
+                if (world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity && blockEntity.getLinkedTardis() != null) {
+                    var tardis = blockEntity.getLinkedTardis();
+                    world.playSound(null, pos, SoundEvents.BLOCK_BAMBOO_WOOD_DOOR_CLOSE, SoundCategory.BLOCKS);
+                    tardis.getExteriorWorld().ifPresent(world ->
+                            world.playSound(null, tardis.getCurrentLandedLocation().get().pos(),
+                                    SoundEvents.BLOCK_BAMBOO_WOOD_DOOR_CLOSE, SoundCategory.BLOCKS));
+                    tardis.setDoorOpen(false, false);
+                }
+            }
+        };
+
+        var leftDoorInteraction = new InteractionElement();
+        leftDoorInteraction.setHandler(doorCloseInteractionHandler);
+        leftDoorInteraction.setOffset(new Vec3d(0, 1.0 / 16.0 * -7, 0)
+                .offset(facing, 0.5)
+                .offset(facing.rotateYCounterclockwise(), 1.0 / 16.0 * 8.0));
+        leftDoorInteraction.setSize(0.25f, 2);
+
+        var rightDoorInteraction = new InteractionElement();
+        rightDoorInteraction.setHandler(doorCloseInteractionHandler);
+        rightDoorInteraction.setOffset(new Vec3d(0, 1.0 / 16.0 * -7, 0)
+                .offset(facing, 0.5)
+                .offset(facing.rotateYClockwise(), 1.0 / 16.0 * 8.0));
+        rightDoorInteraction.setSize(0.25f, 2);
+
         return new ElementHolder() {
             byte currentAlpha = 0;
             boolean currentlyOpen;
@@ -134,8 +167,12 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
                     if (open != currentlyOpen) {
                         if (open) {
                             addElement(doorElement);
+                            addElement(leftDoorInteraction);
+                            addElement(rightDoorInteraction);
                         } else {
                             removeElement(doorElement);
+                            removeElement(leftDoorInteraction);
+                            removeElement(rightDoorInteraction);
                         }
                         currentlyOpen = open;
                     }

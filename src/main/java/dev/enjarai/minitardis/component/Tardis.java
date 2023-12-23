@@ -163,6 +163,10 @@ public class Tardis {
             sparksQueued++;
         }
 
+        if (!state.isSolid(this)) {
+            setDoorOpen(false, true);
+        }
+
         destinationScanner.tick();
     }
 
@@ -444,8 +448,13 @@ public class Tardis {
         return doorOpen;
     }
 
-    public void setDoorOpen(boolean open) {
+    public boolean setDoorOpen(boolean open, boolean force) {
+        if (!force && !state.isSolid(this)) {
+            return false;
+        }
+
         this.doorOpen = open;
+        return true;
     }
 
     public void createInteriorSparks(boolean damage) {

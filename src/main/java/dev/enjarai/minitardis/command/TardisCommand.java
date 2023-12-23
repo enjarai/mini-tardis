@@ -82,7 +82,7 @@ public class TardisCommand {
     }
 
     private static int toggleDoor(CommandContext<ServerCommandSource> context, UUID uuid) {
-        getHolder(context).getTardis(uuid).ifPresent(t -> t.setDoorOpen(!t.isDoorOpen()));
+        getHolder(context).getTardis(uuid).ifPresent(t -> t.setDoorOpen(!t.isDoorOpen(), false));
         return 1;
     }
 

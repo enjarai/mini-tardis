@@ -126,6 +126,9 @@ public class TardisControl {
         } else if (state && tardis.getState() instanceof DriftingState) {
             return tardis.suggestStateTransition(new FlyingState());
         }
+
+        if (tardis.isDoorOpen()) return false;
+
         return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState(false));
     }
 

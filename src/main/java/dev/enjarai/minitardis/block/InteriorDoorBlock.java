@@ -1,11 +1,14 @@
 package dev.enjarai.minitardis.block;
 
+import dev.enjarai.minitardis.component.flight.FlightState;
 import dev.enjarai.minitardis.item.PolymerModels;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
+import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
+import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
@@ -16,6 +19,8 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
@@ -122,6 +127,33 @@ public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, Tard
             doorElement.setOffset(new Vec3d(0, 1, 0).offset(facing, 1));
             doorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
 
+            var doorCloseInteractionHandler = new VirtualElement.InteractionHandler() {
+                @Override
+                public void interact(ServerPlayerEntity player, Hand hand) {
+                    getTardis(world).ifPresent(tardis -> {
+                        world.playSound(null, pos, SoundEvents.BLOCK_BAMBOO_WOOD_DOOR_CLOSE, SoundCategory.BLOCKS);
+                        tardis.getExteriorWorld().ifPresent(world ->
+                                world.playSound(null, tardis.getCurrentLandedLocation().get().pos(),
+                                        SoundEvents.BLOCK_BAMBOO_WOOD_DOOR_CLOSE, SoundCategory.BLOCKS));
+                        tardis.setDoorOpen(false, false);
+                    });
+                }
+            };
+
+            var leftDoorInteraction = new InteractionElement();
+            leftDoorInteraction.setHandler(doorCloseInteractionHandler);
+            leftDoorInteraction.setOffset(new Vec3d(0, 1.0 / 16.0 * -7, 0)
+                    .offset(facing, 1.0 / 16.0 * 14.0)
+                    .offset(facing.rotateYCounterclockwise(), 1.0 / 16.0 * 11.0));
+            leftDoorInteraction.setSize(0.5f, 2);
+
+            var rightDoorInteraction = new InteractionElement();
+            rightDoorInteraction.setHandler(doorCloseInteractionHandler);
+            rightDoorInteraction.setOffset(new Vec3d(0, 1.0 / 16.0 * -7, 0)
+                    .offset(facing, 1.0 / 16.0 * 14.0)
+                    .offset(facing.rotateYClockwise(), 1.0 / 16.0 * 11.0));
+            rightDoorInteraction.setSize(0.5f, 2);
+
             return new ElementHolder() {
                 boolean currentlyOpen;
 
@@ -136,8 +168,12 @@ public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, Tard
                         if (open != currentlyOpen) {
                             if (open) {
                                 addElement(doorElement);
+                                addElement(leftDoorInteraction);
+                                addElement(rightDoorInteraction);
                             } else {
                                 removeElement(doorElement);
+                                removeElement(leftDoorInteraction);
+                                removeElement(rightDoorInteraction);
                             }
                             currentlyOpen = open;
                         }

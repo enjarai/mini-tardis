@@ -57,7 +57,8 @@ public class Tardis {
             FlightState.CODEC.optionalFieldOf("flight_state", new LandedState()).forGetter(t -> t.state),
             Codec.INT.optionalFieldOf("stability", 1000).forGetter(t -> t.stability),
             Codec.INT.optionalFieldOf("fuel", 500).forGetter(t -> t.fuel),
-            HistoryEntry.CODEC.listOf().optionalFieldOf("history", List.of()).forGetter(t -> t.history)
+            HistoryEntry.CODEC.listOf().optionalFieldOf("history", List.of()).forGetter(t -> t.history),
+            Codec.BOOL.optionalFieldOf("door_open", false).forGetter(t -> t.doorOpen)
     ).apply(instance, Tardis::new));
 
     TardisHolder holder;
@@ -77,8 +78,9 @@ public class Tardis {
     private int stability;
     private int fuel;
     private final List<HistoryEntry> history;
+    private boolean doorOpen;
 
-    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Either<TardisLocation, PartialTardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability, int fuel, List<HistoryEntry> history) {
+    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Either<TardisLocation, PartialTardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability, int fuel, List<HistoryEntry> history, boolean doorOpen) {
         this.uuid = uuid;
         this.interiorPlaced = interiorPlaced;
         this.interior = interior;
@@ -90,6 +92,7 @@ public class Tardis {
         this.stability = stability;
         this.fuel = fuel;
         this.history = new ArrayList<>(history);
+        this.doorOpen = doorOpen;
 
         this.controls.tardis = this;
     }
@@ -102,7 +105,7 @@ public class Tardis {
                         Either.left(location),
                 Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(),
                 location == null ? new DisabledState() : new LandingState(location, true),
-                1000, 500, List.of()
+                1000, 500, List.of(), false
         );
 
         holder.addTardis(this);
@@ -119,7 +122,7 @@ public class Tardis {
                 Either.right(new PartialTardisLocation(destination.worldKey())),
                 Optional.of(destination), BlockPos.ORIGIN, new TardisControl(),
                 new FlyingState(),
-                842, 567, List.of()
+                842, 567, List.of(), false
         );
 
         holder.addTardis(this);
@@ -435,6 +438,14 @@ public class Tardis {
 
     public void addHistoryEntry(HistoryEntry entry) {
         history.add(0, entry);
+    }
+
+    public boolean isDoorOpen() {
+        return doorOpen;
+    }
+
+    public void setDoorOpen(boolean open) {
+        this.doorOpen = open;
     }
 
     public void createInteriorSparks(boolean damage) {

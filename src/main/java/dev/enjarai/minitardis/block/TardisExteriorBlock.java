@@ -27,6 +27,8 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 @SuppressWarnings("deprecation")
 public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock, BlockWithElementHolder {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
@@ -91,13 +93,20 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
 
     @Override
     public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
+        var facing = initialBlockState.get(FACING);
+
         var exteriorElement = new ItemDisplayElement();
         exteriorElement.setItem(PolymerModels.getStack(PolymerModels.TARDIS_ALPHA[0]));
         exteriorElement.setOffset(new Vec3d(0, 1, 0));
-        exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(initialBlockState.get(FACING).asRotation()));
+        exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
 
+        var doorElement = new ItemDisplayElement();
+        doorElement.setItem(PolymerModels.getStack(PolymerModels.EXTERIOR_DOOR_OPEN));
+        doorElement.setOffset(new Vec3d(0, 1, 0).offset(facing, 1));
+        doorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
         return new ElementHolder() {
             byte currentAlpha = 0;
+            boolean currentlyOpen;
 
             {
                 addElement(exteriorElement);
@@ -106,7 +115,11 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
             @Override
             protected void onTick() {
                 if (world.getTime() % 20 == 0) {
-                    exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(world.getBlockState(pos).get(FACING).asRotation()));
+                    var facing = world.getBlockState(pos).get(FACING);
+
+                    exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
+                    doorElement.setOffset(new Vec3d(0, 1, 0).offset(facing, 1));
+                    doorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
                 }
 
                 if (world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity && blockEntity.getLinkedTardis() != null) {
@@ -115,6 +128,16 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
                     if (alpha != currentAlpha) {
                         exteriorElement.setItem(PolymerModels.getStack(alpha < 0 ? PolymerModels.TARDIS : PolymerModels.TARDIS_ALPHA[alpha]));
                         currentAlpha = alpha;
+                    }
+
+                    var open = Objects.requireNonNull(blockEntity.getLinkedTardis()).isDoorOpen();
+                    if (open != currentlyOpen) {
+                        if (open) {
+                            addElement(doorElement);
+                        } else {
+                            removeElement(doorElement);
+                        }
+                        currentlyOpen = open;
                     }
                 }
             }

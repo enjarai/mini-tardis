@@ -22,15 +22,14 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 @SuppressWarnings("deprecation")
 public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, TardisAware, BlockWithElementHolder {
@@ -104,16 +103,47 @@ public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, Tard
     }
 
     @Override
+    public boolean tickElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
+        return initialBlockState.get(HALF) == DoubleBlockHalf.LOWER;
+    }
+
+    @Override
     public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
         if (initialBlockState.get(HALF) == DoubleBlockHalf.LOWER) {
+            var facing = initialBlockState.get(FACING);
+
             var exteriorElement = new ItemDisplayElement();
             exteriorElement.setItem(PolymerModels.getStack(PolymerModels.INTERIOR_DOOR));
             exteriorElement.setOffset(new Vec3d(0, 1, 0));
-            exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(initialBlockState.get(FACING).asRotation()));
+            exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
 
-            return new ElementHolder() {{
-                addElement(exteriorElement);
-            }};
+            var doorElement = new ItemDisplayElement();
+            doorElement.setItem(PolymerModels.getStack(PolymerModels.INTERIOR_DOOR_OPEN));
+            doorElement.setOffset(new Vec3d(0, 1, 0).offset(facing, 1));
+            doorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
+
+            return new ElementHolder() {
+                boolean currentlyOpen;
+
+                {
+                    addElement(exteriorElement);
+                }
+
+                @Override
+                protected void onTick() {
+                    getTardis(world).ifPresent(tardis -> {
+                        var open = tardis.isDoorOpen();
+                        if (open != currentlyOpen) {
+                            if (open) {
+                                addElement(doorElement);
+                            } else {
+                                removeElement(doorElement);
+                            }
+                            currentlyOpen = open;
+                        }
+                    });
+                }
+            };
         }
         return null;
     }

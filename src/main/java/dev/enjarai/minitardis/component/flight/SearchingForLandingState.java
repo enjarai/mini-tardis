@@ -4,11 +4,19 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
+import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.component.Tardis;
+import net.minecraft.block.Blocks;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkSectionPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.World;
 
 import java.util.Iterator;
 
@@ -19,8 +27,8 @@ public class SearchingForLandingState implements FlightState {
             Codec.BOOL.fieldOf("crashing").forGetter(s -> s.crashing)
     ).apply(instance, SearchingForLandingState::new));
     public static final Identifier ID = MiniTardis.id("searching_for_landing");
-    private static final int BLOCKS_PER_TICK = 64;
-    private static final int MAX_SEARCH_RANGE = 256;
+    private static final int BLOCKS_PER_TICK = 256;
+    private static final int MAX_SEARCH_RANGE = 32;
 
     int flyingTicks;
     private int searchingTicks;
@@ -65,14 +73,34 @@ public class SearchingForLandingState implements FlightState {
                     destination = destination.with(destination.pos().add(random.nextBetween(-1000, 1000), 0, random.nextBetween(-1000, 1000)));
                 }
 
+                var destinationWorld = destination.getWorld(tardis.getServer());
+                var minY = destinationWorld.getDimension().minY();
+                var maxY = minY + destinationWorld.getLogicalHeight();
+                var x = destination.pos().getX();
+                var z = destination.pos().getZ();
+                var heightMapPos = destinationWorld
+                        .getChunk(ChunkSectionPos.getSectionCoord(x), ChunkSectionPos.getSectionCoord(z))
+                        .sampleHeightmap(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x & 15, z & 15);
+                destination = destination.with(destination.pos().withY(
+                        MathHelper.clamp(destination.pos().getY(), minY, Math.min(maxY, heightMapPos))));
+
                 searchIterator = BlockPos.iterateOutwards(destination.pos(), MAX_SEARCH_RANGE, MAX_SEARCH_RANGE, MAX_SEARCH_RANGE).iterator();
             }
 
             for (int i = 0; i < BLOCKS_PER_TICK; i++) {
                 if (!searchIterator.hasNext()) {
-                    // If we've reached the end of our iterator, we're mildly fucked, but let's let FlyingState handle that.
+                    // If we've reached the end of our iterator, we destroy/place some blocks to forcibly make a valid landing spot.
                     tardis.getControls().moderateMalfunction();
-                    return new FlyingState();
+
+                    var random = tardis.getInteriorWorld().getRandom();
+                    var location = destination.with(destination.pos().add(
+                            random.nextBetween(-MAX_SEARCH_RANGE, MAX_SEARCH_RANGE),
+                            random.nextBetween(-MAX_SEARCH_RANGE, MAX_SEARCH_RANGE),
+                            random.nextBetween(-MAX_SEARCH_RANGE, MAX_SEARCH_RANGE)
+                    ));
+                    spawnSafetyStructure(location.getWorld(tardis.getServer()), location.pos());
+
+                    return crashing ? new CrashingState(location) : new LandingState(location);
                 }
                 var pos = searchIterator.next();
 
@@ -93,6 +121,20 @@ public class SearchingForLandingState implements FlightState {
         }
 
         return this;
+    }
+
+    protected void spawnSafetyStructure(ServerWorld world, BlockPos pos) {
+        for (var floorPos : BlockPos.iterate(pos.down().west().north(), pos.down().east().south())) {
+            if (!world.getBlockState(floorPos).isSideSolidFullSquare(world, floorPos, Direction.UP)) {
+                world.setBlockState(floorPos, ModBlocks.TARDIS_PLATING.getDefaultState());
+            }
+        }
+
+        for (var roomPos : BlockPos.iterate(pos.west().north(), pos.up(2).east().south())) {
+            if (!world.getBlockState(roomPos).getCollisionShape(world, roomPos).isEmpty()) {
+                world.setBlockState(roomPos, Blocks.AIR.getDefaultState());
+            }
+        }
     }
 
     @Override

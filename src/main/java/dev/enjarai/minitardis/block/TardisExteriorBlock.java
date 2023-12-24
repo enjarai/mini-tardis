@@ -2,6 +2,10 @@ package dev.enjarai.minitardis.block;
 
 import dev.enjarai.minitardis.item.PolymerModels;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
+import eu.pb4.polymer.core.api.utils.PolymerSyncUtils;
+import eu.pb4.polymer.core.api.utils.PolymerUtils;
+import eu.pb4.polymer.networking.api.PolymerHandshakeHandler;
+import eu.pb4.polymer.networking.api.PolymerServerNetworking;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;

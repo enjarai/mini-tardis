@@ -20,6 +20,11 @@ public abstract class PlacedElement implements AppElement {
         this.height = height;
     }
 
+    public boolean overlapsWith(PlacedElement other) {
+        return Math.max(x, other.x) <= Math.min(x + width, other.x + other.width) &&
+                Math.max(y, other.y) <= Math.min(y + height, other.y + other.height);
+    }
+
     @Override
     public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         drawElement(controls, blockEntity, new SubView(canvas, x, y, width, height));

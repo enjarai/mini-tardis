@@ -6,6 +6,7 @@ import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.element.DimensionStarElement;
+import dev.enjarai.minitardis.component.screen.element.PlacedElement;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
@@ -50,9 +51,13 @@ public class DimensionsApp implements ScreenApp {
                             .filter(key -> !key.getValue().getPath().startsWith("tardis/"))
                             .sorted(Comparator.comparing(RegistryKey::getValue))
                             .forEachOrdered(world -> {
-                                var x = deterministicRandom.nextBetween(2, 128 - 2 - 11);
-                                var y = deterministicRandom.nextBetween(18, 96 - 2 - 11);
-                                addElement(new DimensionStarElement(x, y, world));
+                                var star = new DimensionStarElement(0, 0, world);
+                                do {
+                                    star.x = deterministicRandom.nextBetween(2, 128 - 2 - 11);
+                                    star.y = deterministicRandom.nextBetween(18, 96 - 2 - 11);
+                                } while (children.stream().anyMatch(el -> el instanceof DimensionStarElement pel && star.overlapsWith(pel)));
+
+                                addElement(star);
                             });
                 }
             }

@@ -50,9 +50,8 @@ public class LandingState extends TransitionalFlightState {
             return new FlyingState();
         }
 
-        if (ticksPassed % 2 == 0 && !tardis.addOrDrainFuel(-1)) {
-            tardis.getControls().moderateMalfunction();
-            return this;
+        if (ticksPassed % 2 == 0) {
+            tardis.addOrDrainFuel(-1);
         }
 
         tickScreenShake(tardis, 1);

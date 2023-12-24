@@ -95,7 +95,7 @@ public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolym
 
     @Override
     public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
-        world.setBlockState(pos.up(), ModBlocks.TARDIS_EXTERIOR_EXTENSION.getDefaultState());
+        world.setBlockState(pos.up(), ModBlocks.TARDIS_EXTERIOR_EXTENSION.getStateWithProperties(state));
     }
 
     @Nullable

@@ -9,6 +9,9 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -22,6 +25,8 @@ import net.minecraft.world.WorldAccess;
 
 @SuppressWarnings("deprecation")
 public class TardisExteriorExtensionBlock extends Block implements PerhapsPolymerBlock {
+    public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+
     public static final VoxelShape OUTLINE_SHAPE = VoxelShapes.union(
             Block.createCuboidShape(-1, 0, -1, 17, 15, 17),
             Block.createCuboidShape(-2, 0, -2, 0, 15, 0),
@@ -37,6 +42,12 @@ public class TardisExteriorExtensionBlock extends Block implements PerhapsPolyme
 
     public TardisExteriorExtensionBlock(Settings settings) {
         super(settings);
+        setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH));
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
     }
 
     @Override
@@ -47,7 +58,7 @@ public class TardisExteriorExtensionBlock extends Block implements PerhapsPolyme
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!world.isClient()
-                && hit.getSide() == world.getBlockState(pos.down()).get(TardisExteriorBlock.FACING)
+                && hit.getSide() == state.get(FACING)
                 && world.getBlockEntity(pos.down()) instanceof TardisExteriorBlockEntity blockEntity) {
             blockEntity.teleportEntityIn(player);
             return ActionResult.SUCCESS;

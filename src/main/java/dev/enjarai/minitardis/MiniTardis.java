@@ -21,6 +21,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -75,6 +76,10 @@ public class MiniTardis implements ModInitializer {
 
 	public static TardisInteriorManager getInteriorManager() {
 		return interiorManager;
+	}
+
+	public static boolean playerIsRealGamer(ServerPlayNetworkHandler player) {
+		return HANDSHAKE_SERVER.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED;
 	}
 
 	public static Identifier id(String path) {

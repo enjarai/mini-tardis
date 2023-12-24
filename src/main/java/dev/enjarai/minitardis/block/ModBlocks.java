@@ -62,6 +62,10 @@ public class ModBlocks {
             register("interior_door", new InteriorDoorBlock(FabricBlockSettings.create()
                     .strength(3.0F)
                     .nonOpaque()));
+    public static final InteriorDoorDoorsBlock INTERIOR_DOOR_DOORS =
+            register("interior_door_doors", new InteriorDoorDoorsBlock(FabricBlockSettings.create()
+                    .strength(3.0F)
+                    .nonOpaque()));
     public static final ConsoleLeverBlock HANDBRAKE =
             register("handbrake", new ConsoleLeverBlock(FabricBlockSettings.create()
                     .noCollision()

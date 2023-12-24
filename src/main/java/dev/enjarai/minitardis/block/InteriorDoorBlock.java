@@ -1,44 +1,60 @@
 package dev.enjarai.minitardis.block;
 
-import dev.enjarai.minitardis.component.flight.FlightState;
+import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.item.PolymerModels;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
-import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
+import dev.enjarai.minitardis.util.PerhapsElementHolder;
+import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
-import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
-import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.decoration.Brightness;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 @SuppressWarnings("deprecation")
-public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, TardisAware, BlockWithElementHolder {
+public class InteriorDoorBlock extends FacingBlock implements PerhapsPolymerBlock, TardisAware, BlockWithElementHolder {
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
+
+    public static final VoxelShape[] OUTLINE_SHAPES = new VoxelShape[]{
+            VoxelShapes.union(
+                    Block.createCuboidShape(-1, 1, -1, 17, 16, 17),
+                    Block.createCuboidShape(-2, 0, -2, 18, 1, 18),
+                    Block.createCuboidShape(-2, 1, -2, 0, 16, 0),
+                    Block.createCuboidShape(16, 1, -2, 18, 16, 0),
+                    Block.createCuboidShape(16, 1, 16, 18, 16, 18),
+                    Block.createCuboidShape(-2, 1, 16, 0, 16, 18)
+            ),
+            VoxelShapes.union(
+                    Block.createCuboidShape(-1, 0, -1, 17, 16, 17),
+                    Block.createCuboidShape(-2, 16, -2, 18, 17, 18),
+                    Block.createCuboidShape(-2, 0, -2, 0, 16, 0),
+                    Block.createCuboidShape(16, 0, -2, 18, 16, 0),
+                    Block.createCuboidShape(16, 0, 16, 18, 16, 18),
+                    Block.createCuboidShape(-2, 0, 16, 0, 16, 18)
+            )
+    };
 
     protected InteriorDoorBlock(Settings settings) {
         super(settings);
@@ -76,8 +92,39 @@ public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, Tard
     }
 
     @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return OUTLINE_SHAPES[state.get(HALF) == DoubleBlockHalf.LOWER ? 0 : 1];
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return VoxelShapes.fullCube();
+    }
+
+    @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
         world.setBlockState(pos.up(), state.with(HALF, DoubleBlockHalf.UPPER), Block.NOTIFY_ALL);
+    }
+
+    @Override
+    public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+        if (state.get(HALF) == DoubleBlockHalf.LOWER) {
+            world.scheduleBlockTick(pos, this, 1);
+        }
+    }
+
+    @Override
+    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+        if (state.get(HALF) == DoubleBlockHalf.LOWER) {
+            var facing = state.get(FACING);
+            if (getTardis(world).map(Tardis::isDoorOpen).orElse(false)
+                    && world.getBlockState(pos.offset(facing)).isReplaceable()
+                    && world.getBlockState(pos.offset(facing).up()).isReplaceable()) {
+                world.setBlockState(pos.offset(facing), ModBlocks.INTERIOR_DOOR_DOORS.getDefaultState().with(HALF, DoubleBlockHalf.LOWER).with(FACING, facing));
+                world.setBlockState(pos.offset(facing).up(), ModBlocks.INTERIOR_DOOR_DOORS.getDefaultState().with(HALF, DoubleBlockHalf.UPPER).with(FACING, facing));
+            }
+            world.scheduleBlockTick(pos, this, 1);
+        }
     }
 
     @Override
@@ -103,16 +150,6 @@ public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, Tard
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
-        return PolymerResourcePackUtils.hasPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.QUARTZ_BLOCK;
-    }
-
-    @Override
-    public boolean tickElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        return initialBlockState.get(HALF) == DoubleBlockHalf.LOWER;
-    }
-
-    @Override
     public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
         if (initialBlockState.get(HALF) == DoubleBlockHalf.LOWER) {
             var facing = initialBlockState.get(FACING);
@@ -122,62 +159,9 @@ public class InteriorDoorBlock extends FacingBlock implements PolymerBlock, Tard
             exteriorElement.setOffset(new Vec3d(0, 1, 0));
             exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
 
-            var doorElement = new ItemDisplayElement();
-            doorElement.setItem(PolymerModels.getStack(PolymerModels.INTERIOR_DOOR_OPEN));
-            doorElement.setOffset(new Vec3d(0, 1, 0).offset(facing, 1));
-            doorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
-
-            var doorCloseInteractionHandler = new VirtualElement.InteractionHandler() {
-                @Override
-                public void interact(ServerPlayerEntity player, Hand hand) {
-                    getTardis(world).ifPresent(tardis -> {
-                        world.playSound(null, pos, SoundEvents.BLOCK_BAMBOO_WOOD_DOOR_CLOSE, SoundCategory.BLOCKS);
-                        tardis.getExteriorWorld().ifPresent(world ->
-                                world.playSound(null, tardis.getCurrentLandedLocation().get().pos(),
-                                        SoundEvents.BLOCK_BAMBOO_WOOD_DOOR_CLOSE, SoundCategory.BLOCKS));
-                        tardis.setDoorOpen(false, false);
-                    });
-                }
-            };
-
-            var leftDoorInteraction = new InteractionElement();
-            leftDoorInteraction.setHandler(doorCloseInteractionHandler);
-            leftDoorInteraction.setOffset(new Vec3d(0, 1.0 / 16.0 * -7, 0)
-                    .offset(facing, 1.0 / 16.0 * 14.0)
-                    .offset(facing.rotateYCounterclockwise(), 1.0 / 16.0 * 11.0));
-            leftDoorInteraction.setSize(0.5f, 2);
-
-            var rightDoorInteraction = new InteractionElement();
-            rightDoorInteraction.setHandler(doorCloseInteractionHandler);
-            rightDoorInteraction.setOffset(new Vec3d(0, 1.0 / 16.0 * -7, 0)
-                    .offset(facing, 1.0 / 16.0 * 14.0)
-                    .offset(facing.rotateYClockwise(), 1.0 / 16.0 * 11.0));
-            rightDoorInteraction.setSize(0.5f, 2);
-
-            return new ElementHolder() {
-                boolean currentlyOpen;
-
+            return new PerhapsElementHolder() {
                 {
                     addElement(exteriorElement);
-                }
-
-                @Override
-                protected void onTick() {
-                    getTardis(world).ifPresent(tardis -> {
-                        var open = tardis.isDoorOpen();
-                        if (open != currentlyOpen) {
-                            if (open) {
-                                addElement(doorElement);
-                                addElement(leftDoorInteraction);
-                                addElement(rightDoorInteraction);
-                            } else {
-                                removeElement(doorElement);
-                                removeElement(leftDoorInteraction);
-                                removeElement(rightDoorInteraction);
-                            }
-                            currentlyOpen = open;
-                        }
-                    });
                 }
             };
         }

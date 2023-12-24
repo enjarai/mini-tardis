@@ -42,12 +42,12 @@ public class HandshakeClient<T> {
                     .getOrThrow(false, MiniTardis.LOGGER::error);
         } catch (RuntimeException e) {
             serverConfig = null;
-            MiniTardis.LOGGER.error("Failed to parse config from server", e);
+            MiniTardis.LOGGER.error("Failed to parse handshake from server", e);
         }
 
         if (serverConfig != null) {
             updateCallback.accept(serverConfig);
-            MiniTardis.LOGGER.info("Received config from server");
+            MiniTardis.LOGGER.info("Received handshake from server");
         }
 
         var returnBuf = new PacketByteBuf(Unpooled.buffer());

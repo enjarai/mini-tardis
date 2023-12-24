@@ -67,12 +67,12 @@ public class HandshakeServer<T> {
         if (state == HandshakeState.SENT) {
             if (buf.readBoolean()) {
                 syncStates.put(player, HandshakeState.ACCEPTED);
-                MiniTardis.LOGGER.info("Client of {} accepted server config.", player.getPlayer().getName().getString());
+                MiniTardis.LOGGER.info("Client of {} accepted handshake.", player.getPlayer().getName().getString());
                 return HandshakeState.ACCEPTED;
             } else {
                 syncStates.put(player, HandshakeState.FAILED);
                 MiniTardis.LOGGER.warn(
-                        "Client of {} failed to process server config, check client logs find what went wrong.",
+                        "Client of {} failed to process handshake, check client logs find what went wrong.",
                         player.getPlayer().getName().getString());
                 return HandshakeState.FAILED;
             }

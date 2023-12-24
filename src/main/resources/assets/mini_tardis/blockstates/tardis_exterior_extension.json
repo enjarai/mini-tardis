@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mini_tardis:item/tardis"
+    }
+  }
+}

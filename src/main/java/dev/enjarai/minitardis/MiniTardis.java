@@ -1,5 +1,7 @@
 package dev.enjarai.minitardis;
 
+import com.mojang.datafixers.util.Unit;
+import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.command.TardisCommand;
@@ -10,6 +12,8 @@ import dev.enjarai.minitardis.data.ModDataStuff;
 import dev.enjarai.minitardis.data.TardisInteriorManager;
 import dev.enjarai.minitardis.item.ModItems;
 import dev.enjarai.minitardis.item.PolymerModels;
+import dev.enjarai.minitardis.net.HandshakeClient;
+import dev.enjarai.minitardis.net.HandshakeServer;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -28,6 +32,9 @@ public class MiniTardis implements ModInitializer {
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final String MOD_ID = "mini_tardis";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final Identifier HANDSHAKE_CHANNEL = id("handshake/1");
+	public static final HandshakeServer<Unit> HANDSHAKE_SERVER = new HandshakeServer<>(
+			Codec.unit(Unit.INSTANCE), MiniTardis.HANDSHAKE_CHANNEL, () -> Unit.INSTANCE);
 
 	@Nullable
 	private static MinecraftServer server;

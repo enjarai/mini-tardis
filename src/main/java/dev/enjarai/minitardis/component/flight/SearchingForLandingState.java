@@ -28,7 +28,7 @@ public class SearchingForLandingState implements FlightState {
     ).apply(instance, SearchingForLandingState::new));
     public static final Identifier ID = MiniTardis.id("searching_for_landing");
     private static final int BLOCKS_PER_TICK = 256;
-    private static final int MAX_SEARCH_RANGE = 32;
+    private static final int MAX_SEARCH_RANGE = 24;
 
     int flyingTicks;
     private int searchingTicks;
@@ -65,6 +65,7 @@ public class SearchingForLandingState implements FlightState {
         var maybeDestination = tardis.getDestination();
         if (maybeDestination.isPresent() && (maybeDestination.get().worldKey().equals(tardis.getExteriorWorldKey()) || crashing)) {
             var destination = crashing ? maybeDestination.get().with(tardis.getExteriorWorldKey()) : maybeDestination.get();
+            var destinationWorld = destination.getWorld(tardis.getServer());
 
             if (searchIterator == null) {
                 // Shuffle the landing location if we're crashing
@@ -73,8 +74,7 @@ public class SearchingForLandingState implements FlightState {
                     destination = destination.with(destination.pos().add(random.nextBetween(-1000, 1000), 0, random.nextBetween(-1000, 1000)));
                 }
 
-                var destinationWorld = destination.getWorld(tardis.getServer());
-                var minY = destinationWorld.getDimension().minY();
+                var minY = destinationWorld.getBottomY();
                 var maxY = minY + destinationWorld.getLogicalHeight();
                 var x = destination.pos().getX();
                 var z = destination.pos().getZ();
@@ -87,22 +87,36 @@ public class SearchingForLandingState implements FlightState {
                 searchIterator = BlockPos.iterateOutwards(destination.pos(), MAX_SEARCH_RANGE, MAX_SEARCH_RANGE, MAX_SEARCH_RANGE).iterator();
             }
 
-            for (int i = 0; i < BLOCKS_PER_TICK; i++) {
+            for (int i = 0; i < BLOCKS_PER_TICK; ) {
                 if (!searchIterator.hasNext()) {
                     // If we've reached the end of our iterator, we destroy/place some blocks to forcibly make a valid landing spot.
                     tardis.getControls().moderateMalfunction();
 
                     var random = tardis.getInteriorWorld().getRandom();
-                    var location = destination.with(destination.pos().add(
-                            random.nextBetween(-MAX_SEARCH_RANGE, MAX_SEARCH_RANGE),
-                            random.nextBetween(-MAX_SEARCH_RANGE, MAX_SEARCH_RANGE),
-                            random.nextBetween(-MAX_SEARCH_RANGE, MAX_SEARCH_RANGE)
-                    ));
+                    var location = destination.with(destination.pos()
+                            .withY(MathHelper.clamp(
+                                    destination.pos().getY(),
+                                    destinationWorld.getBottomY() + MAX_SEARCH_RANGE + 8, // Add 8 blocks of buffer to avoid replacing bedrock
+                                    destinationWorld.getBottomY() + destinationWorld.getLogicalHeight() - MAX_SEARCH_RANGE - 8
+                            ))
+                            .add(
+                                    random.nextBetween(-MAX_SEARCH_RANGE, MAX_SEARCH_RANGE),
+                                    random.nextBetween(-MAX_SEARCH_RANGE, MAX_SEARCH_RANGE),
+                                    random.nextBetween(-MAX_SEARCH_RANGE, MAX_SEARCH_RANGE)
+                            )
+                    );
                     spawnSafetyStructure(location.getWorld(tardis.getServer()), location.pos());
 
                     return crashing ? new CrashingState(location) : new LandingState(location);
                 }
                 var pos = searchIterator.next();
+                if (destinationWorld.isOutOfHeightLimit(pos)) {
+                    continue;
+                } else {
+                    i++;
+                    // Only increment i if we check a pos inside the world,
+                    // this speeds up searches on the world's edge
+                }
 
                 var location = destination.with(pos);
                 if (tardis.canLandAt(location)) {

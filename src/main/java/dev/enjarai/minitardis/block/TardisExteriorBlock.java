@@ -1,6 +1,8 @@
 package dev.enjarai.minitardis.block;
 
 import dev.enjarai.minitardis.item.PolymerModels;
+import dev.enjarai.minitardis.util.PerhapsElementHolder;
+import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.core.api.utils.PolymerSyncUtils;
 import eu.pb4.polymer.core.api.utils.PolymerUtils;
@@ -12,10 +14,7 @@ import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -31,6 +30,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.*;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -38,8 +39,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 @SuppressWarnings("deprecation")
-public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock, BlockWithElementHolder {
+public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolymerBlock, BlockWithElementHolder {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+
+    public static final VoxelShape OUTLINE_SHAPE = VoxelShapes.union(
+            Block.createCuboidShape(-1, 2, -1, 17, 16, 17),
+            Block.createCuboidShape(-3, 0, -3, 19, 2, 19),
+            Block.createCuboidShape(-2, 2, -2, 0, 16, 0),
+            Block.createCuboidShape(16, 2, -2, 18, 16, 0),
+            Block.createCuboidShape(16, 2, 16, 18, 16, 18),
+            Block.createCuboidShape(-2, 2, 16, 0, 16, 18)
+    );
 
     protected TardisExteriorBlock(Settings settings) {
         super(settings);
@@ -63,11 +73,6 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
-        return PolymerResourcePackUtils.hasPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.LAPIS_BLOCK;
-    }
-
-    @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!world.isClient()
                 && hit.getSide() == state.get(FACING)
@@ -76,6 +81,16 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
             return ActionResult.SUCCESS;
         }
         return super.onUse(state, world, pos, player, hand, hit);
+    }
+
+    @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return OUTLINE_SHAPE;
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return VoxelShapes.fullCube();
     }
 
     @Override
@@ -92,6 +107,11 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
     @Override
     public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
         return true;
+    }
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.INVISIBLE;
     }
 
     @Override
@@ -141,7 +161,7 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
                 .offset(facing.rotateYClockwise(), 1.0 / 16.0 * 8.0));
         rightDoorInteraction.setSize(0.25f, 2);
 
-        return new ElementHolder() {
+        return new PerhapsElementHolder() {
             byte currentAlpha = 0;
             boolean currentlyOpen;
 

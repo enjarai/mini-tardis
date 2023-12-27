@@ -5,6 +5,7 @@ import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.flight.DriftingState;
 import dev.enjarai.minitardis.component.flight.RefuelingState;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
@@ -27,6 +28,22 @@ public class StatusApp implements ScreenApp {
                 var tardis = controls.getTardis();
 
                 DefaultFonts.VANILLA.drawText(canvas, tardis.getState().getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
+
+                tardis.getState(DriftingState.class).ifPresent(state -> {
+                    for (int i = 0; i < state.phaseCount; i++) {
+                        CanvasImage icon;
+
+                        if (state.phasesComplete > i) {
+                            icon = ModCanvasUtils.DRIFTING_PHASE_COMPLETE;
+                        } else if (state.phasesComplete >= i && state.phaseTicks >= state.phaseLength) {
+                            icon = ModCanvasUtils.DRIFTING_PHASE_AVAILABLE;
+                        } else {
+                            icon = ModCanvasUtils.DRIFTING_PHASE;
+                        }
+
+                        CanvasUtils.draw(canvas, 8 + i * 8, 24, icon);
+                    }
+                });
 
                 var random = blockEntity.drawRandom;
                 var state = tardis.getState();

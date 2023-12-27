@@ -34,6 +34,9 @@ public class ModCanvasUtils {
     public static final CanvasImage LOCK_ICON_UNLOCKED = loadImage("lock_icon_unlocked.png");
     public static final CanvasImage ENERGY_CONDUITS_ACTIVE = loadImage("energy_conduits_active.png");
     public static final CanvasImage ENERGY_CONDUITS_INACTIVE = loadImage("energy_conduits_inactive.png");
+    public static final CanvasImage DRIFTING_PHASE = loadImage("drifting_phase.png");
+    public static final CanvasImage DRIFTING_PHASE_AVAILABLE = loadImage("drifting_phase_available.png");
+    public static final CanvasImage DRIFTING_PHASE_COMPLETE = loadImage("drifting_phase_complete.png");
     public static final CanvasImage HISTORY_CURRENT_OUTLINE = loadImage("history_current_outline.png");
     public static final CanvasImage DIMENSION_MARKER = loadImage("dimension_marker.png");
     public static final CanvasImage DIMENSION_MARKER_SELECTED = loadImage("dimension_marker_selected.png");

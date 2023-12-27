@@ -32,6 +32,7 @@
   "mini_tardis.state.mini_tardis.crashing": "ERROR ERROR WARNING ERROR ERROR ERROR ERROR",
   "mini_tardis.state.mini_tardis.drifting": "CAUTION: Drifting",
   "mini_tardis.state.mini_tardis.disabled": "Powered Off",
+  "mini_tardis.state.mini_tardis.suspended_flight": "Suspended Flight",
 
   "mini_tardis.app.mini_tardis.bad_apple": "Bad Apple",
   "mini_tardis.app.mini_tardis.dimensions": "Dimensions",

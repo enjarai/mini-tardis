@@ -26,6 +26,7 @@ import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeKeys;
@@ -333,6 +334,10 @@ public class Tardis {
 
     public MinecraftServer getServer() {
         return holder.getServer();
+    }
+
+    public Random getRandom() {
+        return getInteriorWorld().getRandom();
     }
 
     public BlockPos getInteriorCenter() {

@@ -123,8 +123,8 @@ public class TardisControl {
     public boolean handbrake(boolean state) {
         if (!state && tardis.getState() instanceof FlyingState && !isDestinationLocked()) {
             return tardis.suggestStateTransition(new DriftingState());
-        } else if (state && tardis.getState() instanceof DriftingState) {
-            return tardis.suggestStateTransition(new FlyingState());
+        } else if (tardis.getState() instanceof DriftingState driftingState) {
+            return driftingState.toggleFlyLever(tardis, state) || tardis.suggestStateTransition(new FlyingState());
         }
 
         if (tardis.isDoorOpen()) return false;
@@ -149,12 +149,16 @@ public class TardisControl {
     }
 
     public boolean setEnergyConduits(boolean unlocked) {
-        if (!unlocked && !tardis.getState().isSolid(tardis)) {
-            majorMalfunction();
-            return false;
-        }
-
-        if (unlocked && tardis.getState() instanceof RefuelingState) {
+        if (!tardis.getState().isSolid(tardis)) {
+            if (!unlocked && tardis.getState(FlyingState.class).isPresent()) {
+                tardis.suggestStateTransition(new SuspendedFlightState());
+            } else if (unlocked && tardis.getState(SuspendedFlightState.class).isPresent()) {
+                tardis.suggestStateTransition(new FlyingState());
+            } else if (!unlocked) {
+                majorMalfunction();
+                return false;
+            }
+        } else if (unlocked && tardis.getState() instanceof RefuelingState) {
             return false;
         }
 

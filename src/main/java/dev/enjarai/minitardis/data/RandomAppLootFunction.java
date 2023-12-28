@@ -14,7 +14,8 @@ import java.util.List;
 public class RandomAppLootFunction implements LootFunction {
     public static final Codec<RandomAppLootFunction> CODEC = Codec.unit(RandomAppLootFunction::new);
     public static final List<Identifier> LOOT_APPS = List.of(
-            SnakeApp.ID, ScannerApp.ID, BadAppleApp.ID, HistoryApp.ID, DimensionsApp.ID
+            SnakeApp.ID, ScannerApp.ID, BadAppleApp.ID, HistoryApp.ID, DimensionsApp.ID,
+            LookAndFeelApp.ID, WaypointsApp.ID
     );
 
     @Override

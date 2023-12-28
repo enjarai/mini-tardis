@@ -55,6 +55,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     @Nullable
     Identifier selectedApp;
     public SimpleInventory inventory = new SimpleInventory(1);
+    public CanvasColor backgroundColor = CanvasColor.TERRACOTTA_BLUE_LOWEST;
 
     public ConsoleScreenBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.CONSOLE_SCREEN_ENTITY, pos, state);
@@ -75,6 +76,8 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         }
 
         nbt.put("inventory", inventory.toNbtList());
+
+        nbt.putInt("backgroundColor", backgroundColor.getRgbColor());
     }
 
     @Override
@@ -85,6 +88,10 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
         if (nbt.contains("inventory")) {
             inventory.readNbtList(nbt.getList("inventory", NbtElement.COMPOUND_TYPE));
+        }
+
+        if (nbt.contains("backgroundColor")) {
+            backgroundColor = CanvasUtils.findClosestColor(nbt.getInt("backgroundColor"));
         }
     }
 
@@ -158,7 +165,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     }
 
     private void refresh(Tardis tardis) {
-        CanvasUtils.fill(canvas, 0, 0, canvas.getWidth(), canvas.getHeight(), CanvasColor.TERRACOTTA_BLUE_LOWEST);
+        CanvasUtils.fill(canvas, 0, 0, canvas.getWidth(), canvas.getHeight(), backgroundColor);
 
         var controls = tardis.getControls();
         if (currentView != null) {
@@ -209,6 +216,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                             currentView = app.getView(controls);
                             currentView.screenOpen(this);
                             playClickSound(1.5f);
+                            markDirty();
                         }
                     }
                 }
@@ -232,6 +240,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         currentView.screenClose(this);
         selectedApp = null;
         currentView = null;
+        markDirty();
     }
 
     public void playClickSound(float pitch) {

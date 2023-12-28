@@ -43,6 +43,8 @@
   "mini_tardis.app.mini_tardis.status": "Status",
   "mini_tardis.app.mini_tardis.snake": "Snake",
   "mini_tardis.app.mini_tardis.bad_snake": "Bad Snake",
+  "mini_tardis.app.mini_tardis.look_and_feel": "Look and Feel",
+  "mini_tardis.app.mini_tardis.waypoints": "Waypoints",
 
   "dimension.minecraft.overworld": "Overworld",
   "dimension.minecraft.the_nether": "The Nether",

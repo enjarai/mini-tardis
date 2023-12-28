@@ -12,6 +12,7 @@ public abstract class PlacedElement implements AppElement {
     public int y;
     public int width;
     public int height;
+    public boolean visible = true;
 
     public PlacedElement(int x, int y, int width, int height) {
         this.x = x;
@@ -27,7 +28,9 @@ public abstract class PlacedElement implements AppElement {
 
     @Override
     public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        drawElement(controls, blockEntity, new SubView(canvas, x, y, width, height));
+        if (visible) {
+            drawElement(controls, blockEntity, new SubView(canvas, x, y, width, height));
+        }
     }
 
     @Override
@@ -39,7 +42,7 @@ public abstract class PlacedElement implements AppElement {
 
     @Override
     public boolean onClick(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
-        if (x >= this.x && x < this.x + width && y >= this.y && y < this.y + height) {
+        if (visible && x >= this.x && x < this.x + width && y >= this.y && y < this.y + height) {
             return onClickElement(controls, blockEntity, player, type, x - this.x, y - this.y);
         }
         return false;

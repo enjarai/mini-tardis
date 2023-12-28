@@ -377,7 +377,7 @@ public class Tardis {
     }
 
     public boolean setDestination(Optional<TardisLocation> destination, boolean force) {
-        if (!force && !state.tryChangeCourse(this)) return false;
+        if (!force && (!state.tryChangeCourse(this) || controls.isDestinationLocked())) return false;
 
         this.destination = destination;
         destinationScanner.resetIterators();

@@ -43,7 +43,7 @@ public class DriftingState implements FlightState {
 
     @Override
     public void init(Tardis tardis) {
-        phaseCount = tardis.getRandom().nextBetween(1, 3) * 2 - 1;
+        phaseCount = tardis.getRandom().nextBetween(2, 3) * 2 - 1;
         phaseLength = tardis.getRandom().nextBetween(20, TRANSITION_POINT);
     }
 
@@ -63,11 +63,11 @@ public class DriftingState implements FlightState {
 //        tickScreenShake(tardis, 2);
 
         if (phasesComplete >= phaseCount) {
-            if (phaseTicks == 1) {
+            if (phaseTicks == 11) {
                 playForInterior(tardis, SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), SoundCategory.BLOCKS, 1, 0.9f);
-            } else if (phaseTicks == 6) {
+            } else if (phaseTicks == 16) {
                 playForInterior(tardis, SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), SoundCategory.BLOCKS, 1, 1.1f);
-            } else if (phaseTicks >= 11) {
+            } else if (phaseTicks >= 21) {
                 tardis.getControls().setDestinationLocked(true, true);
                 tardis.getDestination().ifPresent(destination -> {
                     tardis.setCurrentLocation(new PartialTardisLocation(destination.worldKey()));

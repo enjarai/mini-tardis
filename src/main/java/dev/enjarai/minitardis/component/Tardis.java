@@ -14,6 +14,7 @@ import net.minecraft.block.FacingBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -313,6 +314,7 @@ public class Tardis {
         var facing = location.facing();
 
         return world.getBlockState(pos).isReplaceable()
+                && (world.getFluidState(pos).isEmpty() || world.getFluidState(pos).isOf(Fluids.WATER))
                 && world.getBlockState(pos.up()).isReplaceable()
                 && world.getBlockState(pos.down()).isSideSolidFullSquare(world, pos, Direction.UP)
                 && world.getBlockState(pos.offset(facing)).getCollisionShape(world, pos).isEmpty()

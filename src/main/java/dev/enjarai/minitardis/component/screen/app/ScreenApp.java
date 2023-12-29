@@ -4,10 +4,13 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.data.RandomAppLootFunction;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -54,6 +57,19 @@ public interface ScreenApp {
 
     default Text getName() {
         return Text.translatable("mini_tardis.app." + id().getNamespace() + "." + id().getPath());
+    }
+
+    /**
+     * Append extra lines to the tooltip entry of this app when loaded onto a floppy.
+     * This can be used to display extra information on the persistent state of the app.
+     */
+    default void appendTooltip(List<Text> tooltip) {
+    }
+
+    /**
+     * Use this function to initialize data when this app is spawned in a loot floppy.
+     */
+    default void applyLootModifications(LootContext context, RandomAppLootFunction lootFunction) {
     }
 
     Identifier id();

@@ -33,6 +33,7 @@ public class FloppyItem extends Item implements PolymerItem {
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         for (var app : getApps(stack)) {
             tooltip.addAll(app.getName().getWithStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+            app.appendTooltip(tooltip);
         }
     }
 

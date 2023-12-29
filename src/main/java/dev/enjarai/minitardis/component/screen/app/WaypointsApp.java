@@ -9,13 +9,29 @@ import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.TardisLocation;
 import dev.enjarai.minitardis.component.screen.element.SmallButtonElement;
 import dev.enjarai.minitardis.component.screen.element.WaypointListElement;
+import dev.enjarai.minitardis.data.ModDataStuff;
+import dev.enjarai.minitardis.data.RandomAppLootFunction;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import net.minecraft.item.FilledMapItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.map.MapState;
+import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -95,6 +111,33 @@ public class WaypointsApp implements ScreenApp {
     @Override
     public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.WAYPOINTS_APP);
+    }
+
+    @Override
+    public void appendTooltip(List<Text> tooltip) {
+        tooltip.add(Text.literal(" ").append(Text.translatable("mini_tardis.app.mini_tardis.waypoints.tooltip", waypoints.size()))
+                .fillStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
+    }
+
+    @Override
+    public void applyLootModifications(LootContext context, RandomAppLootFunction lootFunction) {
+        Vec3d vec3d = context.get(LootContextParameters.ORIGIN);
+
+        if (vec3d != null) {
+            ServerWorld serverWorld = context.getWorld();
+            Random random = context.getRandom();
+
+            for (int i = 0; i < random.nextBetween(1, 8); i++) {
+                BlockPos blockPos = serverWorld.locateStructure(ModDataStuff.WAYPOINT_APP_RANDOMLY_FOUND_STRUCTURES,
+                        BlockPos.ofFloored(vec3d), 50, true);
+
+                if (blockPos != null) {
+                    waypoints.put(random.nextInt((124 / 8) * (50 / 8)),
+                            new TardisLocation(serverWorld.getRegistryKey(), blockPos.withY(64),
+                                    Direction.fromHorizontal(random.nextInt())));
+                }
+            }
+        }
     }
 
     @Override

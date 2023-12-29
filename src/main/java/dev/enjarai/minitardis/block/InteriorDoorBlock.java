@@ -34,7 +34,7 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
-public class InteriorDoorBlock extends FacingBlock implements PerhapsPolymerBlock, TardisAware, BlockWithElementHolder {
+public class InteriorDoorBlock extends HorizontalFacingBlock implements PerhapsPolymerBlock, TardisAware, BlockWithElementHolder {
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
 
     public static final VoxelShape[] OUTLINE_SHAPES = new VoxelShape[]{

@@ -11,6 +11,7 @@ import dev.enjarai.minitardis.block.TardisExteriorBlock;
 import dev.enjarai.minitardis.block.TardisExteriorBlockEntity;
 import dev.enjarai.minitardis.component.flight.*;
 import net.minecraft.block.FacingBlock;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -257,7 +258,7 @@ public class Tardis {
 
             do {
                 if (interiorDoorState.isOf(ModBlocks.INTERIOR_DOOR) && interiorDoorState.get(InteriorDoorBlock.HALF) == DoubleBlockHalf.LOWER) {
-                    var facing = interiorDoorState.get(FacingBlock.FACING);
+                    var facing = interiorDoorState.get(HorizontalFacingBlock.FACING);
                     interiorDoorPosition = targetPos;
 
                     targetPos = targetPos.add(facing.getVector());

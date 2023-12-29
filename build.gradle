@@ -71,6 +71,7 @@ dependencies {
 	modApi include("eu.pb4:polymer-core:${property('deps.polymer')}")
 	modApi include("eu.pb4:polymer-virtual-entity:${property('deps.polymer')}")
 	modApi include("eu.pb4:polymer-resource-pack:${property('deps.polymer')}")
+	modApi include("eu.pb4:polymer-blocks:${property('deps.polymer')}")
 	modRuntimeOnly("eu.pb4:polymer-autohost:${property('deps.polymer')}")
 	modApi include("xyz.nucleoid:server-translations-api:${property('deps.server_translations_api')}")
 	include(modApi("me.lucko:fabric-permissions-api:${property('deps.permissions_api')}"))

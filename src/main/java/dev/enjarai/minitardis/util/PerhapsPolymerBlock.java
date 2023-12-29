@@ -21,7 +21,7 @@ public interface PerhapsPolymerBlock extends PolymerBlock, PolymerClientDecoded,
     @Override
     default BlockState getPolymerBlockState(BlockState state, ServerPlayerEntity player) {
         if (MiniTardis.playerIsRealGamer(player.networkHandler)) {
-            return ((Block) this).getStateWithProperties(state);
+            return state;
         }
 
         return PolymerBlock.super.getPolymerBlockState(state, player);

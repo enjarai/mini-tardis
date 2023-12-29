@@ -49,15 +49,10 @@ public class ModBlocks {
                     .nonOpaque()
                     .allowsSpawning(Blocks::never)));
     public static final SimplePolymerBlock TARDIS_PLATING =
-            register("tardis_plating", new SimplePolymerBlock(FabricBlockSettings.create()
+            register("tardis_plating", new TardisPlatingBlock(FabricBlockSettings.create()
                     .mapColor(MapColor.BLACK)
                     .requiresTool()
-                    .strength(3.0F, 6.0F), Blocks.DEAD_BRAIN_CORAL_BLOCK) {
-                @Override
-                public boolean canSynchronizeToPolymerClient(ServerPlayerEntity player) {
-                    return false;
-                }
-            });
+                    .strength(3.0F, 6.0F)));
     public static final InteriorDoorBlock INTERIOR_DOOR =
             register("interior_door", new InteriorDoorBlock(FabricBlockSettings.create()
                     .strength(3.0F)
@@ -164,12 +159,13 @@ public class ModBlocks {
             PointOfInterestHelper.register(MiniTardis.id("tardis_exterior"), 0, 1, TARDIS_EXTERIOR);
     public static final PointOfInterestType INTERIOR_DOOR_POI =
             PointOfInterestHelper.register(MiniTardis.id("interior_door"), 0, 1,
-                    Arrays.stream(Direction.values()).map(d -> INTERIOR_DOOR.getDefaultState().with(InteriorDoorBlock.FACING, d)).toList());
+                    Arrays.stream(Direction.values())
+                            .filter(d -> d.getHorizontal() != -1)
+                            .map(d -> INTERIOR_DOOR.getDefaultState().with(InteriorDoorBlock.FACING, d)).toList());
 
     public static final Map<? extends Block, Optional<PolymerModelData>> ITEM_BLOCKS;
     static {
         var builder = ImmutableMap.<Block, Optional<PolymerModelData>>builder();
-        builder.put(TARDIS_PLATING, Optional.empty());
         builder.put(INTERIOR_DOOR, Optional.of(PolymerModels.INTERIOR_DOOR_ITEM));
         builder.put(HANDBRAKE, Optional.empty());
         builder.put(CONSOLE_SCREEN, Optional.of(PolymerModels.ROTATING_MONITOR_PACKED));

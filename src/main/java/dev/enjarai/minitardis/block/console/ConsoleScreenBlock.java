@@ -17,6 +17,7 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -85,8 +86,9 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
                 world.setBlockState(newPos, state.with(FACING, hitSide));
 
                 if (world.getBlockEntity(pos) instanceof ConsoleScreenBlockEntity oldEntity && world.getBlockEntity(newPos) instanceof ConsoleScreenBlockEntity newEntity) {
-                    newEntity.selectedApp = oldEntity.selectedApp;
-                    newEntity.inventory = oldEntity.inventory;
+                    var tempNbt = new NbtCompound();
+                    oldEntity.writeNbt(tempNbt);
+                    newEntity.readNbt(tempNbt);
                     newEntity.currentView = oldEntity.currentView;
                 }
 

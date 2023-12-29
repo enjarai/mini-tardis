@@ -30,6 +30,8 @@ public class ModItems {
             new FabricItemSettings().maxCount(1).equipmentSlot((stack) -> EquipmentSlot.HEAD)));
     public static final FloppyItem FLOPPY = register("floppy", new FloppyItem(new FabricItemSettings().maxCount(1)));
 
+    public static final TardisPlatingItem TARDIS_PLATING = register("tardis_plating", new TardisPlatingItem(new FabricItemSettings()));
+
     public static void load() {
         ModBlocks.ITEM_BLOCKS.forEach((block, modelData) -> {
             var id = Registries.BLOCK.getId(block);

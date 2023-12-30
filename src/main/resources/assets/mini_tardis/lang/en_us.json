@@ -7,5 +7,31 @@
   "sound.mini_tardis.bad_apple": "Bad Apple Playing",
   "sound.mini_tardis.move_sneak": "Snake Moving",
   "sound.mini_tardis.eat_apple": "Snake eating Apple",
-  "sound.mini_tardis.die_snake": "Snake Dying"
+  "sound.mini_tardis.die_snake": "Snake Dying",
+
+  "block.mini_tardis.tardis_plating": "Tardis Plating",
+  "block.mini_tardis.interior_door": "Interior Door",
+  "block.mini_tardis.interior_door_door": "Interior Door",
+  "block.mini_tardis.handbrake": "Handbrake",
+  "block.mini_tardis.console_screen": "Console Screen",
+  "block.mini_tardis.tardis_exterior": "Tardis Exterior",
+  "block.mini_tardis.tardis_exterior_extension": "Tardis Exterior",
+  "block.mini_tardis.reset_destination_button": "Space-time Destination Reset Switch",
+  "block.mini_tardis.nudge_destination_button_1": "Target Localization Corrector",
+  "block.mini_tardis.nudge_destination_button_2": "Target Localization Corrector",
+  "block.mini_tardis.coordinate_scale_selector": "Localization Scale Interpreter",
+  "block.mini_tardis.rotation_selector": "Centrifugal Facing Modifier",
+  "block.mini_tardis.state_comparator": "Selective State Switch",
+  "block.mini_tardis.vertical_nudge_destination_button": "Lateral Target Localization Corrector",
+  "block.mini_tardis.fuel_control": "Artron Conduit Controller",
+  "block.mini_tardis.coordinate_lock": "Space-time Target Lock-in",
+  "block.mini_tardis.refuel_toggle": "Artron Scoop Activator",
+  "block.mini_tardis.interior_light": "Interior Light",
+  "block.mini_tardis.power_coupling": "Power Coupling",
+  "block.mini_tardis.makeshift_engine": "Makeshift Tardis Engine",
+
+  "item.mini_tardis.fez": "Fez",
+  "item.mini_tardis.floppy": "Floppy",
+
+  "mini_tardis.item_group": "Mini Tardis"
 }

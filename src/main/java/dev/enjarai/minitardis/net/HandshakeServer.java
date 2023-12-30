@@ -6,6 +6,9 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.api.Version;
+import net.fabricmc.loader.api.VersionParsingException;
+import net.fabricmc.loader.impl.util.version.StringVersion;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.PacketByteBuf;
@@ -65,15 +68,29 @@ public class HandshakeServer<T> {
         var state = getHandshakeState(player);
 
         if (state == HandshakeState.SENT) {
-            if (buf.readBoolean()) {
+            var accepted = buf.readBoolean();
+            var versionString = buf.readString();
+            Version version;
+            try {
+                version = Version.parse(versionString);
+            } catch (VersionParsingException e) {
+                version = new StringVersion("Unknown");
+                MiniTardis.LOGGER.warn(
+                        "Failed to parse version '{}' sent by client of {}.",
+                        version, player.getPlayer().getName().getString());
+            }
+
+            if (accepted) {
                 syncStates.put(player, HandshakeState.ACCEPTED);
-                MiniTardis.LOGGER.info("Client of {} accepted handshake.", player.getPlayer().getName().getString());
+                MiniTardis.LOGGER.info(
+                        "Client of {} (Using version {}) accepted handshake.",
+                        player.getPlayer().getName().getString(), version);
                 return HandshakeState.ACCEPTED;
             } else {
                 syncStates.put(player, HandshakeState.FAILED);
                 MiniTardis.LOGGER.warn(
-                        "Client of {} failed to process handshake, check client logs find what went wrong.",
-                        player.getPlayer().getName().getString());
+                        "Client of {} (Using version {}) failed to process handshake, check client logs find what went wrong.",
+                        player.getPlayer().getName().getString(), version);
                 return HandshakeState.FAILED;
             }
         }

@@ -52,6 +52,7 @@ public class HandshakeClient<T> {
 
         var returnBuf = new PacketByteBuf(Unpooled.buffer());
         returnBuf.writeBoolean(serverConfig != null);
+        returnBuf.writeString(MiniTardis.VERSION.getFriendlyString());
         return returnBuf;
     }
 

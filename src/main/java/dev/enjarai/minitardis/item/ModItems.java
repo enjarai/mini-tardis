@@ -29,7 +29,6 @@ public class ModItems {
     public static final FezItem FEZ = register("fez", new FezItem(
             new FabricItemSettings().maxCount(1).equipmentSlot((stack) -> EquipmentSlot.HEAD)));
     public static final FloppyItem FLOPPY = register("floppy", new FloppyItem(new FabricItemSettings().maxCount(1)));
-
     public static final TardisPlatingItem TARDIS_PLATING = register("tardis_plating", new TardisPlatingItem(new FabricItemSettings()));
 
     public static void load() {
@@ -52,7 +51,12 @@ public class ModItems {
                 Registry.register(Registries.ITEM_GROUP, ITEM_GROUP, FabricItemGroup.builder()
                     .icon(() -> ModBlocks.CONSOLE_SCREEN.asItem().getDefaultStack())
                     .displayName(Text.translatable("mini_tardis.item_group"))
-                    .entries((context, entries) -> ModBlocks.ITEM_BLOCKS.keySet().forEach(entries::add))
+                    .entries((context, entries) -> {
+                        ModBlocks.ITEM_BLOCKS.keySet().forEach(entries::add);
+                        entries.add(TARDIS_PLATING);
+                        entries.add(FLOPPY);
+                        entries.add(FEZ);
+                    })
                     .build()));
     }
 

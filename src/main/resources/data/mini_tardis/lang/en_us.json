@@ -1,6 +1,7 @@
 {
   "block.mini_tardis.tardis_plating": "Tardis Plating",
   "block.mini_tardis.interior_door": "Interior Door",
+  "block.mini_tardis.interior_door_door": "Interior Door",
   "block.mini_tardis.handbrake": "Handbrake",
   "block.mini_tardis.console_screen": "Console Screen",
   "block.mini_tardis.tardis_exterior": "Tardis Exterior",
@@ -21,6 +22,8 @@
 
   "item.mini_tardis.fez": "Fez",
   "item.mini_tardis.floppy": "Floppy",
+
+  "mini_tardis.item_group": "Mini Tardis",
 
   "mini_tardis.state.mini_tardis.landed": "Landed",
   "mini_tardis.state.mini_tardis.refueling": "Refueling",
@@ -49,7 +52,5 @@
 
   "dimension.minecraft.overworld": "Overworld",
   "dimension.minecraft.the_nether": "The Nether",
-  "dimension.minecraft.the_end": "The End",
-
-  "mini_tardis.item_group": "Mini Tardis"
+  "dimension.minecraft.the_end": "The End"
 }

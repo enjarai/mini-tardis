@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "P#P",
+    "PDP"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:compass"
+    },
+    "D": {
+      "tag": "minecraft:wooden_doors"
+    },
+    "P": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "item": "mini_tardis:interior_door",
+    "count": 1
+  }
+}

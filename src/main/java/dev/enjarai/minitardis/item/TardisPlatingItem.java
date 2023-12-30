@@ -19,7 +19,7 @@ public class TardisPlatingItem extends BlockItem implements PolymerItem, Polymer
 
     @Override
     public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-        if (player != null && MiniTardis.playerIsRealGamer(player.networkHandler)) {
+        if (player == null || MiniTardis.playerIsRealGamer(player.networkHandler)) {
             return this;
         }
 
@@ -28,7 +28,7 @@ public class TardisPlatingItem extends BlockItem implements PolymerItem, Polymer
 
     @Override
     public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-        if (player != null && MiniTardis.playerIsRealGamer(player.networkHandler)) {
+        if (player == null || MiniTardis.playerIsRealGamer(player.networkHandler)) {
             return -1;
         }
 

@@ -50,7 +50,7 @@ public class DimensionsApp implements ScreenApp {
     public AppView getView(TardisControl controls) {
         return new ElementHoldingView(controls) {
             private final Random deterministicRandom = new LocalRandom(69420);
-            private final SmallButtonElement saveDimButton = addElement(new SmallButtonElement(68, 2, "Save", controls1 -> {
+            private final SmallButtonElement saveDimButton = addElement(new SmallButtonElement(68, 2, "Add", controls1 -> {
                 controls1.getTardis().getDestination().ifPresent(destination -> {
                     if (!accessibleDimensions.contains(destination.worldKey())) {
                         accessibleDimensions.add(destination.worldKey());

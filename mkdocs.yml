@@ -1,0 +1,44 @@
+site_name: Mini Tardis Docs
+
+nav:
+  - index.md
+
+theme:
+  name: material
+  features:
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      features:
+        - navigation.expand
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      features:
+        - navigation.expand
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+
+repo_url: https://github.com/enjarai/mini-tardis
+
+plugins:
+  - search
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/enjarai/mini-tardis
+      name: Github
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/WcYsDDQtyR
+      name: enjarai's library Discord server
+  generator: false

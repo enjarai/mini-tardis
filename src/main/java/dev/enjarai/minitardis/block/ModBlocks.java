@@ -40,6 +40,7 @@ public class ModBlocks {
                     .strength(-1.0F, 3600000.0F)
                     .dropsNothing()
                     .nonOpaque()
+                    .blockVision(Blocks::never)
                     .allowsSpawning(Blocks::never)));
     public static final TardisExteriorExtensionBlock TARDIS_EXTERIOR_EXTENSION =
             register("tardis_exterior_extension", new TardisExteriorExtensionBlock(FabricBlockSettings.create()
@@ -47,6 +48,7 @@ public class ModBlocks {
                     .strength(-1.0F, 3600000.0F)
                     .dropsNothing()
                     .nonOpaque()
+                    .blockVision(Blocks::never)
                     .allowsSpawning(Blocks::never)));
     public static final TardisPlatingBlock TARDIS_PLATING =
             register("tardis_plating", new TardisPlatingBlock(FabricBlockSettings.create()

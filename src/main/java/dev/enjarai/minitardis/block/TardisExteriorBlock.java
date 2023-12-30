@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 @SuppressWarnings("deprecation")
-public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolymerBlock, BlockWithElementHolder {
+public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolymerBlock {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
     public static final VoxelShape OUTLINE_SHAPE = VoxelShapes.union(
@@ -83,10 +83,11 @@ public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolym
         return super.onUse(state, world, pos, player, hand, hit);
     }
 
-    @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        return OUTLINE_SHAPE;
-    }
+    // Disabled because of silly transparency issues on block outlines
+//    @Override
+//    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+//        return OUTLINE_SHAPE;
+//    }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
@@ -107,101 +108,5 @@ public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolym
     @Override
     public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
         return true;
-    }
-
-    @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.INVISIBLE;
-    }
-
-    @Override
-    public boolean tickElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        return true;
-    }
-
-    @Override
-    public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        var facing = initialBlockState.get(FACING);
-
-        var exteriorElement = new ItemDisplayElement();
-        exteriorElement.setItem(PolymerModels.getStack(PolymerModels.TARDIS_ALPHA[0]));
-        exteriorElement.setOffset(new Vec3d(0, 1, 0));
-        exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
-
-        var doorElement = new ItemDisplayElement();
-        doorElement.setItem(PolymerModels.getStack(PolymerModels.EXTERIOR_DOOR_OPEN));
-        doorElement.setOffset(new Vec3d(0, 1, 0).offset(facing, 1));
-        doorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
-
-        var doorCloseInteractionHandler = new VirtualElement.InteractionHandler() {
-            @Override
-            public void interact(ServerPlayerEntity player, Hand hand) {
-                if (world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity && blockEntity.getLinkedTardis() != null) {
-                    var tardis = blockEntity.getLinkedTardis();
-                    world.playSound(null, pos, SoundEvents.BLOCK_BAMBOO_WOOD_DOOR_CLOSE, SoundCategory.BLOCKS);
-                    tardis.getExteriorWorld().ifPresent(world ->
-                            world.playSound(null, tardis.getCurrentLandedLocation().get().pos(),
-                                    SoundEvents.BLOCK_BAMBOO_WOOD_DOOR_CLOSE, SoundCategory.BLOCKS));
-                    tardis.setDoorOpen(false, false);
-                }
-            }
-        };
-
-        var leftDoorInteraction = new InteractionElement();
-        leftDoorInteraction.setHandler(doorCloseInteractionHandler);
-        leftDoorInteraction.setOffset(new Vec3d(0, 1.0 / 16.0 * -7, 0)
-                .offset(facing, 0.5)
-                .offset(facing.rotateYCounterclockwise(), 1.0 / 16.0 * 8.0));
-        leftDoorInteraction.setSize(0.25f, 2);
-
-        var rightDoorInteraction = new InteractionElement();
-        rightDoorInteraction.setHandler(doorCloseInteractionHandler);
-        rightDoorInteraction.setOffset(new Vec3d(0, 1.0 / 16.0 * -7, 0)
-                .offset(facing, 0.5)
-                .offset(facing.rotateYClockwise(), 1.0 / 16.0 * 8.0));
-        rightDoorInteraction.setSize(0.25f, 2);
-
-        return new PerhapsElementHolder() {
-            byte currentAlpha = 0;
-            boolean currentlyOpen;
-
-            {
-                addElement(exteriorElement);
-            }
-
-            @Override
-            protected void onTick() {
-                if (world.getTime() % 20 == 0) {
-                    var facing = world.getBlockState(pos).get(FACING);
-
-                    exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
-                    doorElement.setOffset(new Vec3d(0, 1, 0).offset(facing, 1));
-                    doorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
-                }
-
-                if (world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity && blockEntity.getLinkedTardis() != null) {
-                    byte alpha = (byte) MathHelper.clamp(blockEntity.getLinkedTardis().getState()
-                            .getExteriorAlpha(blockEntity.getLinkedTardis()), -1, 15);
-                    if (alpha != currentAlpha) {
-                        exteriorElement.setItem(PolymerModels.getStack(alpha < 0 ? PolymerModels.TARDIS : PolymerModels.TARDIS_ALPHA[alpha]));
-                        currentAlpha = alpha;
-                    }
-
-                    var open = Objects.requireNonNull(blockEntity.getLinkedTardis()).isDoorOpen();
-                    if (open != currentlyOpen) {
-                        if (open) {
-                            addElement(doorElement);
-                            addElement(leftDoorInteraction);
-                            addElement(rightDoorInteraction);
-                        } else {
-                            removeElement(doorElement);
-                            removeElement(leftDoorInteraction);
-                            removeElement(rightDoorInteraction);
-                        }
-                        currentlyOpen = open;
-                    }
-                }
-            }
-        };
     }
 }

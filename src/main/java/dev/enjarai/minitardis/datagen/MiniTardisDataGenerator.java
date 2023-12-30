@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 public class MiniTardisDataGenerator implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
-		fabricDataGenerator.createPack().addProvider(ModLootGeneration::new);
+		var pack = fabricDataGenerator.createPack();
+		pack.addProvider(ModLootGeneration::new);
+		pack.addProvider(ModBlockStateGeneration::new);
 	}
 }

@@ -48,7 +48,7 @@ public class ModBlocks {
                     .dropsNothing()
                     .nonOpaque()
                     .allowsSpawning(Blocks::never)));
-    public static final SimplePolymerBlock TARDIS_PLATING =
+    public static final TardisPlatingBlock TARDIS_PLATING =
             register("tardis_plating", new TardisPlatingBlock(FabricBlockSettings.create()
                     .mapColor(MapColor.BLACK)
                     .requiresTool()

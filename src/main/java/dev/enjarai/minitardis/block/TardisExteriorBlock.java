@@ -68,7 +68,7 @@ public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolym
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
+    public Block getPerhapsPolymerBlock(BlockState state, ServerPlayerEntity player) {
         return Blocks.BARRIER;
     }
 

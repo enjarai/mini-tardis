@@ -13,6 +13,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.EnumProperty;
@@ -145,7 +146,7 @@ public class InteriorDoorBlock extends HorizontalFacingBlock implements PerhapsP
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
+    public Block getPerhapsPolymerBlock(BlockState state, ServerPlayerEntity player) {
         return Blocks.BARRIER;
     }
 

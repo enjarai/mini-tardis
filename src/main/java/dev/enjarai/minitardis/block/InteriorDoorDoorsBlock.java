@@ -168,12 +168,12 @@ public class InteriorDoorDoorsBlock extends HorizontalFacingBlock implements Per
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
+    public Block getPerhapsPolymerBlock(BlockState state, ServerPlayerEntity player) {
         return Blocks.LIGHT;
     }
 
     @Override
-    public BlockState getPolymerBlockState(BlockState state) {
+    public BlockState getPerhapsPolymerBlockState(BlockState state, ServerPlayerEntity player) {
         return getPolymerBlock(state).getDefaultState().with(LightBlock.LEVEL_15, 0);
     }
 

@@ -10,20 +10,31 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 public interface PerhapsPolymerBlock extends PolymerBlock, PolymerClientDecoded, PolymerKeepModel {
     @Override
+    default Block getPolymerBlock(BlockState state) {
+        return (Block) this;
+    }
+
+    @Override
     default Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
         if (MiniTardis.playerIsRealGamer(player.networkHandler)) {
-            return (Block) this;
+            return PolymerBlock.super.getPolymerBlock(state, player);
         }
 
-        return PolymerBlock.super.getPolymerBlock(state, player);
+        return getPerhapsPolymerBlock(state, player);
     }
 
     @Override
     default BlockState getPolymerBlockState(BlockState state, ServerPlayerEntity player) {
         if (MiniTardis.playerIsRealGamer(player.networkHandler)) {
-            return state;
+            return PolymerBlock.super.getPolymerBlockState(state, player);
         }
 
-        return PolymerBlock.super.getPolymerBlockState(state, player);
+        return getPerhapsPolymerBlockState(state, player);
+    }
+
+    Block getPerhapsPolymerBlock(BlockState state, ServerPlayerEntity player);
+
+    default BlockState getPerhapsPolymerBlockState(BlockState state, ServerPlayerEntity player) {
+        return getPerhapsPolymerBlock(state, player).getDefaultState();
     }
 }

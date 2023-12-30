@@ -61,7 +61,7 @@ public class DimensionsApp implements ScreenApp {
 
             {
                 controls.getTardis().getServer().getWorldRegistryKeys().stream()
-                        .filter(key -> !key.getValue().getPath().startsWith("tardis/"))
+                        .filter(key -> canAddAsAccessible(key))
                         .sorted(Comparator.comparing(RegistryKey::getValue))
                         .forEachOrdered(world -> {
                             var star = new DimensionStarElement(0, 0, world);
@@ -112,6 +112,10 @@ public class DimensionsApp implements ScreenApp {
                 CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.DIMENSIONS_BACKGROUND);
             }
         };
+    }
+
+    public boolean canAddAsAccessible(RegistryKey<World> worldKey) {
+        return !worldKey.getValue().getPath().startsWith("tardis/");
     }
 
     @SuppressWarnings("deprecation")

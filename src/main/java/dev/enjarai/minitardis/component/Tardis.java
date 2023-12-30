@@ -10,6 +10,7 @@ import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisExteriorBlock;
 import dev.enjarai.minitardis.block.TardisExteriorBlockEntity;
 import dev.enjarai.minitardis.component.flight.*;
+import dev.enjarai.minitardis.component.screen.app.HistoryApp;
 import net.minecraft.block.FacingBlock;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
@@ -60,7 +61,6 @@ public class Tardis {
             FlightState.CODEC.optionalFieldOf("flight_state", new LandedState()).forGetter(t -> t.state),
             Codec.INT.optionalFieldOf("stability", 1000).forGetter(t -> t.stability),
             Codec.INT.optionalFieldOf("fuel", 500).forGetter(t -> t.fuel),
-            HistoryEntry.CODEC.listOf().optionalFieldOf("history", List.of()).forGetter(t -> t.history),
             Codec.BOOL.optionalFieldOf("door_open", false).forGetter(t -> t.doorOpen)
     ).apply(instance, Tardis::new));
 
@@ -80,10 +80,9 @@ public class Tardis {
     private FlightState state;
     private int stability;
     private int fuel;
-    private final List<HistoryEntry> history;
     private boolean doorOpen;
 
-    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Either<TardisLocation, PartialTardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability, int fuel, List<HistoryEntry> history, boolean doorOpen) {
+    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Either<TardisLocation, PartialTardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability, int fuel, boolean doorOpen) {
         this.uuid = uuid;
         this.interiorPlaced = interiorPlaced;
         this.interior = interior;
@@ -94,7 +93,6 @@ public class Tardis {
         this.state = state;
         this.stability = stability;
         this.fuel = fuel;
-        this.history = new ArrayList<>(history);
         this.doorOpen = doorOpen;
 
         this.controls.tardis = this;
@@ -108,7 +106,7 @@ public class Tardis {
                         Either.left(location),
                 Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(),
                 location == null ? new DisabledState() : new LandingState(location, true),
-                1000, 500, List.of(), false
+                1000, 500, false
         );
 
         holder.addTardis(this);
@@ -125,7 +123,7 @@ public class Tardis {
                 Either.right(new PartialTardisLocation(destination.worldKey())),
                 Optional.of(destination), BlockPos.ORIGIN, new TardisControl(),
                 new FlyingState(),
-                842, 567, List.of(), false
+                842, 567, false
         );
 
         holder.addTardis(this);
@@ -444,12 +442,8 @@ public class Tardis {
         return fuel != oldFuel;
     }
 
-    public List<HistoryEntry> getHistory() {
-        return history;
-    }
-
     public void addHistoryEntry(HistoryEntry entry) {
-        history.add(0, entry);
+        controls.getScreenApp(HistoryApp.ID).ifPresent(app -> ((HistoryApp) app).history.add(0, entry));
     }
 
     public boolean isDoorOpen() {

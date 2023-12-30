@@ -20,7 +20,7 @@ public record RandomAppLootFunction(List<RegistryKey<World>> additionalDimension
             RegistryKey.createCodec(RegistryKeys.WORLD).listOf().optionalFieldOf("additional_dimensions", List.of()).forGetter(RandomAppLootFunction::additionalDimensions)
     ).apply(instance, RandomAppLootFunction::new));
     public static final List<Identifier> LOOT_APPS = List.of(
-            SnakeApp.ID, ScannerApp.ID, BadAppleApp.ID, HistoryApp.ID, DimensionsApp.ID,
+            SnakeApp.ID, ScannerApp.ID, BadAppleApp.ID, DimensionsApp.ID,
             LookAndFeelApp.ID, WaypointsApp.ID
     );
 

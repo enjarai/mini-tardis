@@ -41,6 +41,7 @@
   "mini_tardis.app.mini_tardis.dimensions": "Dimensions",
   "mini_tardis.app.mini_tardis.gps": "GPS",
   "mini_tardis.app.mini_tardis.history": "Past Locations",
+  "mini_tardis.app.mini_tardis.history.tooltip": "%d locations stored",
   "mini_tardis.app.mini_tardis.package_manager": "Packages",
   "mini_tardis.app.mini_tardis.scanner": "Terrain Scanner",
   "mini_tardis.app.mini_tardis.status": "Status",

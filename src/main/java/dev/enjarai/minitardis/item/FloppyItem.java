@@ -2,11 +2,13 @@ package dev.enjarai.minitardis.item;
 
 import com.google.common.collect.ImmutableList;
 import dev.enjarai.minitardis.MiniTardis;
+import dev.enjarai.minitardis.component.screen.app.DimensionsApp;
 import dev.enjarai.minitardis.component.screen.app.ScreenApp;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -17,6 +19,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,6 +31,24 @@ public class FloppyItem extends Item implements PolymerItem {
 
     public FloppyItem(Settings settings) {
         super(settings);
+    }
+
+    @Override
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+        var stack = user.getStackInHand(hand);
+        var apps = getApps(stack);
+        for (int i = 0; i < apps.size(); i++) {
+            var app = apps.get(i);
+            if (app instanceof DimensionsApp dimensionsApp
+                    && dimensionsApp.canAddAsAccessible(world.getRegistryKey())
+                    && !dimensionsApp.accessibleDimensions.contains(world.getRegistryKey())) {
+                removeApp(stack, i);
+                dimensionsApp.accessibleDimensions.add(world.getRegistryKey());
+                addApp(stack, dimensionsApp);
+                return TypedActionResult.success(stack);
+            }
+        }
+        return super.use(world, user, hand);
     }
 
     @Override

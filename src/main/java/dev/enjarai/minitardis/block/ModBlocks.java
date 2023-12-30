@@ -23,6 +23,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.poi.PointOfInterestType;
 
@@ -39,6 +40,7 @@ public class ModBlocks {
                     .strength(-1.0F, 3600000.0F)
                     .dropsNothing()
                     .nonOpaque()
+                    .blockVision(Blocks::never)
                     .allowsSpawning(Blocks::never)));
     public static final TardisExteriorExtensionBlock TARDIS_EXTERIOR_EXTENSION =
             register("tardis_exterior_extension", new TardisExteriorExtensionBlock(FabricBlockSettings.create()
@@ -46,14 +48,19 @@ public class ModBlocks {
                     .strength(-1.0F, 3600000.0F)
                     .dropsNothing()
                     .nonOpaque()
+                    .blockVision(Blocks::never)
                     .allowsSpawning(Blocks::never)));
-    public static final SimplePolymerBlock TARDIS_PLATING =
-            register("tardis_plating", new SimplePolymerBlock(FabricBlockSettings.create()
+    public static final TardisPlatingBlock TARDIS_PLATING =
+            register("tardis_plating", new TardisPlatingBlock(FabricBlockSettings.create()
                     .mapColor(MapColor.BLACK)
                     .requiresTool()
-                    .strength(3.0F, 6.0F), Blocks.DEAD_BRAIN_CORAL_BLOCK));
+                    .strength(3.0F, 6.0F)));
     public static final InteriorDoorBlock INTERIOR_DOOR =
             register("interior_door", new InteriorDoorBlock(FabricBlockSettings.create()
+                    .strength(3.0F)
+                    .nonOpaque()));
+    public static final InteriorDoorDoorsBlock INTERIOR_DOOR_DOORS =
+            register("interior_door_doors", new InteriorDoorDoorsBlock(FabricBlockSettings.create()
                     .strength(3.0F)
                     .nonOpaque()));
     public static final ConsoleLeverBlock HANDBRAKE =
@@ -154,12 +161,13 @@ public class ModBlocks {
             PointOfInterestHelper.register(MiniTardis.id("tardis_exterior"), 0, 1, TARDIS_EXTERIOR);
     public static final PointOfInterestType INTERIOR_DOOR_POI =
             PointOfInterestHelper.register(MiniTardis.id("interior_door"), 0, 1,
-                    Arrays.stream(Direction.values()).map(d -> INTERIOR_DOOR.getDefaultState().with(InteriorDoorBlock.FACING, d)).toList());
+                    Arrays.stream(Direction.values())
+                            .filter(d -> d.getHorizontal() != -1)
+                            .map(d -> INTERIOR_DOOR.getDefaultState().with(InteriorDoorBlock.FACING, d)).toList());
 
     public static final Map<? extends Block, Optional<PolymerModelData>> ITEM_BLOCKS;
     static {
         var builder = ImmutableMap.<Block, Optional<PolymerModelData>>builder();
-        builder.put(TARDIS_PLATING, Optional.empty());
         builder.put(INTERIOR_DOOR, Optional.of(PolymerModels.INTERIOR_DOOR_ITEM));
         builder.put(HANDBRAKE, Optional.empty());
         builder.put(CONSOLE_SCREEN, Optional.of(PolymerModels.ROTATING_MONITOR_PACKED));

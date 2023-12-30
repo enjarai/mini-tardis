@@ -1,6 +1,7 @@
 {
   "block.mini_tardis.tardis_plating": "Tardis Plating",
   "block.mini_tardis.interior_door": "Interior Door",
+  "block.mini_tardis.interior_door_door": "Interior Door",
   "block.mini_tardis.handbrake": "Handbrake",
   "block.mini_tardis.console_screen": "Console Screen",
   "block.mini_tardis.tardis_exterior": "Tardis Exterior",
@@ -22,6 +23,8 @@
   "item.mini_tardis.fez": "Fez",
   "item.mini_tardis.floppy": "Floppy",
 
+  "mini_tardis.item_group": "Mini Tardis",
+
   "mini_tardis.state.mini_tardis.landed": "Landed",
   "mini_tardis.state.mini_tardis.refueling": "Refueling",
   "mini_tardis.state.mini_tardis.taking_off": "Taking Off...",
@@ -32,20 +35,23 @@
   "mini_tardis.state.mini_tardis.crashing": "ERROR ERROR WARNING ERROR ERROR ERROR ERROR",
   "mini_tardis.state.mini_tardis.drifting": "CAUTION: Drifting",
   "mini_tardis.state.mini_tardis.disabled": "Powered Off",
+  "mini_tardis.state.mini_tardis.suspended_flight": "Suspended Flight",
 
   "mini_tardis.app.mini_tardis.bad_apple": "Bad Apple",
   "mini_tardis.app.mini_tardis.dimensions": "Dimensions",
   "mini_tardis.app.mini_tardis.gps": "GPS",
   "mini_tardis.app.mini_tardis.history": "Past Locations",
+  "mini_tardis.app.mini_tardis.history.tooltip": "%d locations stored",
   "mini_tardis.app.mini_tardis.package_manager": "Packages",
   "mini_tardis.app.mini_tardis.scanner": "Terrain Scanner",
   "mini_tardis.app.mini_tardis.status": "Status",
   "mini_tardis.app.mini_tardis.snake": "Snake",
   "mini_tardis.app.mini_tardis.bad_snake": "Bad Snake",
+  "mini_tardis.app.mini_tardis.look_and_feel": "Look and Feel",
+  "mini_tardis.app.mini_tardis.waypoints": "Waypoints",
+  "mini_tardis.app.mini_tardis.waypoints.tooltip": "%d locations stored",
 
   "dimension.minecraft.overworld": "Overworld",
   "dimension.minecraft.the_nether": "The Nether",
-  "dimension.minecraft.the_end": "The End",
-
-  "mini_tardis.item_group": "Mini Tardis"
+  "dimension.minecraft.the_end": "The End"
 }

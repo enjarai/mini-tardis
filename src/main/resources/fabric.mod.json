@@ -18,6 +18,9 @@
 		"main": [
 			"dev.enjarai.minitardis.MiniTardis"
 		],
+		"client": [
+			"dev.enjarai.minitardis.client.MiniTardisClient"
+		],
 		"fabric-datagen": [
           "dev.enjarai.minitardis.datagen.MiniTardisDataGenerator"
 		],

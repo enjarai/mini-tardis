@@ -85,6 +85,9 @@ public class FlyingState implements FlightState {
         } else if (newState instanceof DriftingState driftingState) {
             driftingState.flyingTicks = flyingTicks;
             return true;
+        } else if (newState instanceof SuspendedFlightState suspendedFlightState) {
+            suspendedFlightState.flyingTicks = flyingTicks;
+            return true;
         } else if (newState instanceof TakingOffState) {
             return false;
         }

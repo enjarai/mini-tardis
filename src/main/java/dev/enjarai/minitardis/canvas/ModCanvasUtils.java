@@ -21,6 +21,8 @@ public class ModCanvasUtils {
     public static final CanvasImage DIMENSIONS_BACKGROUND = loadImage("dimensions_background.png");
     public static final CanvasImage SNAKE_OVERLAY = loadImage("snake_overlay.png");
     public static final CanvasImage PACKAGE_MANAGER_BACKGROUND = loadImage("package_manager_background.png");
+    public static final CanvasImage LOOK_AND_FEEL_BACKGROUND = loadImage("look_and_feel_background.png");
+    public static final CanvasImage WAYPOINTS_BACKGROUND = loadImage("waypoints_background.png");
     public static final CanvasImage SCREEN_SIDE_BUTTON = loadImage("screen_side_button.png");
     public static final CanvasImage SCREEN_SIDE_BUTTON_PRESSED = loadImage("screen_side_button_pressed.png");
     public static final CanvasImage COORD_WIDGET_X = loadImage("coord_widget_x.png");
@@ -34,6 +36,9 @@ public class ModCanvasUtils {
     public static final CanvasImage LOCK_ICON_UNLOCKED = loadImage("lock_icon_unlocked.png");
     public static final CanvasImage ENERGY_CONDUITS_ACTIVE = loadImage("energy_conduits_active.png");
     public static final CanvasImage ENERGY_CONDUITS_INACTIVE = loadImage("energy_conduits_inactive.png");
+    public static final CanvasImage DRIFTING_PHASE = loadImage("drifting_phase.png");
+    public static final CanvasImage DRIFTING_PHASE_AVAILABLE = loadImage("drifting_phase_available.png");
+    public static final CanvasImage DRIFTING_PHASE_COMPLETE = loadImage("drifting_phase_complete.png");
     public static final CanvasImage HISTORY_CURRENT_OUTLINE = loadImage("history_current_outline.png");
     public static final CanvasImage DIMENSION_MARKER = loadImage("dimension_marker.png");
     public static final CanvasImage DIMENSION_MARKER_SELECTED = loadImage("dimension_marker_selected.png");
@@ -43,6 +48,12 @@ public class ModCanvasUtils {
     public static final CanvasImage SNAKE_TAIL = loadImage("snake_tail.png");
     public static final CanvasImage APPLE = loadImage("apple.png");
     public static final CanvasImage APP_SELECTED = loadImage("app_selected.png");
+    public static final CanvasImage HUE_SELECTOR = loadImage("hue_selector.png");
+    public static final CanvasImage SV_SELECTOR = loadImage("sv_selector.png");
+    public static final CanvasImage WAYPOINT_EMPTY = loadImage("waypoint_empty.png");
+    public static final CanvasImage WAYPOINT_EMPTY_SELECTED = loadImage("waypoint_empty_selected.png");
+    public static final CanvasImage WAYPOINT_FILLED = loadImage("waypoint_filled.png");
+    public static final CanvasImage WAYPOINT_FILLED_SELECTED = loadImage("waypoint_filled_selected.png");
     public static final CanvasImage SCANNER_APP = loadImage("app/scanner.png");
     public static final CanvasImage GPS_APP = loadImage("app/gps.png");
     public static final CanvasImage BAD_APPLE_APP = loadImage("app/bad_apple.png");
@@ -52,6 +63,8 @@ public class ModCanvasUtils {
     public static final CanvasImage HISTORY_APP = loadImage("app/history.png");
     public static final CanvasImage DIMENSIONS_APP = loadImage("app/dimensions.png");
     public static final CanvasImage PACKAGE_MANAGER_APP = loadImage("app/package_manager.png");
+    public static final CanvasImage LOOK_AND_FEEL_APP = loadImage("app/look_and_feel.png");
+    public static final CanvasImage WAYPOINTS_APP = loadImage("app/waypoints.png");
     public static final CanvasImage DUMMY_APP = loadImage("app/dummy.png");
 
     private static CanvasImage loadImage(String filename) {

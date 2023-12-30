@@ -1,5 +1,7 @@
 package dev.enjarai.minitardis;
 
+import com.mojang.datafixers.util.Unit;
+import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.command.TardisCommand;
@@ -10,13 +12,18 @@ import dev.enjarai.minitardis.data.ModDataStuff;
 import dev.enjarai.minitardis.data.TardisInteriorManager;
 import dev.enjarai.minitardis.item.ModItems;
 import dev.enjarai.minitardis.item.PolymerModels;
+import dev.enjarai.minitardis.net.HandshakeClient;
+import dev.enjarai.minitardis.net.HandshakeServer;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.Version;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -27,7 +34,12 @@ public class MiniTardis implements ModInitializer {
 	// It is considered best practice to use your mod id as the logger's name.
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final String MOD_ID = "mini_tardis";
+	@SuppressWarnings("OptionalGetWithoutIsPresent")
+	public static final Version VERSION = FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata().getVersion();
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final Identifier HANDSHAKE_CHANNEL = id("handshake/1");
+	public static final HandshakeServer<Unit> HANDSHAKE_SERVER = new HandshakeServer<>(
+			Codec.unit(Unit.INSTANCE), MiniTardis.HANDSHAKE_CHANNEL, () -> Unit.INSTANCE);
 
 	@Nullable
 	private static MinecraftServer server;
@@ -68,6 +80,10 @@ public class MiniTardis implements ModInitializer {
 
 	public static TardisInteriorManager getInteriorManager() {
 		return interiorManager;
+	}
+
+	public static boolean playerIsRealGamer(ServerPlayNetworkHandler player) {
+		return HANDSHAKE_SERVER.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED;
 	}
 
 	public static Identifier id(String path) {

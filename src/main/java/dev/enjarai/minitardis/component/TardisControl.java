@@ -5,10 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.component.flight.*;
-import dev.enjarai.minitardis.component.screen.app.GpsApp;
-import dev.enjarai.minitardis.component.screen.app.PackageManagerApp;
-import dev.enjarai.minitardis.component.screen.app.ScreenApp;
-import dev.enjarai.minitardis.component.screen.app.StatusApp;
+import dev.enjarai.minitardis.component.screen.app.*;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
@@ -51,7 +48,7 @@ public class TardisControl {
     }
 
     public TardisControl() {
-        this(1, List.of(new PackageManagerApp(), new StatusApp(), new GpsApp()), false, false);
+        this(1, List.of(new PackageManagerApp(), new StatusApp(), new GpsApp(), new HistoryApp()), false, false);
     }
 
 
@@ -123,9 +120,12 @@ public class TardisControl {
     public boolean handbrake(boolean state) {
         if (!state && tardis.getState() instanceof FlyingState && !isDestinationLocked()) {
             return tardis.suggestStateTransition(new DriftingState());
-        } else if (state && tardis.getState() instanceof DriftingState) {
-            return tardis.suggestStateTransition(new FlyingState());
+        } else if (tardis.getState() instanceof DriftingState driftingState) {
+            return driftingState.toggleFlyLever(tardis, state) || tardis.suggestStateTransition(new FlyingState());
         }
+
+        if (tardis.isDoorOpen()) return false;
+
         return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState(false));
     }
 
@@ -146,12 +146,16 @@ public class TardisControl {
     }
 
     public boolean setEnergyConduits(boolean unlocked) {
-        if (!unlocked && !tardis.getState().isSolid(tardis)) {
-            majorMalfunction();
-            return false;
-        }
-
-        if (unlocked && tardis.getState() instanceof RefuelingState) {
+        if (!tardis.getState().isSolid(tardis)) {
+            if (!unlocked && tardis.getState(FlyingState.class).isPresent()) {
+                tardis.suggestStateTransition(new SuspendedFlightState());
+            } else if (unlocked && tardis.getState(SuspendedFlightState.class).isPresent()) {
+                tardis.suggestStateTransition(new FlyingState());
+            } else if (!unlocked) {
+                majorMalfunction();
+                return false;
+            }
+        } else if (unlocked && tardis.getState() instanceof RefuelingState) {
             return false;
         }
 
@@ -197,6 +201,8 @@ public class TardisControl {
     public Optional<ScreenApp> getScreenApp(@Nullable Identifier id) {
         return Optional.ofNullable(screenApps.get(id));
     }
+
+
 
     public List<ScreenApp> getAllApps() {
         return screenApps.values().stream().sorted(Comparator.comparing(ScreenApp::id)).toList();

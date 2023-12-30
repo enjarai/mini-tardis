@@ -53,6 +53,14 @@ public class TardisCommand {
                                 .executes(context -> installApps(context, ScreenApp.CONSTRUCTORS.values().stream().map(Supplier::get).toList()))
                         )
                 )
+                .then(CommandManager.literal("door")
+                        .then(CommandManager.literal("toggle")
+                                .then(CommandManager.argument("tardis", UuidArgumentType.uuid())
+                                        .suggests(TardisCommand::suggestTardii)
+                                        .executes(context -> toggleDoor(context, UuidArgumentType.getUuid(context, "tardis")))
+                                )
+                        )
+                )
         );
     }
 
@@ -70,6 +78,11 @@ public class TardisCommand {
 
     private static int restoreExterior(CommandContext<ServerCommandSource> context, UUID uuid) {
         getHolder(context).getTardis(uuid).ifPresent(Tardis::buildExterior);
+        return 1;
+    }
+
+    private static int toggleDoor(CommandContext<ServerCommandSource> context, UUID uuid) {
+        getHolder(context).getTardis(uuid).ifPresent(t -> t.setDoorOpen(!t.isDoorOpen(), false));
         return 1;
     }
 

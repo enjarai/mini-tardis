@@ -67,9 +67,9 @@ public class GpsApp implements ScreenApp {
         eitherLocation.ifLeft(location -> drawLocation(location, canvas, x, y)).ifRight(partialLocation -> {
             DefaultFonts.VANILLA.drawText(canvas, "Unknown", x, y, 8, CanvasColor.LIGHT_GRAY_HIGH);
 
-            var worldId = partialLocation.worldKey().getValue();
+            var worldId = partialLocation.worldKey();
             DefaultFonts.VANILLA.drawText(
-                    canvas, Text.translatable("dimension." + worldId.getNamespace() + "." + worldId.getPath()).getString(),
+                    canvas, DimensionsApp.translateWorldId(worldId).getString(),
                     x, y + 9, 8, CanvasColor.LIGHT_GRAY_HIGH
             );
         });
@@ -92,9 +92,9 @@ public class GpsApp implements ScreenApp {
         var facingColor = location.facing().getOffsetX() != 0 ? CanvasColor.RED_HIGH : (location.facing().getOffsetZ() != 0 ? CanvasColor.GREEN_HIGH : CanvasColor.BLUE_HIGH);
         DefaultFonts.VANILLA.drawText(canvas, facingText, x + xWidth + spaceWidth + yWidth + spaceWidth + zWidth + spaceWidth, y, 8, facingColor);
 
-        var worldId = location.worldKey().getValue();
+        var worldId = location.worldKey();
         DefaultFonts.VANILLA.drawText(
-                canvas, Text.translatable("dimension." + worldId.getNamespace() + "." + worldId.getPath()).getString(),
+                canvas, DimensionsApp.translateWorldId(worldId).getString(),
                 x, y + 9, 8, CanvasColor.LIGHT_GRAY_HIGH
         );
     }

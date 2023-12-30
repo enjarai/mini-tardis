@@ -10,6 +10,7 @@ import dev.enjarai.minitardis.component.flight.DisabledState;
 import dev.enjarai.minitardis.component.screen.TardisScreenView;
 import dev.enjarai.minitardis.component.screen.app.AppView;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
+import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
@@ -45,6 +46,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
     private final VirtualDisplay display;
     private final TardisScreenView canvas;
+    private final CanvasImage backingCanvas;
     public final Random drawRandom = new LocalRandom(69420); // funny numbers haha
     private final List<ServerPlayerEntity> addedPlayers = new ArrayList<>();
     @Nullable
@@ -55,6 +57,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     @Nullable
     Identifier selectedApp;
     public SimpleInventory inventory = new SimpleInventory(1);
+    public CanvasColor backgroundColor = CanvasColor.TERRACOTTA_BLUE_LOWEST;
 
     public ConsoleScreenBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.CONSOLE_SCREEN_ENTITY, pos, state);
@@ -65,7 +68,8 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                 .invisible()
                 .callback(this::handleClick)
                 .build();
-        this.canvas = new TardisScreenView(new SubView(display.getCanvas(), 0, 16, 128, 96));
+        this.backingCanvas = new CanvasImage(128, 128);
+        this.canvas = new TardisScreenView(new SubView(backingCanvas, 0, 16, 128, 96));
     }
 
     @Override
@@ -75,6 +79,8 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         }
 
         nbt.put("inventory", inventory.toNbtList());
+
+        nbt.putInt("backgroundColor", backgroundColor.getRgbColor());
     }
 
     @Override
@@ -85,6 +91,10 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
         if (nbt.contains("inventory")) {
             inventory.readNbtList(nbt.getList("inventory", NbtElement.COMPOUND_TYPE));
+        }
+
+        if (nbt.contains("backgroundColor")) {
+            backgroundColor = CanvasUtils.findClosestColor(nbt.getInt("backgroundColor"));
         }
     }
 
@@ -158,7 +168,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     }
 
     private void refresh(Tardis tardis) {
-        CanvasUtils.fill(canvas, 0, 0, canvas.getWidth(), canvas.getHeight(), CanvasColor.TERRACOTTA_BLUE_LOWEST);
+        CanvasUtils.fill(canvas, 0, 0, canvas.getWidth(), canvas.getHeight(), backgroundColor);
 
         var controls = tardis.getControls();
         if (currentView != null) {
@@ -172,7 +182,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
             var apps = controls.getAllApps();
             for (int i = 0; i < apps.size(); i++) {
                 var app = apps.get(i);
-                app.drawIcon(controls, this, new SubView(canvas, getAppX(i), getAppY(i), 24, 24)); // TODO wrapping
+                app.drawIcon(controls, this, new SubView(canvas, getAppX(i), getAppY(i), 24, 24));
             }
         }
 
@@ -182,6 +192,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         }
 
         canvas.refresh(drawRandom);
+        CanvasUtils.draw(display.getCanvas(), 0, 0, backingCanvas);
         display.getCanvas().sendUpdates();
     }
 
@@ -209,6 +220,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
                             currentView = app.getView(controls);
                             currentView.screenOpen(this);
                             playClickSound(1.5f);
+                            markDirty();
                         }
                     }
                 }
@@ -232,6 +244,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         currentView.screenClose(this);
         selectedApp = null;
         currentView = null;
+        markDirty();
     }
 
     public void playClickSound(float pitch) {

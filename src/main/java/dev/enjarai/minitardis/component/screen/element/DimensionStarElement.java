@@ -9,7 +9,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.World;
 
 public class DimensionStarElement extends ClickableElement {
-    private final RegistryKey<World> worldKey;
+    public final RegistryKey<World> worldKey;
 
     public DimensionStarElement(int x, int y, RegistryKey<World> worldKey) {
         super(x, y, 11, 11, controls -> controls.moveDestinationToDimension(worldKey));

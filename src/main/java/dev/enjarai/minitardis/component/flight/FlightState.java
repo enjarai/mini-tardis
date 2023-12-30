@@ -23,7 +23,8 @@ public interface FlightState {
             Map.entry(DriftingState.ID, DriftingState.CODEC),
             Map.entry(DisabledState.ID, DisabledState.CODEC),
             Map.entry(BootingUpState.ID, BootingUpState.CODEC),
-            Map.entry(CrashedState.ID, CrashedState.CODEC)
+            Map.entry(CrashedState.ID, CrashedState.CODEC),
+            Map.entry(SuspendedFlightState.ID, SuspendedFlightState.CODEC)
     );
     Codec<FlightState> CODEC = Identifier.CODEC.dispatch(FlightState::id, ALL::get);
 

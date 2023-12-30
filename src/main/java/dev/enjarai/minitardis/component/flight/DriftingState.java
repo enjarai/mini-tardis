@@ -14,26 +14,43 @@ import static dev.enjarai.minitardis.component.flight.FlyingState.SOUND_LOOP_LEN
 
 public class DriftingState implements FlightState {
     public static final Codec<DriftingState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks)
+            Codec.INT.fieldOf("phase_count").forGetter(s -> s.phaseCount),
+            Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks),
+            Codec.INT.fieldOf("phase_length").forGetter(s -> s.phaseLength),
+            Codec.INT.fieldOf("phase_ticks").forGetter(s -> s.phaseTicks),
+            Codec.INT.fieldOf("phases_complete").forGetter(s -> s.phasesComplete)
     ).apply(instance, DriftingState::new));
     public static final Identifier ID = MiniTardis.id("drifting");
-    private static final int TRANSITION_POINT = 20 * 4;
+    private static final int TRANSITION_POINT = 20 * 2;
 
+    public int phaseCount;
     int flyingTicks;
-    private int driftingTicks;
+    public int phaseLength;
+    public int phaseTicks;
+    public int phasesComplete;
 
-    DriftingState(int flyingTicks) {
+    DriftingState(int phaseCount, int flyingTicks, int phaseLength, int phaseTicks, int phasesComplete) {
+        this.phaseCount = phaseCount;
         this.flyingTicks = flyingTicks;
+        this.phaseLength = phaseLength;
+        this.phaseTicks = phaseTicks;
+        this.phasesComplete = phasesComplete;
     }
 
     public DriftingState() {
-        this(0);
+        this(0, 0, 0, 0, 0);
+    }
+
+    @Override
+    public void init(Tardis tardis) {
+        phaseCount = tardis.getRandom().nextBetween(2, 3) * 2 - 1;
+        phaseLength = tardis.getRandom().nextBetween(20, TRANSITION_POINT);
     }
 
     @Override
     public FlightState tick(Tardis tardis) {
         flyingTicks++;
-        driftingTicks++;
+        phaseTicks++;
         if (flyingTicks % SOUND_LOOP_LENGTH == 0) {
             float errorPitch = tardis.getInteriorWorld().getRandom().nextFloat() - 0.5f;
 
@@ -43,9 +60,30 @@ public class DriftingState implements FlightState {
                     SoundCategory.BLOCKS, 0.6f, 1);
         }
 
-        tickScreenShake(tardis, 2);
+//        tickScreenShake(tardis, 2);
+
+        if (phasesComplete >= phaseCount) {
+            if (phaseTicks == 11) {
+                playForInterior(tardis, SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), SoundCategory.BLOCKS, 1, 0.9f);
+            } else if (phaseTicks == 16) {
+                playForInterior(tardis, SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), SoundCategory.BLOCKS, 1, 1.1f);
+            } else if (phaseTicks >= 21) {
+                tardis.getControls().setDestinationLocked(true, true);
+                tardis.getDestination().ifPresent(destination -> {
+                    tardis.setCurrentLocation(new PartialTardisLocation(destination.worldKey()));
+                });
+                var flyingState = new FlyingState();
+                flyingState.flyingTicks = flyingTicks;
+                return flyingState;
+            }
+        }
 
         if (tardis.getStability() <= 0) {
+            if (tardis.getControls().isDestinationLocked()) {
+                tardis.getDestination().ifPresent(destination -> {
+                    tardis.setCurrentLocation(new PartialTardisLocation(destination.worldKey()));
+                });
+            }
             return new SearchingForLandingState(true);
         }
 
@@ -53,26 +91,33 @@ public class DriftingState implements FlightState {
         tardis.addOrDrainFuel(1);
         tardis.destabilize(4);
 
-        if (driftingTicks == TRANSITION_POINT) {
-            tardis.getControls().setDestinationLocked(true, true);
+        if (phaseTicks == phaseLength) {
             playForInterior(tardis, SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), SoundCategory.BLOCKS, 1, 1);
         }
 
         return this;
     }
 
+    public boolean toggleFlyLever(Tardis tardis, boolean active) {
+        if (phaseTicks >= phaseLength) {
+            if (phasesComplete < phaseCount) {
+                phasesComplete++;
+                phaseTicks = 0;
+                phaseLength = tardis.getRandom().nextBetween(5, TRANSITION_POINT);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public boolean suggestTransition(Tardis tardis, FlightState newState) {
         if (newState instanceof FlyingState flyingState) {
-            if (tardis.getControls().isDestinationLocked()) {
-                tardis.getDestination().ifPresent(destination -> {
-                    tardis.setCurrentLocation(new PartialTardisLocation(destination.worldKey()));
-                });
-            }
             flyingState.flyingTicks = flyingTicks;
+            flyingState.errorLoops = 2;
             return true;
         }
-        tardis.getControls().moderateMalfunction();
         return false;
     }
 

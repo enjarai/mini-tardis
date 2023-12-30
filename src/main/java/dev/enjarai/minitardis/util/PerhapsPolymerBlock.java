@@ -6,7 +6,9 @@ import eu.pb4.polymer.core.api.utils.PolymerClientDecoded;
 import eu.pb4.polymer.core.api.utils.PolymerKeepModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 
 public interface PerhapsPolymerBlock extends PolymerBlock, PolymerClientDecoded, PolymerKeepModel {
     @Override
@@ -30,6 +32,11 @@ public interface PerhapsPolymerBlock extends PolymerBlock, PolymerClientDecoded,
         }
 
         return getPerhapsPolymerBlockState(state, player);
+    }
+
+    @Override
+    default boolean handleMiningOnServer(ItemStack tool, BlockState state, BlockPos pos, ServerPlayerEntity player) {
+        return !MiniTardis.playerIsRealGamer(player.networkHandler);
     }
 
     Block getPerhapsPolymerBlock(BlockState state, ServerPlayerEntity player);

@@ -38,6 +38,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
+import static dev.enjarai.minitardis.block.TardisExteriorExtensionBlock.VISIBLENESS;
+
 @SuppressWarnings("deprecation")
 public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolymerBlock {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
@@ -96,7 +98,7 @@ public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolym
 
     @Override
     public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
-        world.setBlockState(pos.up(), ModBlocks.TARDIS_EXTERIOR_EXTENSION.getStateWithProperties(state));
+        world.setBlockState(pos.up(), ModBlocks.TARDIS_EXTERIOR_EXTENSION.getStateWithProperties(state).with(VISIBLENESS, 0));
     }
 
     @Nullable

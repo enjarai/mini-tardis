@@ -59,7 +59,7 @@ public class TardisExteriorExtensionBlock extends Block implements PerhapsPolyme
 
     public TardisExteriorExtensionBlock(Settings settings) {
         super(settings);
-        setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(VISIBLENESS, 0));
+        setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(VISIBLENESS, 16));
     }
 
     @Override

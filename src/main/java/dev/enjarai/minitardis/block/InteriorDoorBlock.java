@@ -88,8 +88,11 @@ public class InteriorDoorBlock extends HorizontalFacingBlock implements PerhapsP
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        getTardis(world).ifPresent(tardis -> tardis.teleportEntityOut(player));
-        return ActionResult.SUCCESS;
+        if (hit.getSide() == state.get(FACING)) {
+            getTardis(world).ifPresent(tardis -> tardis.teleportEntityOut(player));
+            return ActionResult.SUCCESS;
+        }
+        return super.onUse(state, world, pos, player, hand, hit);
     }
 
     @Override

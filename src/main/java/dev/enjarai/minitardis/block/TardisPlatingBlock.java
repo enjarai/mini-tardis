@@ -9,7 +9,9 @@ import eu.pb4.polymer.core.api.utils.PolymerKeepModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 
 public class TardisPlatingBlock extends Block implements PolymerBlock, PolymerClientDecoded, PolymerKeepModel, PolymerTexturedBlock {
     public TardisPlatingBlock(Settings settings) {
@@ -46,5 +48,10 @@ public class TardisPlatingBlock extends Block implements PolymerBlock, PolymerCl
         }
 
         return Blocks.NETHERITE_BLOCK.getDefaultState();
+    }
+
+    @Override
+    public boolean handleMiningOnServer(ItemStack tool, BlockState state, BlockPos pos, ServerPlayerEntity player) {
+        return !MiniTardis.playerIsRealGamer(player.networkHandler);
     }
 }

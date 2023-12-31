@@ -1,28 +1,11 @@
 package dev.enjarai.minitardis.block;
 
-import dev.enjarai.minitardis.item.PolymerModels;
-import dev.enjarai.minitardis.util.PerhapsElementHolder;
 import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
-import eu.pb4.polymer.core.api.utils.PolymerSyncUtils;
-import eu.pb4.polymer.core.api.utils.PolymerUtils;
-import eu.pb4.polymer.networking.api.PolymerHandshakeHandler;
-import eu.pb4.polymer.networking.api.PolymerServerNetworking;
-import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
-import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
-import eu.pb4.polymer.virtualentity.api.ElementHolder;
-import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
-import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
-import eu.pb4.polymer.virtualentity.api.elements.VirtualElement;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
@@ -35,8 +18,6 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 import static dev.enjarai.minitardis.block.TardisExteriorExtensionBlock.VISIBLENESS;
 
@@ -70,7 +51,7 @@ public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolym
     }
 
     @Override
-    public Block getPerhapsPolymerBlock(BlockState state, ServerPlayerEntity player) {
+    public Block getPerhapsPolymerBlock(BlockState state) {
         return Blocks.BARRIER;
     }
 

@@ -100,7 +100,7 @@ public class TardisExteriorExtensionBlock extends Block implements PerhapsPolyme
     }
 
     @Override
-    public Block getPerhapsPolymerBlock(BlockState state, ServerPlayerEntity player) {
+    public Block getPerhapsPolymerBlock(BlockState state) {
         return Blocks.BARRIER;
     }
 

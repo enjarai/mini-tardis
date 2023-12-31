@@ -32,7 +32,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
@@ -168,12 +167,12 @@ public class InteriorDoorDoorsBlock extends HorizontalFacingBlock implements Per
     }
 
     @Override
-    public Block getPerhapsPolymerBlock(BlockState state, ServerPlayerEntity player) {
+    public Block getPerhapsPolymerBlock(BlockState state) {
         return Blocks.LIGHT;
     }
 
     @Override
-    public BlockState getPerhapsPolymerBlockState(BlockState state, ServerPlayerEntity player) {
+    public BlockState getPerhapsPolymerBlockState(BlockState state) {
         return getPolymerBlock(state).getDefaultState().with(LightBlock.LEVEL_15, 0);
     }
 

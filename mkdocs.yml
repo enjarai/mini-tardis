@@ -1,8 +1,11 @@
-site_name: Mini Tardis Docs
+site_name: Mini Tardis Manual
 
 nav:
   - index.md
   - getting_started.md
+  - Basics:
+      - basics/console_layout.md
+      - basics/basics_of_flight.md
 
 theme:
   name: material

@@ -40,3 +40,17 @@ See the blueprint below for instructions.
     The console of your makeshift TARDIS (made of Birch Stairs in this blueprint) can be made of any block.
 
 ![Makeshift Tardis Blueprint (IF THIS DOESN'T LOAD, UPDATE YOUR BROWSER)](img/makeshift_tardis.apng)
+
+### Operation
+
+Once you have built your makeshift TARDIS, using it is as simple as getting on and pulling the **Handbrake**.
+For your own safety, please make sure to stay inside the dematerialization zone while your TARDIS is taking off.
+
+!!! warning
+
+    Using the makeshift TARDIS will deposit it and you into a fully-fledged Model 82-4 timeship,
+    which will be in flight at your moment of entry. As you will have limited time to safely land your new TARDIS, 
+    it is highly recommended that you read at least the [Basics of Flight] page of this manual before operating
+    your makeshift timeship.
+
+[Basics of Flight]: basics/basics_of_flight.md

@@ -4,6 +4,7 @@ import dev.enjarai.minitardis.MiniTardis;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.core.api.utils.PolymerClientDecoded;
 import eu.pb4.polymer.core.api.utils.PolymerKeepModel;
+import eu.pb4.polymer.core.api.utils.PolymerUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -13,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 public interface PerhapsPolymerBlock extends PolymerBlock, PolymerClientDecoded, PolymerKeepModel {
     @Override
     default Block getPolymerBlock(BlockState state) {
-        return (Block) this;
+        return PolymerUtils.isOnClientThread() ? (Block) this : getPerhapsPolymerBlock(state);
     }
 
     @Override
@@ -22,7 +23,12 @@ public interface PerhapsPolymerBlock extends PolymerBlock, PolymerClientDecoded,
             return PolymerBlock.super.getPolymerBlock(state, player);
         }
 
-        return getPerhapsPolymerBlock(state, player);
+        return getPerhapsPolymerBlock(state);
+    }
+
+    @Override
+    default BlockState getPolymerBlockState(BlockState state) {
+        return PolymerUtils.isOnClientThread() ? state : getPerhapsPolymerBlockState(state);
     }
 
     @Override
@@ -31,7 +37,7 @@ public interface PerhapsPolymerBlock extends PolymerBlock, PolymerClientDecoded,
             return PolymerBlock.super.getPolymerBlockState(state, player);
         }
 
-        return getPerhapsPolymerBlockState(state, player);
+        return getPerhapsPolymerBlockState(state);
     }
 
     @Override
@@ -39,9 +45,9 @@ public interface PerhapsPolymerBlock extends PolymerBlock, PolymerClientDecoded,
         return !MiniTardis.playerIsRealGamer(player.networkHandler);
     }
 
-    Block getPerhapsPolymerBlock(BlockState state, ServerPlayerEntity player);
+    Block getPerhapsPolymerBlock(BlockState state);
 
-    default BlockState getPerhapsPolymerBlockState(BlockState state, ServerPlayerEntity player) {
-        return getPerhapsPolymerBlock(state, player).getDefaultState();
+    default BlockState getPerhapsPolymerBlockState(BlockState state) {
+        return getPerhapsPolymerBlock(state).getDefaultState();
     }
 }

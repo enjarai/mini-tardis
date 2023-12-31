@@ -2,6 +2,7 @@ site_name: Mini Tardis Docs
 
 nav:
   - index.md
+  - getting_started.md
 
 theme:
   name: material
@@ -30,6 +31,7 @@ theme:
 
 
 repo_url: https://github.com/enjarai/mini-tardis
+repo_name: enjarai/mini-tardis
 
 markdown_extensions:
   - admonition

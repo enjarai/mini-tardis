@@ -10,6 +10,8 @@ it is highly recommended that you read this guide in full before making any atte
     While most of this guide will still be applicable if your TARDIS is the expanded Model 82-4T,
     additional functionality such as inter-temporal targeting and displacement will not be covered.
 
+![Cover Image](img/cover.png)
+
 If you are currently not in possession of a Model 82-4 TARDIS, 
 see the [Getting Started] page for details on how to locate one.
 

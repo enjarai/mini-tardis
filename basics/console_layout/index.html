@@ -686,7 +686,9 @@
 
 <h1 id="console-layout">Console Layout</h1>
 <p>While the TARDIS console is fully reconfigurable, you will probably want to use the standard layout to begin with.
-This page names and explains these controls.</p>
+This page names and explains these controls. </p>
+<p>All controls are included with every TARDIS by default, 
+but recipes to craft additional copies/replacements are also included on this page. </p>
 <p>For ease of use ingame, you may want to install a mod like <a href="https://modrinth.com/mod/polydex">Polydex</a> (server-side) or <a href="https://modrinth.com/mod/wthit">WTHIT</a> (client-side),
 as these will be able to identify controls for you at a glance.</p>
 <h2 id="layout">Layout</h2>
@@ -709,15 +711,83 @@ as these will be able to identify controls for you at a glance.</p>
 </ol>
 <h2 id="detailed-reference">Detailed Reference</h2>
 <h3 id="artron-scoop-activator">Artron Scoop Activator</h3>
+<p>Toggles refueling mode, can only be activated when the TARDIS is landed 
+and <a href="#artron-conduit-controller">Artron Conduits</a> are turned off.</p>
+<p>Refueling mode slowly refills the artron batteries of the TARDIS over time, which are used up during flight.</p>
+<details class="abstract">
+<summary>Recipe</summary>
+<p><img alt="Scoop Activator Recipe" src="../../img/refuel_toggle_recipe.png" /></p>
+</details>
 <h3 id="target-localization-corrector">Target Localization Corrector</h3>
+<p>These buttons are used to offset your target destination in their assigned directions.
+They are intended to be used in conjunction with the <a href="#localization-scale-interpreter">Scale Interpreter</a> 
+to easily cover larger distances.</p>
+<p>To modify your destination vertically, use the <a href="#lateral-target-localization-corrector">Lateral Target Localization Corrector</a>.</p>
+<details class="abstract">
+<summary>Recipes</summary>
+<p><img alt="Localization Corrector variant 1 Recipe" src="../../img/nudge_destination_button_1_recipe.png" />
+<img alt="Localization Corrector variant 2 Recipe" src="../../img/nudge_destination_button_2_recipe.png" /></p>
+</details>
 <h3 id="lateral-target-localization-corrector">Lateral Target Localization Corrector</h3>
+<p>This button is used in conjunction with the adjacent state switch to move your destination on the Y axis.
+When the state switch is disabled, pressing the corrector will snap your destination to the next 
+valid landing spot directly below the current destination.
+Having the state switch enabled does the exact same thing, except it goes up instead of down.</p>
+<details class="abstract">
+<summary>Recipes</summary>
+<p><img alt="Lateral Corrector Recipe" src="../../img/vertical_nudge_destination_button_recipe.png" />
+<img alt="State Switch Recipe" src="../../img/state_comparator_recipe.png" /></p>
+</details>
 <h3 id="artron-conduit-controller">Artron Conduit Controller</h3>
+<p>This toggle has to be activated as a prerequisite for taking off, but will, 
+while active, also constantly drain a slight amount of artron energy.</p>
+<p>Deactivating Artron Conduits while already in flight will let your TARDIS enter suspended flight mode,
+massively reducing fuel consumption while still staying in the time vortex.</p>
+<details class="abstract">
+<summary>Recipe</summary>
+<p><img alt="Conduit Controller Recipe" src="../../img/fuel_control_recipe.png" /></p>
+</details>
 <h3 id="localization-scale-interpreter">Localization Scale Interpreter</h3>
+<p>Configures the coordinate scale used by <a href="#target-localization-corrector">Target Localization Correctors</a>.
+Setting to state 1, 2, 3, and 4 will apply a scale of 1, 10, 100, and 1000 respectively.</p>
+<details class="abstract">
+<summary>Recipe</summary>
+<p><img alt="Scale Interpreter Recipe" src="../../img/coordinate_scale_selector_recipe.png" /></p>
+</details>
 <h3 id="handbrake">Handbrake</h3>
+<p>This lever triggers both takeoff and landing sequences.</p>
+<p>Also used in interdimensional drifting.</p>
+<details class="abstract">
+<summary>Recipe</summary>
+<p><img alt="Handbrake Recipe" src="../../img/handbrake.png" /></p>
+</details>
 <h3 id="power-coupling">Power Coupling</h3>
+<p>The Power Coupling can be used to completely turn off your TARDIS, or reboot it in case of critical systems failure.</p>
+<details class="abstract">
+<summary>Recipe</summary>
+<p><img alt="Power Coupling Recipe" src="../../img/power_coupling.png" /></p>
+</details>
 <h3 id="space-time-destination-reset-switch">Space-time Destination Reset Switch</h3>
+<p>Using this button will set your destination back to your current location.</p>
+<details class="abstract">
+<summary>Recipe</summary>
+<p><img alt="Destination Reset Switch Recipe" src="../../img/reset_destination_button.png" /></p>
+</details>
 <h3 id="centrifugal-facing-modifier">Centrifugal Facing Modifier</h3>
+<p>A quad-state switch that can be used to change the facing of your TARDIS after landing.</p>
+<details class="abstract">
+<summary>Recipe</summary>
+<p><img alt="Facing Modifier Recipe" src="../../img/rotation_selector.png" /></p>
+</details>
 <h3 id="space-time-target-lock-in">Space-time Target Lock-in</h3>
+<p>This button can be toggled on to lock your current target destination. 
+Your destination must be locked to be able to take off.</p>
+<p>Unlocking your destination mid-flight also has several uses, 
+including mid-flight course correction and interdimensional drifting.</p>
+<details class="abstract">
+<summary>Recipe</summary>
+<p><img alt="Target Lock-in" src="../../img/coordinate_lock_recipe.png" /></p>
+</details>
 
 
 

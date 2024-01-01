@@ -98,7 +98,7 @@ Also used in interdimensional drifting.
 
 ??? abstract "Recipe"
 
-    ![Handbrake Recipe](../img/handbrake.png)
+    ![Handbrake Recipe](../img/handbrake_recipe.png)
 
 ### Power Coupling
 
@@ -106,7 +106,7 @@ The Power Coupling can be used to completely turn off your TARDIS, or reboot it 
 
 ??? abstract "Recipe"
 
-    ![Power Coupling Recipe](../img/power_coupling.png)
+    ![Power Coupling Recipe](../img/power_coupling_recipe.png)
 
 ### Space-time Destination Reset Switch
 
@@ -114,7 +114,7 @@ Using this button will set your destination back to your current location.
 
 ??? abstract "Recipe"
 
-    ![Destination Reset Switch Recipe](../img/reset_destination_button.png)
+    ![Destination Reset Switch Recipe](../img/reset_destination_button_recipe.png)
 
 ### Centrifugal Facing Modifier
 
@@ -122,7 +122,7 @@ A quad-state switch that can be used to change the facing of your TARDIS after l
 
 ??? abstract "Recipe"
 
-    ![Facing Modifier Recipe](../img/rotation_selector.png)
+    ![Facing Modifier Recipe](../img/rotation_selector_recipe.png)
 
 ### Space-time Target Lock-in
 

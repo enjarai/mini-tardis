@@ -5,7 +5,7 @@ nav:
   - getting_started.md
   - Basics:
       - basics/console_layout.md
-      - basics/basics_of_flight.md
+      - basics/flying_a_tardis_101.md
 
 theme:
   name: material

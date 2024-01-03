@@ -8,6 +8,7 @@ import dev.enjarai.minitardis.command.TardisCommand;
 import dev.enjarai.minitardis.component.ModComponents;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.screen.app.ScreenApp;
+import dev.enjarai.minitardis.component.screen.app.ScreenAppTypes;
 import dev.enjarai.minitardis.data.ModDataStuff;
 import dev.enjarai.minitardis.data.TardisInteriorManager;
 import dev.enjarai.minitardis.item.ModItems;
@@ -62,10 +63,8 @@ public class MiniTardis implements ModInitializer {
 		ModSounds.load();
 		ModCanvasUtils.load();
 
-		// We want ScreenApp to initialize early, otherwise we get
-		// a recursive initialization NPE once its subclass is accessed later.
-		//noinspection ResultOfMethodCallIgnored
-		ScreenApp.ALL.size();
+		// Load screenapps and their loot tables in order
+		ScreenAppTypes.load();
 		ModDataStuff.load();
 
 		PolymerResourcePackUtils.addModAssets(MOD_ID);

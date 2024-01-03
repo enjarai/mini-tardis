@@ -5,22 +5,31 @@ import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.ModCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.flight.DriftingState;
+import dev.enjarai.minitardis.component.flight.RefuelingState;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
+import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
+import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 import net.minecraft.util.Identifier;
 
-public class DummyApp implements ScreenApp {
-    public static final Codec<DummyApp> CODEC = Codec.unit(DummyApp::new);
+public class FlappyBallApp implements ScreenApp {
+    public static final Codec<FlappyBallApp> CODEC = Codec.unit(FlappyBallApp::new);
 
     @Override
     public AppView getView(TardisControl controls) {
         return new AppView() {
             @Override
             public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                ModCanvasUtils.drawCenteredText(canvas, "This app does not exist anymore.", 64, 40, CanvasColor.WHITE_HIGH);
+
+            }
+
+            @Override
+            public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+                CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.STATUS_BACKGROUND);
             }
 
             @Override
@@ -37,6 +46,6 @@ public class DummyApp implements ScreenApp {
 
     @Override
     public ScreenAppType<?> getType() {
-        return ScreenAppTypes.DUMMY;
+        return null; // TODO
     }
 }

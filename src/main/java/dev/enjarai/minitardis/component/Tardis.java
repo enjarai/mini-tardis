@@ -11,6 +11,7 @@ import dev.enjarai.minitardis.block.TardisExteriorBlock;
 import dev.enjarai.minitardis.block.TardisExteriorBlockEntity;
 import dev.enjarai.minitardis.component.flight.*;
 import dev.enjarai.minitardis.component.screen.app.HistoryApp;
+import dev.enjarai.minitardis.component.screen.app.ScreenAppTypes;
 import net.minecraft.block.FacingBlock;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
@@ -443,7 +444,7 @@ public class Tardis {
     }
 
     public void addHistoryEntry(HistoryEntry entry) {
-        controls.getScreenApp(HistoryApp.ID).ifPresent(app -> ((HistoryApp) app).history.add(0, entry));
+        controls.getScreenApp(ScreenAppTypes.HISTORY).ifPresent(app -> ((HistoryApp) app).history.add(0, entry));
     }
 
     public boolean isDoorOpen() {

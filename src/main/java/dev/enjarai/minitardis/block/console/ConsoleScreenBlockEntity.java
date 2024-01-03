@@ -9,6 +9,7 @@ import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.flight.DisabledState;
 import dev.enjarai.minitardis.component.screen.TardisScreenView;
 import dev.enjarai.minitardis.component.screen.app.AppView;
+import dev.enjarai.minitardis.component.screen.app.ScreenAppType;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -101,7 +102,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     public void tick(World world, BlockPos pos, BlockState state) {
         if (world instanceof ServerWorld serverWorld) {
             if (selectedApp != null && currentView == null) {
-                getTardis(world).ifPresent(tardis -> tardis.getControls().getScreenApp(selectedApp).ifPresent(app -> {
+                getTardis(world).ifPresent(tardis -> tardis.getControls().getScreenApp(ScreenAppType.REGISTRY.get(selectedApp)).ifPresent(app -> {
                     currentView = app.getView(tardis.getControls());
                     currentView.screenOpen(this);
                 }));
@@ -216,7 +217,7 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
 
                         if (x >= appX && x < appX + 24 && y >= appY && y < appY + 24) {
                             var app = apps.get(i);
-                            selectedApp = app.id();
+                            selectedApp = app.getId();
                             currentView = app.getView(controls);
                             currentView.screenOpen(this);
                             playClickSound(1.5f);

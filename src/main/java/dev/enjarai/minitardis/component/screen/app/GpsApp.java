@@ -22,7 +22,6 @@ import java.util.Optional;
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class GpsApp implements ScreenApp {
     public static final Codec<GpsApp> CODEC = Codec.unit(GpsApp::new);
-    public static final Identifier ID = MiniTardis.id("gps");
 
     @Override
     public AppView getView(TardisControl controls) {
@@ -105,7 +104,7 @@ public class GpsApp implements ScreenApp {
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.GPS;
     }
 }

@@ -28,7 +28,6 @@ import static java.lang.Math.abs;
 
 public class SnakeApp implements ScreenApp {
     public static final Codec<SnakeApp> CODEC = Codec.unit(SnakeApp::new);
-    public static final Identifier ID = MiniTardis.id("snake");
 
     @Override
     public AppView getView(TardisControl controls) {
@@ -41,8 +40,8 @@ public class SnakeApp implements ScreenApp {
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.SNAKE;
     }
 
     public static class SnakeAppView implements AppView {

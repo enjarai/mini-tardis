@@ -15,7 +15,6 @@ import net.minecraft.util.Identifier;
 
 public class ScannerApp implements ScreenApp {
     public static final Codec<ScannerApp> CODEC = Codec.unit(ScannerApp::new);
-    public static final Identifier ID = MiniTardis.id("scanner");
 
     @Override
     public AppView getView(TardisControl controls) {
@@ -71,7 +70,7 @@ public class ScannerApp implements ScreenApp {
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.SCANNER;
     }
 }

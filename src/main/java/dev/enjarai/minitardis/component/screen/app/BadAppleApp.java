@@ -19,7 +19,6 @@ import net.minecraft.util.math.MathHelper;
 
 public class BadAppleApp implements ScreenApp {
     public static final Codec<BadAppleApp> CODEC = Codec.unit(BadAppleApp::new);
-    public static final Identifier ID = MiniTardis.id("bad_apple");
 
     @Override
     public AppView getView(TardisControl controls) {
@@ -46,8 +45,8 @@ public class BadAppleApp implements ScreenApp {
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.BAD_APPLE;
     }
 
     public static class BadAppleView implements AppView {

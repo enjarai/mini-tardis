@@ -34,7 +34,6 @@ public class DimensionsApp implements ScreenApp {
     public static final Codec<DimensionsApp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryKey.createCodec(RegistryKeys.WORLD).listOf().optionalFieldOf("accessible_dimensions", List.of()).forGetter(app -> app.accessibleDimensions)
     ).apply(instance, DimensionsApp::new));
-    public static final Identifier ID = MiniTardis.id("dimensions");
 
     public final List<RegistryKey<World>> accessibleDimensions;
 
@@ -149,7 +148,7 @@ public class DimensionsApp implements ScreenApp {
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.DIMENSIONS;
     }
 }

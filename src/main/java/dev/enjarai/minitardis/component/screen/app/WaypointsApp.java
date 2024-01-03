@@ -39,7 +39,6 @@ public class WaypointsApp implements ScreenApp {
     public static final Codec<WaypointsApp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.unboundedMap(Codec.STRING.xmap(Integer::parseInt, Object::toString), TardisLocation.CODEC).optionalFieldOf("waypoints", Map.of()).forGetter(app -> app.waypoints)
     ).apply(instance, WaypointsApp::new));
-    public static final Identifier ID = MiniTardis.id("waypoints");
 
     private final Map<Integer, TardisLocation> waypoints;
 
@@ -141,7 +140,7 @@ public class WaypointsApp implements ScreenApp {
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.WAYPOINTS;
     }
 }

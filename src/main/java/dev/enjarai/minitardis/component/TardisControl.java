@@ -1,13 +1,11 @@
 package dev.enjarai.minitardis.component;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.component.flight.*;
 import dev.enjarai.minitardis.component.screen.app.*;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -27,7 +25,7 @@ public class TardisControl {
     ).apply(instance, TardisControl::new));
 
     private int coordinateScale;
-    private final Map<Identifier, ScreenApp> screenApps;
+    private final Map<ScreenAppType<?>, ScreenApp> screenApps;
     private boolean destinationLocked;
     private boolean energyConduitsUnlocked;
 
@@ -37,7 +35,7 @@ public class TardisControl {
         this.coordinateScale = coordinateScale;
         this.screenApps = new HashMap<>();
 //        ScreenApp.CONSTRUCTORS.forEach((key, value) -> builder.put(key, value.get()));
-        screenApps.forEach(app -> this.screenApps.put(app.id(), app));
+        screenApps.forEach(app -> this.screenApps.put(app.getType(), app));
         this.destinationLocked = destinationLocked;
         this.energyConduitsUnlocked = energyConduitsUnlocked;
     }
@@ -198,31 +196,31 @@ public class TardisControl {
         return tardis;
     }
 
-    public Optional<ScreenApp> getScreenApp(@Nullable Identifier id) {
-        return Optional.ofNullable(screenApps.get(id));
+    public Optional<ScreenApp> getScreenApp(@Nullable ScreenAppType<?> type) {
+        return Optional.ofNullable(screenApps.get(type));
     }
 
 
 
     public List<ScreenApp> getAllApps() {
-        return screenApps.values().stream().sorted(Comparator.comparing(ScreenApp::id)).toList();
+        return screenApps.values().stream().sorted(Comparator.comparing(ScreenApp::getId)).toList();
     }
 
-    public boolean canUninstallApp(Identifier id) {
-        return screenApps.containsKey(id) && screenApps.get(id).canBeUninstalled();
+    public boolean canUninstallApp(ScreenAppType<?> type) {
+        return screenApps.containsKey(type) && screenApps.get(type).canBeUninstalled();
     }
 
-    public Optional<ScreenApp> uninstallApp(Identifier id) {
-        return Optional.ofNullable(screenApps.remove(id));
+    public Optional<ScreenApp> uninstallApp(ScreenAppType<?> type) {
+        return Optional.ofNullable(screenApps.remove(type));
     }
 
     public boolean canInstallApp(ScreenApp app) {
-        return !screenApps.containsKey(app.id());
+        return !screenApps.containsKey(app.getType());
     }
 
     public boolean installApp(ScreenApp app) {
-        if (!screenApps.containsKey(app.id())) {
-            screenApps.put(app.id(), app);
+        if (!screenApps.containsKey(app.getType())) {
+            screenApps.put(app.getType(), app);
             return true;
         }
         return false;

@@ -17,7 +17,6 @@ import net.minecraft.util.Identifier;
 
 public class PackageManagerApp implements ScreenApp {
     public static final Codec<PackageManagerApp> CODEC = Codec.unit(PackageManagerApp::new);
-    public static final Identifier ID = MiniTardis.id("package_manager");
 
     @Override
     public AppView getView(TardisControl controls) {
@@ -113,9 +112,9 @@ public class PackageManagerApp implements ScreenApp {
                 if (floppyInserted) {
                     var floppyStack = blockEntity.inventory.getStack(0);
 
-                    if (controls.canUninstallApp(element.app.id())) {
+                    if (controls.canUninstallApp(element.app.getType())) {
                         FloppyItem.addApp(floppyStack, element.app);
-                        controls.uninstallApp(element.app.id());
+                        controls.uninstallApp(element.app.getType());
 
                         updateInstalledApps();
                         updateSourceApps(floppyStack);
@@ -144,7 +143,7 @@ public class PackageManagerApp implements ScreenApp {
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.PACKAGE_MANAGER;
     }
 }

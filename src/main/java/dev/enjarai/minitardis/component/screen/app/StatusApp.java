@@ -18,7 +18,6 @@ import net.minecraft.util.Identifier;
 
 public class StatusApp implements ScreenApp {
     public static final Codec<StatusApp> CODEC = Codec.unit(StatusApp::new);
-    public static final Identifier ID = MiniTardis.id("status");
 
     @Override
     public AppView getView(TardisControl controls) {
@@ -96,7 +95,7 @@ public class StatusApp implements ScreenApp {
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.STATUS;
     }
 }

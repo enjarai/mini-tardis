@@ -28,7 +28,6 @@ public class HistoryApp implements ScreenApp {
     public static final Codec<HistoryApp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             HistoryEntry.CODEC.listOf().optionalFieldOf("history", List.of()).forGetter(app -> app.history)
     ).apply(instance, HistoryApp::new));
-    public static final Identifier ID = MiniTardis.id("history");
     private static final int ENTRIES_PER_PAGE = 3;
 
     public final List<HistoryEntry> history;
@@ -110,7 +109,7 @@ public class HistoryApp implements ScreenApp {
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.HISTORY;
     }
 }

@@ -9,6 +9,7 @@ import dev.enjarai.minitardis.component.ModComponents;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisHolder;
 import dev.enjarai.minitardis.component.screen.app.ScreenApp;
+import dev.enjarai.minitardis.component.screen.app.ScreenAppType;
 import dev.enjarai.minitardis.item.FloppyItem;
 import dev.enjarai.minitardis.item.ModItems;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -22,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -44,13 +46,13 @@ public class TardisCommand {
                 .then(CommandManager.literal("floppy")
                         .then(CommandManager.literal("install")
                                 .then(CommandManager.argument("app", IdentifierArgumentType.identifier())
-                                        .suggests((context, builder) -> CommandSource.suggestIdentifiers(ScreenApp.ALL.keySet(), builder))
-                                        .executes(context -> installApps(context, List.of(ScreenApp.CONSTRUCTORS.get(
-                                                IdentifierArgumentType.getIdentifier(context, "app")).get())))
+                                        .suggests((context, builder) -> CommandSource.suggestIdentifiers(ScreenAppType.REGISTRY.getIds(), builder))
+                                        .executes(context -> installApps(context, List.of(Objects.requireNonNull(ScreenAppType.REGISTRY.get(
+                                                IdentifierArgumentType.getIdentifier(context, "app"))).constructor().get())))
                                 )
                         )
                         .then(CommandManager.literal("installAll")
-                                .executes(context -> installApps(context, ScreenApp.CONSTRUCTORS.values().stream().map(Supplier::get).toList()))
+                                .executes(context -> installApps(context, ScreenAppType.REGISTRY.stream().map(type -> type.constructor().get()).toList()))
                         )
                 )
                 .then(CommandManager.literal("door")

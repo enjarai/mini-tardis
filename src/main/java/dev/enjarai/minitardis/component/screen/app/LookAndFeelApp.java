@@ -27,7 +27,6 @@ public class LookAndFeelApp implements ScreenApp {
     public static final Codec<LookAndFeelApp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT_STREAM.optionalFieldOf("history", IntStream.empty()).forGetter(app -> IntStream.of(app.history))
     ).apply(instance, LookAndFeelApp::new));
-    public static final Identifier ID = MiniTardis.id("look_and_feel");
 
     public static final int SV_SIZE = 76;
     public static final int H_WIDTH = 16;
@@ -216,7 +215,7 @@ public class LookAndFeelApp implements ScreenApp {
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.LOOK_AND_FEEL;
     }
 }

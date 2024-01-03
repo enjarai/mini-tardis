@@ -11,7 +11,6 @@ import net.minecraft.util.Identifier;
 
 public class SnakeOnBadAppleApp extends SnakeApp {
     public static final Codec<SnakeOnBadAppleApp> CODEC = Codec.unit(SnakeOnBadAppleApp::new);
-    public static final Identifier ID = MiniTardis.id("bad_snake");
 
     @Override
     public AppView getView(TardisControl controls) {
@@ -24,8 +23,8 @@ public class SnakeOnBadAppleApp extends SnakeApp {
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return null; // TODO?
     }
 
     public static class BadSnakeAppView extends SnakeApp.SnakeAppView {

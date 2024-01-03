@@ -19,10 +19,9 @@ public record RandomAppLootFunction(List<RegistryKey<World>> additionalDimension
     public static final Codec<RandomAppLootFunction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryKey.createCodec(RegistryKeys.WORLD).listOf().optionalFieldOf("additional_dimensions", List.of()).forGetter(RandomAppLootFunction::additionalDimensions)
     ).apply(instance, RandomAppLootFunction::new));
-    public static final List<Identifier> LOOT_APPS = List.of(
-            SnakeApp.ID, ScannerApp.ID, BadAppleApp.ID, DimensionsApp.ID,
-            LookAndFeelApp.ID, WaypointsApp.ID
-    );
+    public static final List<ScreenAppType<?>> LOOT_APPS = ScreenAppType.REGISTRY.stream()
+            .filter(ScreenAppType::spawnsAsDungeonLoot)
+            .toList();
 
     @Override
     public LootFunctionType getType() {
@@ -31,8 +30,8 @@ public record RandomAppLootFunction(List<RegistryKey<World>> additionalDimension
 
     @Override
     public ItemStack apply(ItemStack stack, LootContext lootContext) {
-        var appId = LOOT_APPS.get(Math.abs(lootContext.getRandom().nextInt() % LOOT_APPS.size()));
-        var app = ScreenApp.CONSTRUCTORS.get(appId).get();
+        var appType = LOOT_APPS.get(Math.abs(lootContext.getRandom().nextInt() % LOOT_APPS.size()));
+        var app = appType.constructor().get();
         app.applyLootModifications(lootContext, this);
         FloppyItem.addApp(stack, app);
         return stack;

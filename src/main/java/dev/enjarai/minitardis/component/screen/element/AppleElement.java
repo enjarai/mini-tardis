@@ -1,14 +1,12 @@
 package dev.enjarai.minitardis.component.screen.element;
 
-import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.app.SnakeApp;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ClickType;
 import org.joml.Vector2i;
 
@@ -24,7 +22,7 @@ public class AppleElement extends PlacedElement {
 
     @Override
     protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.APPLE);
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("apple"));
     }
 
     @Override

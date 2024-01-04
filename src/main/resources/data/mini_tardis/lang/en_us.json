@@ -37,6 +37,7 @@
   "mini_tardis.state.mini_tardis.disabled": "Powered Off",
   "mini_tardis.state.mini_tardis.suspended_flight": "Suspended Flight",
 
+  "mini_tardis.app.mini_tardis.dummy": "Deleted App",
   "mini_tardis.app.mini_tardis.bad_apple": "Bad Apple",
   "mini_tardis.app.mini_tardis.dimensions": "Dimensions",
   "mini_tardis.app.mini_tardis.gps": "GPS",
@@ -50,6 +51,7 @@
   "mini_tardis.app.mini_tardis.look_and_feel": "Look and Feel",
   "mini_tardis.app.mini_tardis.waypoints": "Waypoints",
   "mini_tardis.app.mini_tardis.waypoints.tooltip": "%d locations stored",
+  "mini_tardis.app.mini_tardis.floppy_bird": "Floppy Bird",
 
   "dimension.minecraft.overworld": "Overworld",
   "dimension.minecraft.the_nether": "The Nether",

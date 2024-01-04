@@ -1,13 +1,11 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import net.minecraft.util.Identifier;
 
 public class SnakeOnBadAppleApp extends SnakeApp {
     public static final Codec<SnakeOnBadAppleApp> CODEC = Codec.unit(SnakeOnBadAppleApp::new);
@@ -19,7 +17,7 @@ public class SnakeOnBadAppleApp extends SnakeApp {
 
     @Override
     public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.BAD_SNAKE_APP);
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/bad_snake"));
     }
 
     @Override
@@ -44,7 +42,7 @@ public class SnakeOnBadAppleApp extends SnakeApp {
             if(animationStarted) {
                 badAppleAppView.draw(blockEntity, canvas);
             }
-            CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SNAKE_OVERLAY);
+            CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("snake_overlay"));
             super.draw(blockEntity, canvas);
         }
 

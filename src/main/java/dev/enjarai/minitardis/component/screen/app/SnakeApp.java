@@ -1,11 +1,9 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.BadApple;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.element.AppleElement;
 import dev.enjarai.minitardis.component.screen.element.SnakeElement;
@@ -13,13 +11,10 @@ import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ClickType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
 import org.joml.Vector2i;
@@ -36,7 +31,7 @@ public class SnakeApp implements ScreenApp {
 
     @Override
     public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SNAKE_APP);
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/snake"));
     }
 
     @Override
@@ -115,7 +110,7 @@ public class SnakeApp implements ScreenApp {
 
         @Override
         public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-            CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.DIMENSIONS_BACKGROUND);
+            CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("dimensions_background"));
         }
 
         public void snakeDied(ConsoleScreenBlockEntity blockEntity) {

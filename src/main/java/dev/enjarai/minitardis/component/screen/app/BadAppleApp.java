@@ -1,11 +1,10 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.BadApple;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -14,7 +13,6 @@ import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ClickType;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 public class BadAppleApp implements ScreenApp {
@@ -41,7 +39,7 @@ public class BadAppleApp implements ScreenApp {
 
     @Override
     public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.BAD_APPLE_APP);
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/bad_apple"));
     }
 
     @Override

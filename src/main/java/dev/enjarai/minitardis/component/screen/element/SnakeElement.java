@@ -1,7 +1,7 @@
 package dev.enjarai.minitardis.component.screen.element;
 
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.app.SnakeApp;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -42,7 +42,7 @@ public class SnakeElement extends PlacedElement {
 
     @Override
     protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SNAKE);
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("snake"));
     }
 
     @Override

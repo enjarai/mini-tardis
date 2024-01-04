@@ -1,9 +1,8 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.element.AppSelectorElement;
 import dev.enjarai.minitardis.component.screen.element.InstallableAppElement;
@@ -13,7 +12,6 @@ import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
 
 public class PackageManagerApp implements ScreenApp {
     public static final Codec<PackageManagerApp> CODEC = Codec.unit(PackageManagerApp::new);
@@ -40,10 +38,10 @@ public class PackageManagerApp implements ScreenApp {
                 }
 
                 if (!floppyInserted) {
-                    ModCanvasUtils.drawCenteredText(canvas, "Insert", 2 + 26, 30, CanvasColor.WHITE_HIGH);
-                    ModCanvasUtils.drawCenteredText(canvas, "Floppy", 2 + 26, 40, CanvasColor.WHITE_HIGH);
+                    TardisCanvasUtils.drawCenteredText(canvas, "Insert", 2 + 26, 30, CanvasColor.WHITE_HIGH);
+                    TardisCanvasUtils.drawCenteredText(canvas, "Floppy", 2 + 26, 40, CanvasColor.WHITE_HIGH);
                 } else if (leftElement.getElements().isEmpty()) {
-                    ModCanvasUtils.drawCenteredText(canvas, "Empty", 2 + 26, 30, CanvasColor.LIGHT_GRAY_HIGH);
+                    TardisCanvasUtils.drawCenteredText(canvas, "Empty", 2 + 26, 30, CanvasColor.LIGHT_GRAY_HIGH);
                 }
 
                 super.draw(blockEntity, canvas);
@@ -127,14 +125,14 @@ public class PackageManagerApp implements ScreenApp {
 
             @Override
             public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.PACKAGE_MANAGER_BACKGROUND);
+                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("package_manager_background"));
             }
         };
     }
 
     @Override
     public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.PACKAGE_MANAGER_APP);
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/package_manager"));
     }
 
     @Override

@@ -3,9 +3,8 @@ package dev.enjarai.minitardis.component.screen.app;
 import com.google.common.collect.Iterables;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.HistoryEntry;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.element.AppElement;
@@ -17,7 +16,6 @@ import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +68,7 @@ public class HistoryApp implements ScreenApp {
                     var entry = history.get(i);
 
                     if (entry.location().equals(controls.getTardis().getDestination().orElse(null))) {
-                        CanvasUtils.draw(canvas, 2, 18 + 26 * relativeIndex, ModCanvasUtils.HISTORY_CURRENT_OUTLINE);
+                        CanvasUtils.draw(canvas, 2, 18 + 26 * relativeIndex, TardisCanvasUtils.getSprite("history_current_outline"));
                     }
 
                     var numText = (i + 1) + ".";
@@ -92,7 +90,7 @@ public class HistoryApp implements ScreenApp {
 
             @Override
             public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.HISTORY_BACKGROUND);
+                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("history_background"));
             }
         };
     }
@@ -105,7 +103,7 @@ public class HistoryApp implements ScreenApp {
 
     @Override
     public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.HISTORY_APP);
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/history"));
     }
 
     @Override

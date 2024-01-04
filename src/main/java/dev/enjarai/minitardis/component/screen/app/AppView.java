@@ -1,7 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,7 +18,7 @@ public interface AppView {
     void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas);
 
     default void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.APP_BACKGROUND);
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app_background"));
     }
 
     /**

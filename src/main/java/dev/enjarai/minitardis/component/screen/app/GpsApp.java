@@ -2,9 +2,8 @@ package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.PartialTardisLocation;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.TardisLocation;
@@ -13,9 +12,7 @@ import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.util.ClickType;
-import net.minecraft.util.Identifier;
 
 import java.util.Optional;
 
@@ -46,7 +43,7 @@ public class GpsApp implements ScreenApp {
 
             @Override
             public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.GPS_BACKGROUND);
+                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("gps_background"));
             }
 
             @Override
@@ -100,7 +97,7 @@ public class GpsApp implements ScreenApp {
 
     @Override
     public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.GPS_APP);
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/gps"));
     }
 
     @Override

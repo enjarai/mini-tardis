@@ -2,9 +2,8 @@ package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.TardisLocation;
 import dev.enjarai.minitardis.component.screen.element.SmallButtonElement;
@@ -15,16 +14,12 @@ import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.map.MapState;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -92,7 +87,7 @@ public class WaypointsApp implements ScreenApp {
                         deleteLocation.visible = true;
 
                         if (location.equals(controls.getTardis().getDestination().orElse(null))) {
-                            CanvasUtils.draw(canvas, 2, 18, ModCanvasUtils.HISTORY_CURRENT_OUTLINE);
+                            CanvasUtils.draw(canvas, 2, 18, TardisCanvasUtils.getSprite("history_current_outline"));
                         }
                         GpsApp.drawLocation(Optional.of(location), canvas, 6, 22);
                     }
@@ -102,14 +97,14 @@ public class WaypointsApp implements ScreenApp {
 
             @Override
             public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.WAYPOINTS_BACKGROUND);
+                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("waypoints_background"));
             }
         };
     }
 
     @Override
     public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.WAYPOINTS_APP);
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/waypoints"));
     }
 
     @Override

@@ -4,9 +4,8 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.Tardis;
-import dev.enjarai.minitardis.component.flight.DisabledState;
 import dev.enjarai.minitardis.component.screen.TardisScreenView;
 import dev.enjarai.minitardis.component.screen.app.AppView;
 import dev.enjarai.minitardis.component.screen.app.ScreenAppType;
@@ -175,10 +174,10 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
         if (currentView != null) {
             currentView.drawBackground(this, canvas);
             currentView.draw(this, canvas);
-            CanvasUtils.draw(canvas, 96 + 2, 2, ModCanvasUtils.SCREEN_SIDE_BUTTON);
+            CanvasUtils.draw(canvas, 96 + 2, 2, TardisCanvasUtils.getSprite("screen_side_button"));
             DefaultFonts.VANILLA.drawText(canvas, "Menu", 96 + 2 + 2, 2 + 4, 8, CanvasColor.WHITE_HIGH);
         } else {
-            CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SCREEN_BACKGROUND);
+            CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("screen_background"));
 
             var apps = controls.getAllApps();
             for (int i = 0; i < apps.size(); i++) {

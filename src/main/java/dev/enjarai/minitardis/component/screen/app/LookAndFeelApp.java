@@ -2,9 +2,8 @@ package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
@@ -14,7 +13,6 @@ import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import eu.pb4.mapcanvas.impl.view.SubView;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
@@ -90,7 +88,7 @@ public class LookAndFeelApp implements ScreenApp {
                         }
                     }
 
-                    CanvasUtils.draw(pickerCanvas, 2 + SV_SIZE, (int) (-4 + h * SV_SIZE), ModCanvasUtils.HUE_SELECTOR);
+                    CanvasUtils.draw(pickerCanvas, 2 + SV_SIZE, (int) (-4 + h * SV_SIZE), TardisCanvasUtils.getSprite("hue_selector"));
                     this.pickerCanvas = pickerCanvas;
                 }
 
@@ -99,7 +97,7 @@ public class LookAndFeelApp implements ScreenApp {
                 CanvasUtils.draw(canvas, 2, 18, pickerCanvas);
 
                 CanvasUtils.draw(new SubView(canvas, 2, 18, SV_SIZE, SV_SIZE),
-                        -8 + (int) (this.s * SV_SIZE), -7 + SV_SIZE - (int) (this.v * SV_SIZE), ModCanvasUtils.SV_SELECTOR);
+                        -8 + (int) (this.s * SV_SIZE), -7 + SV_SIZE - (int) (this.v * SV_SIZE), TardisCanvasUtils.getSprite("sv_selector"));
 
                 var historySize = 11;
                 var historyOffset = 2;
@@ -112,7 +110,7 @@ public class LookAndFeelApp implements ScreenApp {
 
             @Override
             public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.LOOK_AND_FEEL_BACKGROUND);
+                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("look_and_feel_background"));
             }
 
             @Override
@@ -211,7 +209,7 @@ public class LookAndFeelApp implements ScreenApp {
 
     @Override
     public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.LOOK_AND_FEEL_APP);
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/look_and_feel"));
     }
 
     @Override

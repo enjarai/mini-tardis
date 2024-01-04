@@ -1,7 +1,7 @@
 package dev.enjarai.minitardis.component.screen.element;
 
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.app.ScreenApp;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -33,7 +33,7 @@ public class InstallableAppElement extends PlacedElement {
     protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         app.drawIcon(controls, blockEntity, new SubView(canvas, 1, 1, 24, 24));
         if (isSelected()) {
-            CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.APP_SELECTED);
+            CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app_selected"));
         }
     }
 

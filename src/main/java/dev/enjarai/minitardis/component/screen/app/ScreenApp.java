@@ -2,9 +2,11 @@ package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.data.RandomAppLootFunction;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
+import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -20,7 +22,14 @@ public interface ScreenApp {
      * Draw the icon of the application to the provided canvas, the canvas provided is limited to the available area.
      * THIS IS CALLED OFF-THREAD, DON'T INTERACT WITH THE WORLD IF AT ALL POSSIBLE.
      */
-    void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas);
+    default void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        var id = getId();
+        var sprite = TardisCanvasUtils.getSprite(new Identifier(id.getNamespace(), "app/" + id.getPath()));
+        if (sprite.getWidth() == 0 && sprite.getHeight() == 0) {
+            sprite = TardisCanvasUtils.getSprite("app/dummy");
+        }
+        CanvasUtils.draw(canvas, 0, 0, sprite);
+    }
 
     default boolean canBeUninstalled() {
         return true;

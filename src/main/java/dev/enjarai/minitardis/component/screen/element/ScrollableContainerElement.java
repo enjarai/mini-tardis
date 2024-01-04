@@ -1,15 +1,12 @@
 package dev.enjarai.minitardis.component.screen.element;
 
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ScrollableContainerElement<T extends PlacedElement> extends AbstractParentElement<T> {
     public int scrolledness;
@@ -24,8 +21,8 @@ public class ScrollableContainerElement<T extends PlacedElement> extends Abstrac
         for (var element : elements) {
             element.draw(controls, blockEntity, scrolledCanvas);
         }
-        CanvasUtils.draw(canvas, width - 8, 0, ModCanvasUtils.SCROLL_BUTTON_UP);
-        CanvasUtils.draw(canvas, width - 8, height - 38, ModCanvasUtils.SCROLL_BUTTON_DOWN);
+        CanvasUtils.draw(canvas, width - 8, 0, TardisCanvasUtils.getSprite("scroll_button_up"));
+        CanvasUtils.draw(canvas, width - 8, height - 38, TardisCanvasUtils.getSprite("scroll_button_down"));
     }
 
     @Override

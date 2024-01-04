@@ -3,7 +3,6 @@ package dev.enjarai.minitardis.component.screen.app;
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.MiniTardis;
 import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
 
 import java.util.function.Supplier;
 
@@ -19,6 +18,7 @@ public class ScreenAppTypes {
     public static final ScreenAppType<SnakeApp> SNAKE = register("snake", SnakeApp.CODEC, SnakeApp::new, true);
     public static final ScreenAppType<WaypointsApp> WAYPOINTS = register("waypoints", WaypointsApp.CODEC, WaypointsApp::new, true);
     public static final ScreenAppType<LookAndFeelApp> LOOK_AND_FEEL = register("look_and_feel", LookAndFeelApp.CODEC, LookAndFeelApp::new, true);
+    public static final ScreenAppType<FloppyBirdApp> FLOPPY_BIRD = register("floppy_bird", FloppyBirdApp.CODEC, FloppyBirdApp::new, true);
 
     private static <T extends ScreenApp> ScreenAppType<T> register(String name, Codec<T> codec, Supplier<T> constructor, boolean spawnsAsDungeonLoot) {
         return Registry.register(ScreenAppType.REGISTRY, MiniTardis.id(name), new ScreenAppType<>(codec, constructor, spawnsAsDungeonLoot));

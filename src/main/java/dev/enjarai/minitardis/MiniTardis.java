@@ -3,17 +3,15 @@ package dev.enjarai.minitardis;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.block.ModBlocks;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.command.TardisCommand;
 import dev.enjarai.minitardis.component.ModComponents;
 import dev.enjarai.minitardis.component.Tardis;
-import dev.enjarai.minitardis.component.screen.app.ScreenApp;
 import dev.enjarai.minitardis.component.screen.app.ScreenAppTypes;
 import dev.enjarai.minitardis.data.ModDataStuff;
 import dev.enjarai.minitardis.data.TardisInteriorManager;
 import dev.enjarai.minitardis.item.ModItems;
 import dev.enjarai.minitardis.item.PolymerModels;
-import dev.enjarai.minitardis.net.HandshakeClient;
 import dev.enjarai.minitardis.net.HandshakeServer;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.ModInitializer;
@@ -61,7 +59,7 @@ public class MiniTardis implements ModInitializer {
 		ModBlocks.load();
 		ModItems.load();
 		ModSounds.load();
-		ModCanvasUtils.load();
+		TardisCanvasUtils.load();
 
 		// Load screenapps and their loot tables in order
 		ScreenAppTypes.load();

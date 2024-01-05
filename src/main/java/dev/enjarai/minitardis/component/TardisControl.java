@@ -69,7 +69,21 @@ public class TardisControl {
         return true;
     }
 
+    public int getScaleState() {
+        return (int) Math.log10(coordinateScale);
+    }
+
     public boolean nudgeDestination(Direction direction) {
+        if (isDestinationLocked() && !direction.getAxis().isVertical()) {
+            return tardis.getState(FlyingState.class).map(state -> {
+                var axis = direction.getAxis().ordinal() == 0 ? 1 : 0;
+                var i = state.scaleState * 2 + axis;
+                var original = state.offsets[i];
+                state.offsets[i] = MathHelper.clamp(original - direction.getDirection().offset(), -1, 1);
+                return state.offsets[i] != original;
+            }).orElse(false);
+        }
+
         var success = tardis.setDestination(tardis.getDestination()
                 .map(d -> {
                     if (direction.getAxis().isVertical()) {
@@ -119,12 +133,12 @@ public class TardisControl {
         if (!state && tardis.getState() instanceof FlyingState && !isDestinationLocked()) {
             return tardis.suggestStateTransition(new DriftingState());
         } else if (tardis.getState() instanceof DriftingState driftingState) {
-            return driftingState.toggleFlyLever(tardis, state) || tardis.suggestStateTransition(new FlyingState());
+            return driftingState.toggleFlyLever(tardis, state) || tardis.suggestStateTransition(new FlyingState(tardis.getRandom().nextInt()));
         }
 
         if (tardis.isDoorOpen()) return false;
 
-        return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState(false));
+        return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState(false, 0));
     }
 
     public boolean isDestinationLocked() {
@@ -148,7 +162,7 @@ public class TardisControl {
             if (!unlocked && tardis.getState(FlyingState.class).isPresent()) {
                 tardis.suggestStateTransition(new SuspendedFlightState());
             } else if (unlocked && tardis.getState(SuspendedFlightState.class).isPresent()) {
-                tardis.suggestStateTransition(new FlyingState());
+                tardis.suggestStateTransition(new FlyingState(tardis.getState(SuspendedFlightState.class).get().distance));
             } else if (!unlocked) {
                 majorMalfunction();
                 return false;

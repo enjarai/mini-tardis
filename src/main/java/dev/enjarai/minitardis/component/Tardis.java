@@ -123,7 +123,7 @@ public class Tardis {
                 UUID.randomUUID(), false, DEFAULT_INTERIOR,
                 Either.right(new PartialTardisLocation(destination.worldKey())),
                 Optional.of(destination), BlockPos.ORIGIN, new TardisControl(),
-                new FlyingState(),
+                new FlyingState(holder.getServer().getOverworld().getRandom().nextInt()),
                 842, 567, false
         );
 

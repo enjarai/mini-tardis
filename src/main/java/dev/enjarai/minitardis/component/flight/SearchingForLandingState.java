@@ -16,7 +16,6 @@ import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
 
 import java.util.Iterator;
 
@@ -24,7 +23,8 @@ public class SearchingForLandingState implements FlightState {
     public static final Codec<SearchingForLandingState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks),
             Codec.INT.fieldOf("searching_ticks").forGetter(s -> s.searchingTicks),
-            Codec.BOOL.fieldOf("crashing").forGetter(s -> s.crashing)
+            Codec.BOOL.fieldOf("crashing").forGetter(s -> s.crashing),
+            Codec.INT.fieldOf("error_distance").forGetter(s -> s.errorDistance)
     ).apply(instance, SearchingForLandingState::new));
     public static final Identifier ID = MiniTardis.id("searching_for_landing");
     private static final int BLOCKS_PER_TICK = 256;
@@ -33,16 +33,18 @@ public class SearchingForLandingState implements FlightState {
     int flyingTicks;
     private int searchingTicks;
     final boolean crashing;
+    int errorDistance;
     private Iterator<BlockPos> searchIterator;
 
-    private SearchingForLandingState(int flyingTicks, int searchingTicks, boolean crashing) {
+    private SearchingForLandingState(int flyingTicks, int searchingTicks, boolean crashing, int errorDistance) {
         this.flyingTicks = flyingTicks;
         this.searchingTicks = searchingTicks;
         this.crashing = crashing;
+        this.errorDistance = errorDistance;
     }
 
-    public SearchingForLandingState(boolean crashing) {
-        this(0, 0, crashing);
+    public SearchingForLandingState(boolean crashing, int errorDistance) {
+        this(0, 0, crashing, FlyingState.trimDistance(errorDistance));
     }
 
     @Override
@@ -68,11 +70,9 @@ public class SearchingForLandingState implements FlightState {
             var destinationWorld = destination.getWorld(tardis.getServer());
 
             if (searchIterator == null) {
-                // Shuffle the landing location if we're crashing
-                if (crashing) {
-                    var random = tardis.getInteriorWorld().getRandom();
-                    destination = destination.with(destination.pos().add(random.nextBetween(-1000, 1000), 0, random.nextBetween(-1000, 1000)));
-                }
+                // Shuffle the landing location based on errorDistance
+                var random = tardis.getRandom();
+                destination = destination.with(destination.pos().add(random.nextBetween(-errorDistance, errorDistance), 0, random.nextBetween(-errorDistance, errorDistance)));
 
                 var minY = destinationWorld.getBottomY();
                 var maxY = minY + destinationWorld.getLogicalHeight();
@@ -128,7 +128,7 @@ public class SearchingForLandingState implements FlightState {
             searchingTicks++;
         } else {
             tardis.getControls().minorMalfunction();
-            var flyingState = new FlyingState();
+            var flyingState = new FlyingState(errorDistance);
             flyingState.errorLoops = 2;
             flyingState.flyingTicks = flyingTicks;
             return flyingState;

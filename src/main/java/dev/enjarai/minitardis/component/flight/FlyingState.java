@@ -8,10 +8,17 @@ import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 public class FlyingState implements FlightState {
     public static final Codec<FlyingState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks),
-            Codec.INT.fieldOf("errorLoops").forGetter(s -> s.errorLoops)
+            Codec.INT.fieldOf("errorLoops").forGetter(s -> s.errorLoops),
+            Codec.INT_STREAM.fieldOf("offsets").forGetter(s -> Arrays.stream(s.offsets)),
+            Codec.INT.fieldOf("scale_state").forGetter(s -> s.scaleState)
     ).apply(instance, FlyingState::new));
     public static final Identifier ID = MiniTardis.id("flying");
     static final int SOUND_LOOP_LENGTH = 32;
@@ -20,14 +27,22 @@ public class FlyingState implements FlightState {
     int flyingTicks;
     int aftershakeTicks;
     public int errorLoops;
+    public int[] offsets;
+    public int scaleState;
 
-    private FlyingState(int flyingTicks, int errorLoops) {
+    private FlyingState(int flyingTicks, int errorLoops, IntStream offsets, int scaleState) {
         this.flyingTicks = flyingTicks;
         this.errorLoops = errorLoops;
+        this.offsets = offsets.toArray();
+        this.scaleState = scaleState;
     }
 
-    public FlyingState() {
-        this(0, 0);
+    public FlyingState(int distance) {
+        this.flyingTicks = 0;
+        this.errorLoops = 0;
+        this.offsets = new int[8];
+        this.scaleState = 0;
+        setOffsets(distance);
     }
 
     @Override
@@ -56,7 +71,11 @@ public class FlyingState implements FlightState {
         }
 
         if (tardis.getStability() <= 0) {
-            return new SearchingForLandingState(true);
+            return new SearchingForLandingState(true, tardis.getRandom().nextInt());
+        }
+
+        if (tardis.getControls().isDestinationLocked()) {
+            scaleState = tardis.getControls().getScaleState();
         }
 
         if (flyingTicks % 10 == 0 && !tardis.addOrDrainFuel(-1)) {
@@ -80,6 +99,7 @@ public class FlyingState implements FlightState {
                 return false;
             }
 
+            landingState.errorDistance = getDistance();
             landingState.flyingTicks = flyingTicks;
             return true;
         } else if (newState instanceof DriftingState driftingState) {
@@ -87,12 +107,47 @@ public class FlyingState implements FlightState {
             return true;
         } else if (newState instanceof SuspendedFlightState suspendedFlightState) {
             suspendedFlightState.flyingTicks = flyingTicks;
+            suspendedFlightState.distance = getDistance();
             return true;
         } else if (newState instanceof TakingOffState) {
             return false;
         }
         tardis.getControls().minorMalfunction();
         return false;
+    }
+
+    public void setOffsets(int distance) {
+        for (int i = 0; i < offsets.length; i++) {
+            int value = distance >> i * 2 & 0b11;
+            offsets[i] = switch (value) {
+                case 1 -> -1;
+                case 2 -> 1;
+                default -> 0;
+            };
+        }
+    }
+
+    public int getDistance() {
+        int result = 0;
+        for (int i = 0; i < offsets.length; i++) {
+            int value = switch (offsets[i]) {
+                case -1 -> 1;
+                case 1 -> 2;
+                default -> 0;
+            };
+            result |= value << i * 2;
+        }
+        return result;
+    }
+
+    public static int trimDistance(int distance) {
+        int result = 0;
+        for (int i = 0; i < 8; i++) {
+            int value = distance >> i * 2 & 0b11;
+            if (value == 3) value = 0;
+            result |= value << i * 2;
+        }
+        return result;
     }
 
     @Override

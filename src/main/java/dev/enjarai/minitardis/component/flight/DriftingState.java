@@ -72,7 +72,7 @@ public class DriftingState implements FlightState {
                 tardis.getDestination().ifPresent(destination -> {
                     tardis.setCurrentLocation(new PartialTardisLocation(destination.worldKey()));
                 });
-                var flyingState = new FlyingState();
+                var flyingState = new FlyingState(tardis.getRandom().nextInt());
                 flyingState.flyingTicks = flyingTicks;
                 return flyingState;
             }
@@ -84,7 +84,7 @@ public class DriftingState implements FlightState {
                     tardis.setCurrentLocation(new PartialTardisLocation(destination.worldKey()));
                 });
             }
-            return new SearchingForLandingState(true);
+            return new SearchingForLandingState(true, tardis.getRandom().nextInt());
         }
 
         // Drifting actually refuels mid-flight

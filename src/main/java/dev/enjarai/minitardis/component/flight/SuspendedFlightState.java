@@ -11,7 +11,8 @@ import net.minecraft.util.Identifier;
 public class SuspendedFlightState implements FlightState {
     public static final Codec<SuspendedFlightState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks),
-            Codec.INT.fieldOf("errorLoops").forGetter(s -> s.errorLoops)
+            Codec.INT.fieldOf("errorLoops").forGetter(s -> s.errorLoops),
+            Codec.INT.optionalFieldOf("distance", 0).forGetter(s -> s.distance)
     ).apply(instance, SuspendedFlightState::new));
     public static final Identifier ID = MiniTardis.id("suspended_flight");
     static final int SOUND_LOOP_LENGTH = 32;
@@ -20,14 +21,16 @@ public class SuspendedFlightState implements FlightState {
     int flyingTicks;
     int aftershakeTicks;
     public int errorLoops;
+    public int distance;
 
-    private SuspendedFlightState(int flyingTicks, int errorLoops) {
+    private SuspendedFlightState(int flyingTicks, int errorLoops, int distance) {
         this.flyingTicks = flyingTicks;
         this.errorLoops = errorLoops;
+        this.distance = distance;
     }
 
     public SuspendedFlightState() {
-        this(0, 0);
+        this(0, 0, 0);
     }
 
     @Override
@@ -57,7 +60,7 @@ public class SuspendedFlightState implements FlightState {
 
         var stability = tardis.getStability();
         if (stability <= 0) {
-            return new SearchingForLandingState(true);
+            return new SearchingForLandingState(true, tardis.getRandom().nextInt());
         }
 
         if (flyingTicks % 2 == 0 && stability < 1000) {
@@ -76,6 +79,7 @@ public class SuspendedFlightState implements FlightState {
     public boolean suggestTransition(Tardis tardis, FlightState newState) {
         if (newState instanceof FlyingState flyingState) {
             flyingState.flyingTicks = flyingTicks;
+            flyingState.setOffsets(distance);
             return true;
         } else if (newState instanceof DriftingState driftingState) {
             driftingState.flyingTicks = flyingTicks;

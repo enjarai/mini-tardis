@@ -5,6 +5,7 @@ import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.flight.DriftingState;
+import dev.enjarai.minitardis.component.flight.FlyingState;
 import dev.enjarai.minitardis.component.flight.RefuelingState;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
@@ -40,6 +41,27 @@ public class StatusApp implements ScreenApp {
 
                         CanvasUtils.draw(canvas, 8 + i * 8, 24, icon);
                     }
+                });
+
+                tardis.getState(FlyingState.class).ifPresent(state -> {
+                    for (int i = 0; i < state.offsets.length; i++) {
+                        int offset = state.offsets[i];
+
+                        CanvasImage icon;
+                        if (offset > 0) {
+                            icon = TardisCanvasUtils.getSprite("offset_right");
+                        } else if (offset < 0) {
+                            icon = TardisCanvasUtils.getSprite("offset_left");
+                        } else {
+                            icon = TardisCanvasUtils.getSprite("offset_centered");
+                        }
+
+                        CanvasUtils.draw(canvas, 8 + i / 2 * 10, 24 + i % 2 * 6, icon);
+                    }
+
+                    CanvasUtils.draw(canvas, 7 + state.scaleState * 10, 23, TardisCanvasUtils.getSprite("offset_set_selected"));
+
+                    DefaultFonts.VANILLA.drawText(canvas, "ER: " + state.getDistance(), 8, 41, 8, CanvasColor.WHITE_HIGH);
                 });
 
                 var random = blockEntity.drawRandom;

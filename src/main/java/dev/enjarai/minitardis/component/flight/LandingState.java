@@ -47,7 +47,7 @@ public class LandingState extends TransitionalFlightState {
         if (tardis.getCurrentLandedLocation().map(tardis::canLandAt).orElse(false)) {
             tardis.getControls().moderateMalfunction();
             tardis.setCurrentLocation(new PartialTardisLocation(tardis.getExteriorWorldKey()));
-            return new FlyingState();
+            return new FlyingState(tardis.getRandom().nextInt());
         }
 
         if (ticksPassed % 2 == 0) {

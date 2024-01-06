@@ -1,7 +1,5 @@
 package dev.enjarai.minitardis;
 
-import com.mojang.datafixers.util.Unit;
-import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.command.TardisCommand;
@@ -12,7 +10,7 @@ import dev.enjarai.minitardis.data.ModDataStuff;
 import dev.enjarai.minitardis.data.TardisInteriorManager;
 import dev.enjarai.minitardis.item.ModItems;
 import dev.enjarai.minitardis.item.PolymerModels;
-import dev.enjarai.minitardis.net.HandshakeServer;
+import eu.pb4.polymer.networking.api.PolymerServerNetworking;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -36,9 +34,9 @@ public class MiniTardis implements ModInitializer {
 	@SuppressWarnings("OptionalGetWithoutIsPresent")
 	public static final Version VERSION = FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata().getVersion();
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	public static final Identifier HANDSHAKE_CHANNEL = id("handshake/1");
-	public static final HandshakeServer<Unit> HANDSHAKE_SERVER = new HandshakeServer<>(
-			Codec.unit(Unit.INSTANCE), MiniTardis.HANDSHAKE_CHANNEL, () -> Unit.INSTANCE);
+	public static final Identifier HANDSHAKE_CHANNEL = id("handshake/2");
+//	public static final HandshakeServer<Unit> HANDSHAKE_SERVER = new HandshakeServer<>(
+//			Codec.unit(Unit.INSTANCE), MiniTardis.HANDSHAKE_CHANNEL, () -> Unit.INSTANCE);
 
 	@Nullable
 	private static MinecraftServer server;
@@ -68,6 +66,8 @@ public class MiniTardis implements ModInitializer {
 		PolymerResourcePackUtils.addModAssets(MOD_ID);
 		PolymerResourcePackUtils.markAsRequired();
 		PolymerModels.load();
+
+		PolymerServerNetworking.registerSendPacket(HANDSHAKE_CHANNEL, 0);
 	}
 
 	@Nullable
@@ -80,7 +80,7 @@ public class MiniTardis implements ModInitializer {
 	}
 
 	public static boolean playerIsRealGamer(ServerPlayNetworkHandler player) {
-		return HANDSHAKE_SERVER.getHandshakeState(player) == HandshakeServer.HandshakeState.ACCEPTED;
+		return PolymerServerNetworking.getSupportedVersion(player, HANDSHAKE_CHANNEL) != -1;
 	}
 
 	public static Identifier id(String path) {

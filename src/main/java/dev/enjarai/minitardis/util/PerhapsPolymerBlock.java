@@ -40,10 +40,10 @@ public interface PerhapsPolymerBlock extends PolymerBlock, PolymerClientDecoded,
         return getPerhapsPolymerBlockState(state);
     }
 
-    @Override
-    default boolean handleMiningOnServer(ItemStack tool, BlockState state, BlockPos pos, ServerPlayerEntity player) {
-        return !MiniTardis.playerIsRealGamer(player.networkHandler);
-    }
+//    @Override
+//    default boolean handleMiningOnServer(ItemStack tool, BlockState state, BlockPos pos, ServerPlayerEntity player) {
+//        return !MiniTardis.playerIsRealGamer(player.networkHandler);
+//    }
 
     @Override
     default boolean canSyncRawToClient(ServerPlayerEntity player) {

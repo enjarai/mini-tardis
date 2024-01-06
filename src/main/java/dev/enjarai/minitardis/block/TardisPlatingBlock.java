@@ -54,4 +54,9 @@ public class TardisPlatingBlock extends Block implements PolymerBlock, PolymerCl
     public boolean handleMiningOnServer(ItemStack tool, BlockState state, BlockPos pos, ServerPlayerEntity player) {
         return !MiniTardis.playerIsRealGamer(player.networkHandler);
     }
+
+    @Override
+    public boolean canSyncRawToClient(ServerPlayerEntity player) {
+        return MiniTardis.playerIsRealGamer(player.networkHandler);
+    }
 }

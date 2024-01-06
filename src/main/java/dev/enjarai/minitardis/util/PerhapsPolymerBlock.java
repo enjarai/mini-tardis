@@ -45,6 +45,11 @@ public interface PerhapsPolymerBlock extends PolymerBlock, PolymerClientDecoded,
         return !MiniTardis.playerIsRealGamer(player.networkHandler);
     }
 
+    @Override
+    default boolean canSyncRawToClient(ServerPlayerEntity player) {
+        return MiniTardis.playerIsRealGamer(player.networkHandler);
+    }
+
     Block getPerhapsPolymerBlock(BlockState state);
 
     default BlockState getPerhapsPolymerBlockState(BlockState state) {

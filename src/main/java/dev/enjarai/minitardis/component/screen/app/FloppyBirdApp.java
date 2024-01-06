@@ -1,5 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
@@ -14,26 +16,33 @@ import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import eu.pb4.mapcanvas.impl.view.SubView;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.util.ClickType;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Uuids;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
 
 public class FloppyBirdApp implements ScreenApp {
     public static final Codec<FloppyBirdApp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.INT.optionalFieldOf("high_score", 0).forGetter(app -> app.highScore)
+            Codec.unboundedMap(Uuids.STRING_CODEC, Codec.INT).optionalFieldOf("high_scores", Map.of()).forGetter(app -> app.highScores)
     ).apply(instance, FloppyBirdApp::new));
     public static final int WIN_DURATION = 30;
     public static final int PIPE_SPACING = 42;
 
-    private int highScore;
+    private HashMap<UUID, Integer> highScores;
 
-    private FloppyBirdApp(int highScore) {
-        this.highScore = highScore;
+    private FloppyBirdApp(Map<UUID, Integer> highScores) {
+        this.highScores = new HashMap<>(highScores);
     }
 
     public FloppyBirdApp() {
-        this(0);
+        this(Map.of());
     }
 
     @Override
@@ -46,9 +55,23 @@ public class FloppyBirdApp implements ScreenApp {
                 points = 0;
                 currentLevel = 1;
                 beatHighScore = false;
+                showHighScores = null;
                 resetLevel();
 
                 children.removeIf(FloppyPipeElement.class::isInstance);
+            });
+            final ResizableButtonElement highScoresButton = new ResizableButtonElement(62 - 32, 58, 64, "High scores", controls1 -> {
+                //noinspection DataFlowIssue
+                showHighScores = highScores.entrySet().stream()
+                        .sorted(Comparator.<Map.Entry<UUID, Integer>>comparingInt(Map.Entry::getValue).reversed())
+                        .map(e -> Pair.of(controls1
+                                .getTardis().getServer().getUserCache()
+                                .getByUuid(e.getKey()).map(GameProfile::getName)
+                                .orElse("Unknown"), e.getValue()))
+                        .toList();
+            });
+            final ResizableButtonElement backButton = new ResizableButtonElement(62 - 14, 4, 28, "Back", controls1 -> {
+                showHighScores = null;
             });
             int frameCounter;
             int spacingCounter = PIPE_SPACING;
@@ -61,10 +84,16 @@ public class FloppyBirdApp implements ScreenApp {
             int pipesSpawned;
             int winningLevelFrames = -1;
             boolean beatHighScore;
+            @Nullable
+            List<Pair<String, Integer>> showHighScores;
+            @Nullable
+            ServerPlayerEntity lastInteractor;
 
             {
                 addElement(ballElement);
                 addElement(restartButton);
+                addElement(highScoresButton);
+                addElement(backButton);
             }
 
             @Override
@@ -151,25 +180,40 @@ public class FloppyBirdApp implements ScreenApp {
                 } else {
                     ballElement.deltaY += hanging ? 0 : gameOver ? 1f : 0.3f;
                 }
-                restartButton.visible = gameOver;
+                restartButton.visible = deadFrames >= 12 && showHighScores == null;
+                highScoresButton.visible = deadFrames >= 12 && showHighScores == null;
+                backButton.visible = deadFrames >= 12 && showHighScores != null;
 
                 super.draw(blockEntity, new SubView(canvas, 2, 18, 124, 76));
 
-                DefaultFonts.VANILLA.drawText(canvas, "Point: " + points, 5, 5, 8, CanvasColor.WHITE_HIGH);
+                DefaultFonts.VANILLA.drawText(canvas, "Pts: " + points, 5, 5, 8, CanvasColor.WHITE_HIGH);
                 DefaultFonts.VANILLA.drawText(canvas, "Lv: " + currentLevel, 64, 5, 8, CanvasColor.WHITE_HIGH);
 
-                if (gameOver) {
-                    TardisCanvasUtils.drawCenteredText(canvas, "Game Over", 64, 32, CanvasColor.GRAY_HIGH);
-                    TardisCanvasUtils.drawCenteredText(canvas, beatHighScore ? "New High Score!" : ("High Score: " + highScore), 64, 44, CanvasColor.GRAY_HIGH);
+                if (deadFrames >= 12) {
+                    if (showHighScores == null) {
+                        TardisCanvasUtils.drawCenteredText(canvas, "Game Over", 64, 32, CanvasColor.GRAY_HIGH);
+                        if (lastInteractor != null) {
+                            TardisCanvasUtils.drawCenteredText(canvas, beatHighScore ? "New High Score!" :
+                                    ("High Score: " + highScores.getOrDefault(lastInteractor.getUuid(), 0)), 64, 44, CanvasColor.GRAY_HIGH);
+                        }
+                    } else {
+                        var world = blockEntity.getWorld();
+                        if (world != null) {
+                            for (int i = 0; i < Math.min(showHighScores.size(), 5); i++) {
+                                var entry = showHighScores.get(i);
+                                TardisCanvasUtils.drawCenteredText(canvas, entry.getFirst() + ": " + entry.getSecond(), 64, 40 + i * 12, CanvasColor.GRAY_HIGH);
+                            }
+                        }
+                    }
                 }
             }
 
             private void gameOver() {
                 gameOver = true;
                 ballElement.deltaY = -6f;
-                if (points > highScore) {
+                if (lastInteractor != null && points > highScores.getOrDefault(lastInteractor.getUuid(), 0)) {
                     beatHighScore = true;
-                    highScore = points;
+                    highScores.put(lastInteractor.getUuid(), points);
                 }
             }
 
@@ -193,6 +237,7 @@ public class FloppyBirdApp implements ScreenApp {
 
             @Override
             public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+                lastInteractor = player;
                 if (!gameOver && winningLevelFrames < 0) {
                     ballElement.deltaY = -2.5f;
                     hanging = false;
@@ -202,6 +247,12 @@ public class FloppyBirdApp implements ScreenApp {
                 return super.onClick(blockEntity, player, type, x - 2, y - 18);
             }
         };
+    }
+
+    @Override
+    public void appendTooltip(List<Text> tooltip) {
+        tooltip.add(Text.literal(" ").append(Text.translatable("mini_tardis.app.mini_tardis.floppy_bird.tooltip", highScores.size()))
+                .fillStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
     }
 
     @Override

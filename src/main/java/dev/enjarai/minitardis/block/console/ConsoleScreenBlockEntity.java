@@ -24,6 +24,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ClickType;
 import net.minecraft.util.Identifier;
@@ -248,8 +249,12 @@ public class ConsoleScreenBlockEntity extends BlockEntity implements TardisAware
     }
 
     public void playClickSound(float pitch) {
+        playSound(SoundEvents.BLOCK_NOTE_BLOCK_BIT.value(), 0.5f, pitch);
+    }
+
+    public void playSound(SoundEvent soundEvent, float volume, float pitch) {
         if (getWorld() instanceof ServerWorld serverWorld) {
-            serverWorld.playSound(null, getPos(), SoundEvents.BLOCK_NOTE_BLOCK_BIT.value(), SoundCategory.BLOCKS, 0.5f, pitch);
+            serverWorld.playSound(null, getPos(), soundEvent, SoundCategory.BLOCKS, volume, pitch);
         }
     }
 }

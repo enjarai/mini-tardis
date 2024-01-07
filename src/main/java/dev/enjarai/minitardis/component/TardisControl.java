@@ -80,7 +80,7 @@ public class TardisControl {
                 var i = state.scaleState * 2 + axis;
                 var original = state.offsets[i];
                 state.offsets[i] = MathHelper.clamp(original - direction.getDirection().offset(), -1, 1);
-                return state.offsets[i] != original;
+                return true;
             }).orElse(false);
         }
 

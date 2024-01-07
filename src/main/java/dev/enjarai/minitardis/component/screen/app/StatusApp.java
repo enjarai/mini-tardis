@@ -13,7 +13,12 @@ import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ClickType;
+
+import java.util.Arrays;
 
 public class StatusApp implements ScreenApp {
     public static final Codec<StatusApp> CODEC = Codec.unit(StatusApp::new);
@@ -21,6 +26,8 @@ public class StatusApp implements ScreenApp {
     @Override
     public AppView getView(TardisControl controls) {
         return new AppView() {
+            final int[] lastOffsets = new int[8];
+
             @Override
             public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var tardis = controls.getTardis();
@@ -79,6 +86,24 @@ public class StatusApp implements ScreenApp {
                 var destinationLocked = controls.isDestinationLocked();
                 CanvasUtils.draw(canvas, 0, 48, destinationLocked ? TardisCanvasUtils.getSprite("lock_icon_locked") : TardisCanvasUtils.getSprite("lock_icon_unlocked"));
                 DefaultFonts.VANILLA.drawText(canvas, "LCK", 7, 80, 8, CanvasColor.WHITE_HIGH);
+            }
+
+            @Override
+            public void screenTick(ConsoleScreenBlockEntity blockEntity) {
+                controls.getTardis().getState(FlyingState.class).ifPresentOrElse(state -> {
+                    for (int i = 0; i < lastOffsets.length; i++) {
+                        int last = lastOffsets[i];
+                        int current = state.offsets[i];
+                        if (current != last) {
+                            lastOffsets[i] = current;
+                            if (current == 0) {
+                                blockEntity.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), 1, 1);
+                            }
+                        }
+                    }
+                }, () -> {
+                    Arrays.fill(lastOffsets, 0);
+                });
             }
 
             @Override

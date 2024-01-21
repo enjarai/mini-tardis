@@ -2,7 +2,7 @@ package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.PartialTardisLocation;
 import dev.enjarai.minitardis.component.TardisControl;
@@ -24,7 +24,7 @@ public class GpsApp implements ScreenApp {
     public AppView getView(TardisControl controls) {
         return new AppView() {
             @Override
-            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var current = controls.getTardis().getCurrentLocation();
                 DefaultFonts.VANILLA.drawText(canvas, "Current Location", 3, 4, 8, CanvasColor.WHITE_HIGH);
                 drawLocation(current, canvas, 3, 4 + 20);
@@ -42,12 +42,12 @@ public class GpsApp implements ScreenApp {
             }
 
             @Override
-            public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("gps_background"));
             }
 
             @Override
-            public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+            public boolean onClick(ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
                 return false;
             }
         };
@@ -96,7 +96,7 @@ public class GpsApp implements ScreenApp {
     }
 
     @Override
-    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/gps"));
     }
 

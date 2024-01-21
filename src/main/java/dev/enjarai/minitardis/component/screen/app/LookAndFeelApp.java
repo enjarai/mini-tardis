@@ -2,7 +2,7 @@ package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
@@ -54,7 +54,7 @@ public class LookAndFeelApp implements ScreenApp {
             DrawableCanvas pickerCanvas;
 
             @Override
-            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 if (!initialized) {
                     var hsv = rgbToHsv(blockEntity.backgroundColor.getRgbColor());
                     this.h = hsv[0];
@@ -109,12 +109,12 @@ public class LookAndFeelApp implements ScreenApp {
             }
 
             @Override
-            public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("look_and_feel_background"));
             }
 
             @Override
-            public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+            public boolean onClick(ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
                 if (y >= 18 && y < 18 + SV_SIZE) {
                     if (x >= 2 && x < 2 + SV_SIZE) {
                         this.s = (x - 2) / (float) SV_SIZE;
@@ -154,7 +154,7 @@ public class LookAndFeelApp implements ScreenApp {
             }
 
             @Override
-            public void screenClose(ConsoleScreenBlockEntity blockEntity) {
+            public void screenClose(ScreenBlockEntity blockEntity) {
                 var newColor = CanvasUtils.findClosestColor(MathHelper.hsvToRgb(this.h, this.s, this.v)).getRgbColor();
                 if (newColor != history[0]) {
                     // Shift the history over
@@ -208,7 +208,7 @@ public class LookAndFeelApp implements ScreenApp {
     }
 
     @Override
-    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/look_and_feel"));
     }
 

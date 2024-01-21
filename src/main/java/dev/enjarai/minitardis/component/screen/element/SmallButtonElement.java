@@ -1,6 +1,6 @@
 package dev.enjarai.minitardis.component.screen.element;
 
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
@@ -19,7 +19,7 @@ public class SmallButtonElement extends ClickableElement {
     }
 
     @Override
-    protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    protected void drawElement(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         CanvasUtils.draw(canvas, 0, 0, pressedFrames > 0 ? TardisCanvasUtils.getSprite("screen_side_button_pressed") : TardisCanvasUtils.getSprite("screen_side_button"));
         DefaultFonts.VANILLA.drawText(canvas, text, 2, 4, 8, CanvasColor.WHITE_HIGH);
 

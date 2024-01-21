@@ -1,6 +1,6 @@
 package dev.enjarai.minitardis.component.screen.element;
 
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.app.SnakeApp;
@@ -21,19 +21,19 @@ public class AppleElement extends PlacedElement {
     }
 
     @Override
-    protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    protected void drawElement(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("apple"));
     }
 
     @Override
-    protected boolean onClickElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+    protected boolean onClickElement(TardisControl controls, ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
         return false;
     }
 
     private final ArrayList<Vector2i> freePoses = new ArrayList<>((19 * 30) - 2);
 
     @Override
-    public void tick(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+    public void tick(TardisControl controls, ScreenBlockEntity blockEntity) {
         if(this.snakeAppView.snake.getRelativeX() == this.getRelativeX() && this.snakeAppView.snake.getRelativeY() == this.getRelativeY()) {
             this.snakeAppView.ateApple(blockEntity);
 

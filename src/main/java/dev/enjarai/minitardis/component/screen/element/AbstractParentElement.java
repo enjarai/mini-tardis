@@ -1,6 +1,6 @@
 package dev.enjarai.minitardis.component.screen.element;
 
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -17,14 +17,14 @@ public abstract class AbstractParentElement<T extends PlacedElement> extends Pla
     }
 
     @Override
-    protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    protected void drawElement(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         for (var element : elements) {
             element.draw(controls, blockEntity, canvas);
         }
     }
 
     @Override
-    protected boolean onClickElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+    protected boolean onClickElement(TardisControl controls, ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
         for (var element : elements) {
             if (element.onClick(controls, blockEntity, player, type, x, y)) {
                 return true;

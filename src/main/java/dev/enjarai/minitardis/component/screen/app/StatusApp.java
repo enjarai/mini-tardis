@@ -1,7 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.flight.DriftingState;
@@ -13,8 +13,6 @@ import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ClickType;
 
@@ -29,7 +27,7 @@ public class StatusApp implements ScreenApp {
             final int[] lastOffsets = new int[8];
 
             @Override
-            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var tardis = controls.getTardis();
 
                 DefaultFonts.VANILLA.drawText(canvas, tardis.getState().getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
@@ -89,7 +87,7 @@ public class StatusApp implements ScreenApp {
             }
 
             @Override
-            public void screenTick(ConsoleScreenBlockEntity blockEntity) {
+            public void screenTick(ScreenBlockEntity blockEntity) {
                 controls.getTardis().getState(FlyingState.class).ifPresentOrElse(state -> {
                     for (int i = 0; i < lastOffsets.length; i++) {
                         int last = lastOffsets[i];
@@ -107,12 +105,12 @@ public class StatusApp implements ScreenApp {
             }
 
             @Override
-            public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("status_background"));
             }
 
             @Override
-            public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+            public boolean onClick(ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
                 return false;
             }
         };
@@ -135,7 +133,7 @@ public class StatusApp implements ScreenApp {
     }
 
     @Override
-    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/status"));
     }
 

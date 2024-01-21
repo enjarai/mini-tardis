@@ -233,7 +233,7 @@ public class TardisControl {
     }
 
     public boolean installApp(ScreenApp app) {
-        if (!screenApps.containsKey(app.getType())) {
+        if (!screenApps.containsKey(app.getType()) && screenApps.size() < 12) {
             screenApps.put(app.getType(), app);
             return true;
         }

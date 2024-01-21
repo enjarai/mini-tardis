@@ -1,6 +1,6 @@
 package dev.enjarai.minitardis.component.screen.element;
 
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.TardisLocation;
@@ -20,7 +20,7 @@ public class WaypointElement extends PlacedElement {
     }
 
     @Override
-    protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    protected void drawElement(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         if (parent.backingMap.get(index) == null) {
             CanvasUtils.draw(canvas, 0, 0, isSelected() ? TardisCanvasUtils.getSprite("waypoint_empty_selected") : TardisCanvasUtils.getSprite("waypoint_empty"));
         } else {
@@ -29,7 +29,7 @@ public class WaypointElement extends PlacedElement {
     }
 
     @Override
-    protected boolean onClickElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+    protected boolean onClickElement(TardisControl controls, ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
         parent.selected = this;
         blockEntity.playClickSound(0.9f);
         return true;

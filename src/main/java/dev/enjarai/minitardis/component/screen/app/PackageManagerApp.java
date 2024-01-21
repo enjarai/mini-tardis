@@ -1,7 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.element.AppSelectorElement;
@@ -31,7 +31,7 @@ public class PackageManagerApp implements ScreenApp {
             }
 
             @Override
-            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var selected = leftElement.selected == null ? rightElement.selected : leftElement.selected;
                 if (selected != null) {
                     DefaultFonts.VANILLA.drawText(canvas, selected.app.getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
@@ -48,12 +48,12 @@ public class PackageManagerApp implements ScreenApp {
             }
 
             @Override
-            public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
+            public void screenOpen(ScreenBlockEntity blockEntity) {
                 updateInstalledApps();
             }
 
             @Override
-            public void screenTick(ConsoleScreenBlockEntity blockEntity) {
+            public void screenTick(ScreenBlockEntity blockEntity) {
                 var floppyStack = blockEntity.inventory.getStack(0);
                 var newFloppyState = !floppyStack.isEmpty();
                 if (floppyInserted != newFloppyState) {
@@ -90,7 +90,7 @@ public class PackageManagerApp implements ScreenApp {
                 }
             }
 
-            private boolean installApp(ConsoleScreenBlockEntity blockEntity, InstallableAppElement element) {
+            private boolean installApp(ScreenBlockEntity blockEntity, InstallableAppElement element) {
                 var i = leftElement.getElements().indexOf(element);
                 var floppyStack = blockEntity.inventory.getStack(0);
 
@@ -106,7 +106,7 @@ public class PackageManagerApp implements ScreenApp {
                 return false;
             }
 
-            private boolean uninstallApp(ConsoleScreenBlockEntity blockEntity, InstallableAppElement element) {
+            private boolean uninstallApp(ScreenBlockEntity blockEntity, InstallableAppElement element) {
                 if (floppyInserted) {
                     var floppyStack = blockEntity.inventory.getStack(0);
 
@@ -124,14 +124,14 @@ public class PackageManagerApp implements ScreenApp {
             }
 
             @Override
-            public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("package_manager_background"));
             }
         };
     }
 
     @Override
-    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/package_manager"));
     }
 

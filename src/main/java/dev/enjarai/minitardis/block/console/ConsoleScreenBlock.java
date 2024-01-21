@@ -39,39 +39,10 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 @SuppressWarnings("deprecation")
-public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock, TardisAware, BlockWithElementHolder, ConsoleInput {
-    public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
-    public static final BooleanProperty HAS_FLOPPY = BooleanProperty.of("has_floppy");
+public class ConsoleScreenBlock extends ScreenBlock {
 
     public ConsoleScreenBlock(Settings settings) {
         super(settings);
-        setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(HAS_FLOPPY, false));
-    }
-
-    @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, HAS_FLOPPY);
-    }
-
-    @Nullable
-    @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        BlockState blockState = this.getDefaultState();
-        WorldView worldView = ctx.getWorld();
-        BlockPos blockPos = ctx.getBlockPos();
-        Direction[] directions = ctx.getPlacementDirections();
-
-        for(Direction direction : directions) {
-            if (direction.getAxis().isHorizontal()) {
-                Direction direction2 = direction.getOpposite();
-                blockState = blockState.with(FACING, direction2);
-                if (blockState.canPlaceAt(worldView, blockPos)) {
-                    return blockState;
-                }
-            }
-        }
-
-        return null;
     }
 
     @Override
@@ -85,7 +56,7 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
             if (world.getBlockState(newPos).isReplaceable()) {
                 world.setBlockState(newPos, state.with(FACING, hitSide));
 
-                if (world.getBlockEntity(pos) instanceof ConsoleScreenBlockEntity oldEntity && world.getBlockEntity(newPos) instanceof ConsoleScreenBlockEntity newEntity) {
+                if (world.getBlockEntity(pos) instanceof ScreenBlockEntity oldEntity && world.getBlockEntity(newPos) instanceof ScreenBlockEntity newEntity) {
                     var tempNbt = new NbtCompound();
                     oldEntity.writeNbt(tempNbt);
                     newEntity.readNbt(tempNbt);
@@ -97,7 +68,7 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
             }
 
             return ActionResult.SUCCESS;
-        } else if (hand == Hand.MAIN_HAND && hitSide == Direction.DOWN && world.getBlockEntity(pos) instanceof ConsoleScreenBlockEntity blockEntity) {
+        } else if (hand == Hand.MAIN_HAND && hitSide == Direction.DOWN && world.getBlockEntity(pos) instanceof ScreenBlockEntity blockEntity) {
             var handStack = player.getStackInHand(hand);
             var blockStack = blockEntity.inventory.getStack(0);
             @SuppressWarnings("DataFlowIssue")
@@ -137,7 +108,7 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
 
     @Override
     public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
-        if (!state.isOf(newState.getBlock()) && world.getBlockEntity(pos) instanceof ConsoleScreenBlockEntity entity) {
+        if (!state.isOf(newState.getBlock()) && world.getBlockEntity(pos) instanceof ScreenBlockEntity entity) {
             entity.cleanUpForRemoval();
         }
         super.onStateReplaced(state, world, pos, newState, moved);
@@ -157,55 +128,4 @@ public class ConsoleScreenBlock extends BlockWithEntity implements PolymerBlock,
                 : super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
     }
 
-    @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.BARRIER;
-    }
-
-    @Override
-    public Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
-        return PolymerResourcePackUtils.hasPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.COAL_BLOCK;
-    }
-
-    @Override
-    public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
-        return true;
-    }
-
-    @Override
-    public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        return new ConsoleScreenElementHolder(initialBlockState);
-    }
-
-    private static class ConsoleScreenElementHolder extends ElementHolder {
-        final ItemDisplayElement floppyElement;
-
-        ConsoleScreenElementHolder(BlockState initialBlockState) {
-            var facing = initialBlockState.get(FACING);
-
-            var exteriorElement = new ItemDisplayElement();
-            exteriorElement.setItem(PolymerModels.getStack(PolymerModels.ROTATING_MONITOR));
-            exteriorElement.setTranslation(facing.getOpposite().getUnitVector().mul(0.5f));
-            exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
-
-            floppyElement = new ItemDisplayElement();
-            floppyElement.setItem(PolymerModels.getStack(FloppyItem.MODEL));
-            floppyElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
-            floppyElement.setScale(new Vector3f(0.6f));
-            floppyElement.setTranslation(facing.getUnitVector().mul(0.4f).add(0, -0.3f, 0));
-
-            addElement(exteriorElement);
-            if (initialBlockState.get(HAS_FLOPPY)) {
-                addElement(floppyElement);
-            }
-        }
-
-        void setFloppyVisible(boolean visible) {
-            if (visible) {
-                addElement(floppyElement);
-            } else {
-                removeElement(floppyElement);
-            }
-        }
-    }
 }

@@ -1,6 +1,6 @@
 package dev.enjarai.minitardis.component.screen.element;
 
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -17,7 +17,7 @@ public class DimensionStarElement extends ClickableElement {
     }
 
     @Override
-    protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    protected void drawElement(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         var isSelected = controls.getTardis().getDestination().map(l -> l.worldKey().equals(worldKey)).orElse(false);
         CanvasUtils.draw(canvas, 0, 0, isSelected ? TardisCanvasUtils.getSprite("dimension_marker_selected") : TardisCanvasUtils.getSprite("dimension_marker"));
     }

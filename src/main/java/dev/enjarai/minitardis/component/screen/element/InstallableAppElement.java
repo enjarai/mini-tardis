@@ -1,6 +1,6 @@
 package dev.enjarai.minitardis.component.screen.element;
 
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.app.ScreenApp;
@@ -18,9 +18,9 @@ public class InstallableAppElement extends PlacedElement {
     public final boolean installed;
     private final AppSelectorElement parent;
     private final Consumer<InstallableAppElement> onSelect;
-    private final BiFunction<ConsoleScreenBlockEntity, InstallableAppElement, Boolean> moveExecutor;
+    private final BiFunction<ScreenBlockEntity, InstallableAppElement, Boolean> moveExecutor;
 
-    public InstallableAppElement(int x, int y, ScreenApp app, boolean installed, AppSelectorElement parent, Consumer<InstallableAppElement> onSelect, BiFunction<ConsoleScreenBlockEntity, InstallableAppElement, Boolean> moveExecutor) {
+    public InstallableAppElement(int x, int y, ScreenApp app, boolean installed, AppSelectorElement parent, Consumer<InstallableAppElement> onSelect, BiFunction<ScreenBlockEntity, InstallableAppElement, Boolean> moveExecutor) {
         super(x, y, 26, 26);
         this.app = app;
         this.installed = installed;
@@ -30,7 +30,7 @@ public class InstallableAppElement extends PlacedElement {
     }
 
     @Override
-    protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    protected void drawElement(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         app.drawIcon(controls, blockEntity, new SubView(canvas, 1, 1, 24, 24));
         if (isSelected()) {
             CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app_selected"));
@@ -38,7 +38,7 @@ public class InstallableAppElement extends PlacedElement {
     }
 
     @Override
-    protected boolean onClickElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+    protected boolean onClickElement(TardisControl controls, ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
         if (!isSelected()) {
             parent.selected = this;
             onSelect.accept(this);

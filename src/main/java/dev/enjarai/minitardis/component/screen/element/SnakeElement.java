@@ -1,6 +1,6 @@
 package dev.enjarai.minitardis.component.screen.element;
 
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.app.SnakeApp;
@@ -12,7 +12,8 @@ import net.minecraft.util.ClickType;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 
-import static java.lang.Math.*;
+import static java.lang.Math.max;
+import static java.lang.Math.round;
 
 public class SnakeElement extends PlacedElement {
     private final SnakeApp.SnakeAppView snakeAppView;
@@ -28,7 +29,7 @@ public class SnakeElement extends PlacedElement {
     }
 
     @Override
-    public void draw(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    public void draw(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         super.draw(controls, blockEntity, canvas);
         if(snakeTail != null) {
             this.snakeTail.drawAndPush(
@@ -41,17 +42,17 @@ public class SnakeElement extends PlacedElement {
     }
 
     @Override
-    protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    protected void drawElement(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("snake"));
     }
 
     @Override
-    protected boolean onClickElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+    protected boolean onClickElement(TardisControl controls, ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
         return false;
     }
 
     @Override
-    public void tick(TardisControl controls, ConsoleScreenBlockEntity blockEntity) {
+    public void tick(TardisControl controls, ScreenBlockEntity blockEntity) {
         tickCount++;
         if (tickCount % getGameSpeed() == 0) {
             this.snakeAppView.deterministicRandom.skip(this.snakeMove.ordinal());
@@ -105,11 +106,11 @@ public class SnakeElement extends PlacedElement {
         this.tailLength++;
     }
 
-    public void killedByWall(ConsoleScreenBlockEntity blockEntity) {
+    public void killedByWall(ScreenBlockEntity blockEntity) {
         this.snakeAppView.snakeDied(blockEntity);
     }
 
-    public void killedByTail(ConsoleScreenBlockEntity blockEntity) {
+    public void killedByTail(ScreenBlockEntity blockEntity) {
         this.snakeAppView.snakeDied(blockEntity);
     }
 

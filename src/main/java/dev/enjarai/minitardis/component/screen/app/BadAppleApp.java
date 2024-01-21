@@ -2,7 +2,7 @@ package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.ModSounds;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.BadApple;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
@@ -38,7 +38,7 @@ public class BadAppleApp implements ScreenApp {
     }
 
     @Override
-    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/bad_apple"));
     }
 
@@ -51,7 +51,7 @@ public class BadAppleApp implements ScreenApp {
         int badAppleFrameCounter;
 
         @Override
-        public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
             var frame = MathHelper.clamp(badAppleFrameCounter, 0, BadApple.getFrameCount());
 
             for (int x = 0; x < BadApple.width; x++) {
@@ -69,7 +69,7 @@ public class BadAppleApp implements ScreenApp {
         }
 
         @Override
-        public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
+        public void screenOpen(ScreenBlockEntity blockEntity) {
             badAppleFrameCounter = -5; // temporary fix for apple grab beat drop sync, we go out of sync as song goes on though, gotta fix that
             var pos = blockEntity.getPos();
             //noinspection DataFlowIssue
@@ -77,7 +77,7 @@ public class BadAppleApp implements ScreenApp {
         }
 
         @Override
-        public void screenClose(ConsoleScreenBlockEntity blockEntity) {
+        public void screenClose(ScreenBlockEntity blockEntity) {
             badAppleFrameCounter = 0;
             StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(ModSounds.BAD_APPLE.getId(), SoundCategory.RECORDS);
 
@@ -89,12 +89,12 @@ public class BadAppleApp implements ScreenApp {
             }
         }
 
-        public void endAnimation(ConsoleScreenBlockEntity blockEntity) {
+        public void endAnimation(ScreenBlockEntity blockEntity) {
             blockEntity.closeApp();
         }
 
         @Override
-        public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+        public boolean onClick(ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
             return false;
         }
     };

@@ -1,7 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.DestinationScanner;
 import dev.enjarai.minitardis.component.TardisControl;
@@ -23,7 +23,7 @@ public class ScannerApp implements ScreenApp {
             }
 
             @Override
-            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 for (int x = 0; x < DestinationScanner.RANGE; x++) {
                     for (int y = 0; y < DestinationScanner.RANGE; y++) {
                         byte value = controls.getTardis().getDestinationScanner().getFor(x, y);
@@ -55,7 +55,7 @@ public class ScannerApp implements ScreenApp {
             }
 
             @Override
-            public void screenTick(ConsoleScreenBlockEntity blockEntity) {
+            public void screenTick(ScreenBlockEntity blockEntity) {
                 controls.getTardis().getDestinationScanner().shouldScanNextTick();
             }
         };
@@ -63,7 +63,7 @@ public class ScannerApp implements ScreenApp {
 
 
     @Override
-    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/scanner"));
     }
 

@@ -110,7 +110,8 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
             }
 
             var isDisabled = getTardis(world).map(t -> !t.getState().isPowered(t)).orElse(true);
-            var nearbyPlayers = isDisabled ? List.of() : serverWorld.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
+            var viewOverridden = getTardis(world).map(t -> t.getState().overrideScreenImage(t)).orElse(false);
+            var nearbyPlayers = isDisabled && !viewOverridden ? List.of() : serverWorld.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
 
             if (addedPlayers.isEmpty() && nearbyPlayers.isEmpty() && threadFuture != null) {
                 threadFuture.cancel(true);
@@ -129,7 +130,7 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
                 }, 0, 1000 / 30, TimeUnit.MILLISECONDS));
             }
 
-            if (!nearbyPlayers.isEmpty() && currentView != null) {
+            if (!nearbyPlayers.isEmpty() && currentView != null && !viewOverridden) {
                 currentView.screenTick(this);
             }
         }
@@ -150,7 +151,8 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
 
     private void refreshPlayers(ServerWorld world) {
         var isDisabled = getTardis(world).map(t -> !t.getState().isPowered(t)).orElse(true);
-        List<ServerPlayerEntity> nearbyPlayers = isDisabled ? List.of() : world.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
+        var viewOverridden = getTardis(world).map(t -> t.getState().overrideScreenImage(t)).orElse(false);
+        List<ServerPlayerEntity> nearbyPlayers = isDisabled && !viewOverridden ? List.of() : world.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
 
         addedPlayers.removeIf(player -> {
             if (!nearbyPlayers.contains(player)) {
@@ -173,19 +175,23 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
         CanvasUtils.fill(canvas, 0, 0, canvas.getWidth(), canvas.getHeight(), backgroundColor);
 
         var controls = tardis.getControls();
-        if (currentView != null) {
-            currentView.drawBackground(this, canvas);
-            currentView.draw(this, canvas);
-            CanvasUtils.draw(canvas, 96 + 2, 2, TardisCanvasUtils.getSprite("screen_side_button"));
-            DefaultFonts.VANILLA.drawText(canvas, "Menu", 96 + 2 + 2, 2 + 4, 8, CanvasColor.WHITE_HIGH);
-        } else {
-            CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("screen_background"));
+        if (!tardis.getState().overrideScreenImage(tardis)) {
+            if (currentView != null) {
+                currentView.drawBackground(this, canvas);
+                currentView.draw(this, canvas);
+                CanvasUtils.draw(canvas, 96 + 2, 2, TardisCanvasUtils.getSprite("screen_side_button"));
+                DefaultFonts.VANILLA.drawText(canvas, "Menu", 96 + 2 + 2, 2 + 4, 8, CanvasColor.WHITE_HIGH);
+            } else {
+                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("screen_background"));
 
-            var apps = controls.getAllApps();
-            for (int i = 0; i < apps.size(); i++) {
-                var app = apps.get(i);
-                app.drawIcon(controls, this, new SubView(canvas, getAppX(i), getAppY(i), 24, 24));
+                var apps = controls.getAllApps();
+                for (int i = 0; i < apps.size(); i++) {
+                    var app = apps.get(i);
+                    app.drawIcon(controls, this, new SubView(canvas, getAppX(i), getAppY(i), 24, 24));
+                }
             }
+        } else {
+            tardis.getState().drawScreenImage(controls, canvas, this);
         }
 
         var stability = tardis.getStability();
@@ -201,6 +207,10 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
     protected void handleClick(ServerPlayerEntity player, ClickType type, int x, int y) {
         //noinspection DataFlowIssue
         getTardis(getWorld()).ifPresent(tardis -> {
+            if (tardis.getState().overrideScreenImage(tardis)) {
+                return;
+            }
+
             var controls = tardis.getControls();
             if (currentView != null) {
                 if (type == ClickType.RIGHT && x >= 96 + 2 && x < 96 + 2 + 28 && y >= 16 + 2 && y < 16 + 2 + 14) {

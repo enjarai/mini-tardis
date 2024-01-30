@@ -1,7 +1,10 @@
 package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.component.Tardis;
+import dev.enjarai.minitardis.component.TardisControl;
+import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.sound.SoundCategory;
@@ -73,6 +76,20 @@ public interface FlightState {
      */
     default boolean isPowered(Tardis tardis) {
         return true;
+    }
+
+    /**
+     * Whether the screen should delegate to this state's special drawing function.
+     * This lets us do things like show an error in the crashed state, or a loading screen during boot.
+     */
+    default boolean overrideScreenImage(Tardis tardis) {
+        return false;
+    }
+
+    /**
+     * The function that will be used to draw the custom screen image if `overrideScreenImage` returns true.
+     */
+    default void drawScreenImage(TardisControl controls, DrawableCanvas canvas, ScreenBlockEntity blockEntity) {
     }
 
     /**

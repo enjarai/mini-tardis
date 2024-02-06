@@ -62,7 +62,7 @@ To modify your destination vertically, use the [Lateral Target Localization Corr
 This button is used in conjunction with the adjacent state switch to move your destination on the Y axis.
 When the state switch is disabled, pressing the corrector will snap your destination to the next 
 valid landing spot directly below the current destination.
-Having the state switch enabled does the exact same thing, except it goes up instead of down.
+Having the state switch enabled does the exact same thing, except moving up instead of down.
 
 ??? abstract "Recipes"
 

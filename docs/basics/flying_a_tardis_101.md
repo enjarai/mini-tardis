@@ -40,9 +40,47 @@ The direction it moves in is dependent on the attached state switch (the compara
 
 ## Pre-flight Checklist
 
+Before taking off you'll want to run through a quick checklist to ensure a safe trip. 
+All immediately flight-relevant information is shown in the [Status] app.
+- Artron capacitors should be over ~25% charged.
+- Preferably, ensure your stability gauge is full.
+- If possible, use your terrain scanner to verify landing zone safety. 
+  (Your TARDIS *can and will* happily land inside a lake of lava or on the ocean floor)
+
+!!! tip
+
+    You can recharge your artron capacitors by switching to refueling mode while landed.
+    Make sure your [Artron Conduits] are closed and activate the [Artron Scoop] to engage the refueling process.
+
+    **Artron energy is everywhere, and thus, essentially free!** It might take a while to gather though.
+
+![Tardis in lava](../img/tardis_in_lava.png)
+
+[Status]: # (TODO)
+[Artron Conduits]: console_layout.md#artron-conduit-controller
+[Artron Scoop]: console_layout.md#artron-scoop-activator
 
 ## Taking off
 
+At this point, you should be ready for take-off!
+First, lock in your destination using the [Target Lock-in] button. This will prevent you from modifying it, 
+and is required for both the take-off and landing sequence.
+
+Your [Artron Conduits] must also be open to provide energy to the time rotor.
+While active, these will constantly slightly drain your energy supply due to minor transfer inefficiencies,
+so leaving them enabled constantly, while possible, is not practical.
+
+// TODO
+
+![Takeoff visuals](../img/takeoff.apng)
+
+!!! tip
+
+    You can safely unlock and modify your destination, and use many other TARDIS controls once 
+    you're fully dematerialized, allowing for last minute course corrections.
+
+[Target Lock-in]: console_layout.md#space-time-target-lock-in
+[Artron Conduits]: console_layout.md#artron-conduit-controller
 
 ## Landing
 

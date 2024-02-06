@@ -10,7 +10,6 @@ nav:
 theme:
   name: material
   features:
-  logo: img/tardis_icon.png
   favicon: img/tardis_icon.png
   icon:
     repo: fontawesome/brands/github

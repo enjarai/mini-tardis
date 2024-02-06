@@ -11,7 +11,7 @@ To select a landing location, make use of the [GPS] app and [Localization Correc
 A conventional console will have two opposite facing sets of these for horizontal modifications, 
 plus one additional [Lateral Corrector] connected to a state switch for vertical control.
 
-![gps_app.png](gps_app.png)
+![gps_app.png](../img/gps_app.png)
 
 The GPS app will show you your current location in the world and selected destination.
 Each corrector will nudge your destination a certain amount of blocks in one cardinal direction, 

@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="../../img/tardis_icon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.7">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.8">
     
     
       
@@ -422,9 +422,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#landing" class="md-nav__link">
+  <a href="#travel-and-landing" class="md-nav__link">
     <span class="md-ellipsis">
-      Landing
+      Travel and Landing
     </span>
   </a>
   
@@ -509,9 +509,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#landing" class="md-nav__link">
+  <a href="#travel-and-landing" class="md-nav__link">
     <span class="md-ellipsis">
-      Landing
+      Travel and Landing
     </span>
   </a>
   
@@ -592,15 +592,60 @@ and is required for both the take-off and landing sequence.</p>
 <p>Your <a href="../console_layout/#artron-conduit-controller">Artron Conduits</a> must also be open to provide energy to the time rotor.
 While active, these will constantly slightly drain your energy supply due to minor transfer inefficiencies,
 so leaving them enabled constantly, while possible, is not practical.</p>
-<p>// TODO</p>
+<p>After activating these two controls and verifying both are green on the <a href="#" title="TODO">Status</a> app, 
+pull the <a href="../console_layout/#handbrake">Handbrake</a> to engage flight! Once you do this, 
+your TARDIS will start the take-off sequence and will enter flight soon after.</p>
 <p><img alt="Takeoff visuals" src="../../img/takeoff.apng" /></p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>You can safely unlock and modify your destination, and use many other TARDIS controls once 
 you're fully dematerialized, allowing for last minute course corrections.</p>
 </div>
-<h2 id="landing">Landing</h2>
+<h2 id="travel-and-landing">Travel and Landing</h2>
+<p>Unlike some other iterations, this model TARDIS does not require any time to travel, 
+nor does it have random buttons to press to stay stable.
+Instead, it requires you to use the <a href="../console_layout/#target-localization-corrector">Localization Corrector</a> buttons to correct <strong>Error</strong> while in flight.
+In short, Error will make your landing location inaccurate, 
+potentially offsetting it by its current value in any direction.
+As such, you'll almost always want your Error to be zero before landing.</p>
+<p>While in flight, the current Error value along with the correction hud are shown in the <a href="#" title="TODO">Status</a> app.
+Each vertical set of switches in the correction hud correspond to a position on the <a href="../console_layout/#localization-scale-interpreter">Scale Interpreter</a>,
+the currently selected one being highlighted.
+The more of these switches are centered and thus green, the smaller your Error will be.</p>
+<p><img alt="The Error UI" src="../../img/error_ui.png" /></p>
+<p>The state of the correction switches can be changed by selecting a set and using the <a href="../console_layout/#target-localization-corrector">Localization Corrector</a> buttons,
+each set of buttons able to shift one of the switches. 
+This might seem complex, but once understand how it works, It's really quite simple.</p>
+<p>Once your error reaches zero or a value you're sufficiently happy with, 
+pull the <a href="../console_layout/#handbrake">Handbrake</a> again at any time to initiate a landing.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Accumulated Error can sometimes be used to your advantage, as it can safely land you in a random faraway location.</p>
+</div>
 <h2 id="addendum-interdimensional-travel">Addendum: Interdimensional Travel</h2>
+<p>Once you acquire the <a href="#" title="TODO">Dimensions</a> app, you'll be able to easily travel between dimensions using your TARDIS. 
+This does however come with a few additional complexities.</p>
+<p>For one, the Dimensions app does not have access to all dimensions by default, 
+they have to be manually registered to its memory for the TARDIS to be able to travel to them at will.
+This can be achieved either by using the 'Add' button inside the app while already having a different dimension targeted,
+or by loading the app onto a floppy and interacting with it inside the dimension. (Temporary method)
+Once a dimension is added, clicking its star inside the app will set your destination to use that dimension.</p>
+<p>Additionally, to actually travel to a different dimension, you must temporarily destabilize your conduit through the 
+time vortex in a controlled manner and enter a "drifting" state.
+This can be achieved by unlocking your destination mid-flight, and pulling the handbrake as if trying to land.</p>
+<p>Upon entering a drifting state, you'll quickly hear a bell sound, 
+this is the TARDIS attempting to assist your uncontrolled travel.
+For every bell sound you hear, pull the Handbrake <strong>once</strong>.
+After a certain amount of repetitions, you will hear a confirmation and be automatically returned to stable flight, 
+now within your selected dimension, after which you'll be able to land like normal.</p>
+<p>The <a href="#" title="TODO">Status</a> app helpfully provides a visual indicator for the amount of repetitions required while drifting.</p>
+<p><img alt="The drifting UI indicator" src="../../img/drifting_ui.png" /></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>While in a drifting state, your TARDIS will very rapidly lose stability. 
+Once your stability reaches zero, you will enter a <a href="#" title="TODO">Crashing</a> state.
+<strong>This should be avoided if at all possible.</strong></p>
+</div>
 
 
 
@@ -665,7 +710,7 @@ you're fully dematerialized, allowing for last minute course corrections.</p>
     <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.caa56a14.min.js"></script>
+      <script src="../../assets/javascripts/bundle.8fd75fb4.min.js"></script>
       
     
   </body>

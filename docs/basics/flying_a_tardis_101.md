@@ -42,6 +42,7 @@ The direction it moves in is dependent on the attached state switch (the compara
 
 Before taking off you'll want to run through a quick checklist to ensure a safe trip. 
 All immediately flight-relevant information is shown in the [Status] app.
+
 - Artron capacitors should be over ~25% charged.
 - Preferably, ensure your stability gauge is full.
 - If possible, use your terrain scanner to verify landing zone safety. 

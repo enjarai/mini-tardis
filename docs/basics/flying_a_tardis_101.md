@@ -107,6 +107,10 @@ This might seem complex, but once understand how it works, It's really quite sim
 Once your error reaches zero or a value you're sufficiently happy with, 
 pull the [Handbrake] again at any time to initiate a landing.
 
+!!! warning
+
+    After landing, don't forget to disengage your conduits, lest you end up with an empty tank before your next flight!
+
 !!! tip
 
     Accumulated Error can sometimes be used to your advantage, as it can safely land you in a random faraway location.

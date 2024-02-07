@@ -70,7 +70,9 @@ Your [Artron Conduits] must also be open to provide energy to the time rotor.
 While active, these will constantly slightly drain your energy supply due to minor transfer inefficiencies,
 so leaving them enabled constantly, while possible, is not practical.
 
-// TODO
+After activating these two controls and verifying both are green on the [Status] app, 
+pull the [Handbrake] to engage flight! Once you do this, 
+your TARDIS will start the take-off sequence and will enter flight soon after.
 
 ![Takeoff visuals](../img/takeoff.apng)
 
@@ -80,9 +82,65 @@ so leaving them enabled constantly, while possible, is not practical.
     you're fully dematerialized, allowing for last minute course corrections.
 
 [Target Lock-in]: console_layout.md#space-time-target-lock-in
-[Artron Conduits]: console_layout.md#artron-conduit-controller
+[Handbrake]: console_layout.md#handbrake
 
-## Landing
+## Travel and Landing
 
+Unlike some other iterations, this model TARDIS does not require any time to travel, 
+nor does it have random buttons to press to stay stable.
+Instead, it requires you to use the [Localization Corrector] buttons to correct **Error** while in flight.
+In short, Error will make your landing location inaccurate, 
+potentially offsetting it by its current value in any direction.
+As such, you'll almost always want your Error to be zero before landing.
+
+While in flight, the current Error value along with the correction hud are shown in the [Status] app.
+Each vertical set of switches in the correction hud correspond to a position on the [Scale Interpreter],
+the currently selected one being highlighted.
+The more of these switches are centered and thus green, the smaller your Error will be.
+
+![The Error UI](../img/error_ui.png)
+
+The state of the correction switches can be changed by selecting a set and using the [Localization Corrector] buttons,
+each set of buttons able to shift one of the switches. 
+This might seem complex, but once understand how it works, It's really quite simple.
+
+Once your error reaches zero or a value you're sufficiently happy with, 
+pull the [Handbrake] again at any time to initiate a landing.
+
+!!! tip
+
+    Accumulated Error can sometimes be used to your advantage, as it can safely land you in a random faraway location.
 
 ## Addendum: Interdimensional Travel
+
+Once you acquire the [Dimensions] app, you'll be able to easily travel between dimensions using your TARDIS. 
+This does however come with a few additional complexities.
+
+For one, the Dimensions app does not have access to all dimensions by default, 
+they have to be manually registered to its memory for the TARDIS to be able to travel to them at will.
+This can be achieved either by using the 'Add' button inside the app while already having a different dimension targeted,
+or by loading the app onto a floppy and interacting with it inside the dimension. (Temporary method)
+Once a dimension is added, clicking its star inside the app will set your destination to use that dimension.
+
+Additionally, to actually travel to a different dimension, you must temporarily destabilize your conduit through the 
+time vortex in a controlled manner and enter a "drifting" state.
+This can be achieved by unlocking your destination mid-flight, and pulling the handbrake as if trying to land.
+
+Upon entering a drifting state, you'll quickly hear a bell sound, 
+this is the TARDIS attempting to assist your uncontrolled travel.
+For every bell sound you hear, pull the Handbrake **once**.
+After a certain amount of repetitions, you will hear a confirmation and be automatically returned to stable flight, 
+now within your selected dimension, after which you'll be able to land like normal.
+
+The [Status] app helpfully provides a visual indicator for the amount of repetitions required while drifting.
+
+![The drifting UI indicator](../img/drifting_ui.png)
+
+!!! warning
+
+    While in a drifting state, your TARDIS will very rapidly lose stability. 
+    Once your stability reaches zero, you will enter a [Crashing] state.
+    **This should be avoided if at all possible.**
+
+[Dimensions]: # (TODO)
+[Crashing]: # (TODO)

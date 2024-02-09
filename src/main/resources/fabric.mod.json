@@ -3,15 +3,16 @@
 	"id": "mini_tardis",
 	"version": "${version}",
 	"name": "Mini Tardis",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "A different take on the ever-growing TARDIS mod genre",
 	"authors": [
 		"enjarai"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://enjarai.dev/mini-tardis",
+		"sources": "https://github.com/enjarai/mini-tardis",
+		"issues": "https://github.com/enjarai/mini-tardis/issues"
 	},
-	"license": "",
+	"license": "ARR",
 	"icon": "assets/mini_tardis/icon.png",
 	"environment": "*",
 	"entrypoints": {

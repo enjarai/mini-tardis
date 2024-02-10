@@ -18,10 +18,44 @@ though ultimately, they are always internally consistent.
 
 ## Got any games on your phone? Yes actually!
 
-An essential part of your TARDIS, the TdOS interface provides you with critical flight information, 
+An essential part of your TARDIS, the TDoS interface provides critical flight information, 
 databank access, an external scanner, and even multiple games 
 available as apps found on floppy disks around your world.
 Navigable with a simple touch screen interface, it gives you more control than ever, and more importantly, 
 makes your mobile base a fun place to be for everyone involved.
 
+![Some of the apps available for TDoS](img/apps.png)
+
+## An all-in-one mobile base!
+
+With practically infinite space to work with, your TARDIS makes the perfect mobile base!
+Though you may need to clear out some of the internal plating to make room.
+
+With the interior being fully customizable, this of course also extends to the console, 
+all controls being custom blocks that work anywhere inside the TARDIS.
+You can even make a second console room, or a third!
+
+An advanced architectural reconfiguration is coming soon™ to make large scale internal reconstruction easy.
+
+## Dramatic systems malfunctions
+
+If you mess up, you'll at the very least do so in style.
+
+![Inside a crashed TARDIS](img/crashed.gif)
+
+## Optionally works completely server-side
+
+This mod can optionally make use of the excellent [Polymer](https://modrinth.com/mod/polymer) library to work on 
+any Fabric server without needing to be installed on the client, similar to a plugin!
+Only a resource pack is required, which is automatically provided to clients by Polymer.
+
 ![Tardis in flight](img/takeoff.gif)
+
+## Credits
+
+Bad Apple compressed file format was done by [Benonardo](https://github.com/Benonardo).
+
+The included Snake game was made by [Louis](https://github.com/Dev0Louis).
+
+This mod wouldn't be possible in the way it is without many of the libraries 
+by [Patbox](https://github.com/Patbox) and [NucleoidMC](https://github.com/NucleoidMC).

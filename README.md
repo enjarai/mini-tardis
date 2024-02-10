@@ -6,6 +6,8 @@ A new take on the often-made Minecraft TARDIS mod,
 this mod aims to redesign everyone's favorite Doctor Who inspired space-time transport method and mobile base from the ground up, 
 taking things in a different direction compared to other mods of its kind to hopefully provide more immersive and enjoyable gameplay.
 
+> Check out [the Wiki](https://enjarai.dev/mini-tardis/)!
+
 ![Tardis in field](img/tardis_in_field.png)
 
 ## You are in control...

@@ -35,7 +35,7 @@ public class ModItems {
         ModBlocks.ITEM_BLOCKS.forEach((block, modelData) -> {
             var id = Registries.BLOCK.getId(block);
             if (modelData.isPresent()) {
-                Registry.register(Registries.ITEM, id, new PolymerBlockItem(block, new FabricItemSettings(), modelData.get().item()) {
+                Registry.register(Registries.ITEM, id, new TooltipPolymerBlockItem(block, new FabricItemSettings(), modelData.get().item()) {
                     @Override
                     public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
                         return modelData.get().value();
@@ -43,7 +43,7 @@ public class ModItems {
                 });
             } else if (block instanceof PolymerBlock polymerBlock) {
                 var polymerItem = polymerBlock.getPolymerBlock(block.getDefaultState()).asItem();
-                Registry.register(Registries.ITEM, id, new PolymerBlockItem(block, new FabricItemSettings(), polymerItem));
+                Registry.register(Registries.ITEM, id, new TooltipPolymerBlockItem(block, new FabricItemSettings(), polymerItem));
             }
         });
 

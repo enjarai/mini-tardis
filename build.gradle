@@ -1,6 +1,7 @@
 plugins {
 	id 'fabric-loom' version '1.4-SNAPSHOT'
 	id 'maven-publish'
+	id "me.modmuss50.mod-publish-plugin" version "0.4.4"
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -80,10 +81,15 @@ dependencies {
 }
 
 processResources {
-	inputs.property "version", project.version
-
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+	var replaceProperties = [
+			version: version,
+			modrinth_id: modrinth_id,
+			curseforge_id: curseforge_id,
+			github_repo: github_repo,
+	]
+	inputs.properties replaceProperties
+	filesMatching(['pack.mcmeta', 'fabric.mod.json', '*.mixins.json']) {
+		expand replaceProperties
 	}
 }
 
@@ -129,4 +135,78 @@ publishing {
 			from components.java
 		}
 	}
+}
+
+publishMods {
+	file = remapJar.archiveFile
+	displayName = "${property('mod_version')} for ${property('minecraft_version')}"
+	version = project.version
+	changelog = getRootProject().file("CHANGELOG.md").text
+	type = STABLE
+	modLoaders.add("fabric")
+
+	def min = property('target_min')
+	def max = property('target_max')
+
+	modrinth {
+		projectId = property('modrinth_id')
+		accessToken = providers.gradleProperty('enjaraiModrinthToken').get()
+
+		if (min == max) {
+			minecraftVersions.add(min)
+		} else {
+			minecraftVersionRange {
+				start = min
+				end = max
+			}
+		}
+
+		requires {
+			slug = "fabric-api"
+		}
+		embeds {
+			slug = "cardinal-components-api"
+		}
+		embeds {
+			slug = "polymer"
+		}
+	}
+
+	curseforge {
+		projectId = property('curseforge_id')
+		accessToken = providers.gradleProperty('enjaraiCurseforgeToken').get()
+
+		if (min == max) {
+			minecraftVersions.add(min)
+		} else {
+			minecraftVersionRange {
+				start = min
+				end = max
+			}
+		}
+
+		requires {
+			slug = "fabric-api"
+		}
+		embeds {
+			slug = "cardinal-components-api"
+		}
+		embeds {
+			slug = "polymer"
+		}
+	}
+
+	github {
+		repository = property('github_repo')
+		accessToken = providers.gradleProperty('enjaraiGithubToken').get()
+
+		commitish = "master"
+		tagName = project.version
+	}
+}
+
+tasks.register('publishAll') {
+	group 'publishing'
+	dependsOn 'publish'
+	dependsOn 'publishMods'
 }

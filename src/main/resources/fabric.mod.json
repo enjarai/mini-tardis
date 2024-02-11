@@ -9,8 +9,8 @@
 	],
 	"contact": {
 		"homepage": "https://enjarai.dev/mini-tardis",
-		"sources": "https://github.com/enjarai/mini-tardis",
-		"issues": "https://github.com/enjarai/mini-tardis/issues"
+		"sources": "https://github.com/${github_repo}",
+		"issues": "https://github.com/${github_repo}/issues"
 	},
 	"license": "ARR",
 	"icon": "assets/mini_tardis/icon.png",
@@ -43,6 +43,15 @@
 		"cardinal-components": [
 			"mini_tardis:tardis_holder",
 			"mini_tardis:tardis_reference"
-		]
+		],
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.gg/WcYsDDQtyR"
+			}
+		},
+		"projects": {
+			"modrinth": "${modrinth_id}",
+			"curseforge": "${curseforge_id}"
+		}
 	}
 }

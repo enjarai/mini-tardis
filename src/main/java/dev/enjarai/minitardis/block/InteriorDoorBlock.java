@@ -89,7 +89,7 @@ public class InteriorDoorBlock extends HorizontalFacingBlock implements PerhapsP
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         // TODO uncomment when polymer fixes the™
 //        if (hit.getSide() == state.get(FACING)) {
-            getTardis(world).ifPresent(tardis -> tardis.teleportEntityOut(player));
+            getTardis(world).ifPresent(tardis -> tardis.teleportEntityOut(player, state.get(HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos));
             return ActionResult.SUCCESS;
 //        }
 //        return super.onUse(state, world, pos, player, hand, hit);

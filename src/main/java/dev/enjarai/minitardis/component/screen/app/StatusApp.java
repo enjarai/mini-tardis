@@ -15,11 +15,15 @@ import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ClickType;
+import net.minecraft.util.math.random.LocalRandom;
+import net.minecraft.util.math.random.Random;
 
 import java.util.Arrays;
 
 public class StatusApp implements ScreenApp {
     public static final Codec<StatusApp> CODEC = Codec.unit(StatusApp::new);
+
+    private Random etaRandom = new LocalRandom(0);
 
     @Override
     public AppView getView(TardisControl controls) {
@@ -67,6 +71,17 @@ public class StatusApp implements ScreenApp {
                     CanvasUtils.draw(canvas, 7 + state.scaleState * 10, 23, TardisCanvasUtils.getSprite("offset_set_selected"));
 
                     DefaultFonts.VANILLA.drawText(canvas, "ER: " + state.getDistance(), 8, 41, 8, CanvasColor.WHITE_HIGH);
+                });
+
+                tardis.getState(RefuelingState.class).ifPresent(state -> {
+                    etaRandom.setSeed(tardis.getInteriorWorld().getTime() / 40);
+
+                    var seconds = 1000 - tardis.getFuel() * etaRandom.nextBetween(95, 105) / 100;
+                    var minutes = seconds / 60;
+                    seconds %= 60;
+
+                    DefaultFonts.VANILLA.drawText(canvas, "Time to full:", 8, 24, 8, CanvasColor.LIGHT_GRAY_HIGH);
+                    DefaultFonts.VANILLA.drawText(canvas, "%d:%02d".formatted(minutes, seconds), 8, 35, 8, CanvasColor.WHITE_HIGH);
                 });
 
                 var random = blockEntity.drawRandom;

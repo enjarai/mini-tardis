@@ -31,13 +31,14 @@
   "block.mini_tardis.refuel_toggle.tooltip": "Toggles refueling mode.",
   "block.mini_tardis.interior_light": "Interior Light",
   "block.mini_tardis.interior_light.tooltip": "Turns on and emits a redstone signal based on your Tardis' state.",
+  "block.mini_tardis.interior_light.tooltip.order": "Order: %s",
   "block.mini_tardis.power_coupling": "Power Coupling",
   "block.mini_tardis.power_coupling.tooltip": "Can be used to completely turn off your Tardis.",
   "block.mini_tardis.makeshift_engine": "Makeshift Tardis Engine",
   "block.mini_tardis.makeshift_engine.tooltip": "Can be used to build a makeshift Tardis, letting you temporarily enter the time vortex.",
 
   "item.mini_tardis.fez": "Fez",
-  "item.mini_tardis.floppy": "Floppy",
+  "item.mini_tardis.floppy": "Floppy Disk",
 
   "mini_tardis.item_group": "Mini Tardis",
 

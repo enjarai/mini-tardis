@@ -266,9 +266,9 @@ public class Tardis {
                     break;
                 } else {
                     targetPos = world.getPointOfInterestStorage().getInSquare(
-                            poi -> poi.value().equals(ModBlocks.INTERIOR_DOOR_POI), INTERIOR_CENTER,
+                            poi -> poi.value().equals(ModBlocks.INTERIOR_DOOR_POI), interiorDoorPosition,
                             64, PointOfInterestStorage.OccupationStatus.ANY
-                    ).findAny().map(PointOfInterest::getPos).orElse(INTERIOR_CENTER);
+                    ).findAny().map(PointOfInterest::getPos).orElse(interiorDoorPosition);
                     interiorDoorState = world.getBlockState(targetPos);
                 }
             } while (interiorDoorState.isOf(ModBlocks.INTERIOR_DOOR));
@@ -283,7 +283,7 @@ public class Tardis {
         }
     }
 
-    public void teleportEntityOut(Entity entity) {
+    public void teleportEntityOut(Entity entity, BlockPos doorPos) {
         if (state.isSolid(this)) {
             currentLocation.ifLeft(location -> {
                 var world = location.getWorld(holder.getServer());
@@ -295,6 +295,8 @@ public class Tardis {
                     buildExterior();
                     blockEntity = world.getBlockEntity(pos);
                 }
+
+                interiorDoorPosition = doorPos;
 
                 if (blockEntity instanceof TardisExteriorBlockEntity exteriorEntity && this.equals(exteriorEntity.getLinkedTardis())) {
                     var facing = exteriorEntity.getCachedState().get(TardisExteriorBlock.FACING);
@@ -402,6 +404,12 @@ public class Tardis {
             newState.init(this);
         }
         return accepted;
+    }
+
+    public void forceSetState(FlightState newState) {
+        state.complete(this);
+        state = newState;
+        newState.init(this);
     }
 
     public FlightState getState() {

@@ -13,6 +13,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 public interface FlightState {
     Map<Identifier, Codec<? extends FlightState>> ALL = Map.ofEntries(
@@ -28,6 +29,15 @@ public interface FlightState {
             Map.entry(BootingUpState.ID, BootingUpState.CODEC),
             Map.entry(CrashedState.ID, CrashedState.CODEC),
             Map.entry(SuspendedFlightState.ID, SuspendedFlightState.CODEC)
+    );
+    Map<Identifier, Supplier<? extends FlightState>> CONSTRUCTORS = Map.of(
+            LandedState.ID, LandedState::new,
+            RefuelingState.ID, RefuelingState::new,
+            DriftingState.ID, DriftingState::new,
+            DisabledState.ID, DisabledState::new,
+            BootingUpState.ID, BootingUpState::new,
+            CrashedState.ID, CrashedState::new,
+            SuspendedFlightState.ID, SuspendedFlightState::new
     );
     Codec<FlightState> CODEC = Identifier.CODEC.dispatch(FlightState::id, ALL::get);
 

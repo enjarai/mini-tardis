@@ -1,0 +1,4 @@
+- Added some extra operator commands.
+- Added a "time to full" display to the refueling state.
+- Made interior lights pickblockable, keeping their order state.
+- Renamed "Floppy" to "Floppy Disk".

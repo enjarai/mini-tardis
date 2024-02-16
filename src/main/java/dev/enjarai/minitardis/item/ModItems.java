@@ -14,6 +14,7 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -30,20 +31,24 @@ public class ModItems {
             new FabricItemSettings().maxCount(1).equipmentSlot((stack) -> EquipmentSlot.HEAD)));
     public static final FloppyItem FLOPPY = register("floppy", new FloppyItem(new FabricItemSettings().maxCount(1)));
     public static final TardisPlatingItem TARDIS_PLATING = register("tardis_plating", new TardisPlatingItem(new FabricItemSettings()));
+    public static final InteriorLightItem INTERIOR_LIGHT = register("interior_light",
+            new InteriorLightItem(ModBlocks.INTERIOR_LIGHT, new FabricItemSettings(), Items.REDSTONE_LAMP));
 
     public static void load() {
         ModBlocks.ITEM_BLOCKS.forEach((block, modelData) -> {
             var id = Registries.BLOCK.getId(block);
-            if (modelData.isPresent()) {
-                Registry.register(Registries.ITEM, id, new TooltipPolymerBlockItem(block, new FabricItemSettings(), modelData.get().item()) {
-                    @Override
-                    public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-                        return modelData.get().value();
-                    }
-                });
-            } else if (block instanceof PolymerBlock polymerBlock) {
-                var polymerItem = polymerBlock.getPolymerBlock(block.getDefaultState()).asItem();
-                Registry.register(Registries.ITEM, id, new TooltipPolymerBlockItem(block, new FabricItemSettings(), polymerItem));
+            if (!Registries.ITEM.containsId(id)) {
+                if (modelData.isPresent()) {
+                    Registry.register(Registries.ITEM, id, new TooltipPolymerBlockItem(block, new FabricItemSettings(), modelData.get().item()) {
+                        @Override
+                        public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
+                            return modelData.get().value();
+                        }
+                    });
+                } else if (block instanceof PolymerBlock polymerBlock) {
+                    var polymerItem = polymerBlock.getPolymerBlock(block.getDefaultState()).asItem();
+                    Registry.register(Registries.ITEM, id, new TooltipPolymerBlockItem(block, new FabricItemSettings(), polymerItem));
+                }
             }
         });
 

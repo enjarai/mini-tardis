@@ -4,10 +4,12 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.component.TardisLocation;
 import dev.enjarai.minitardis.component.ModComponents;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisHolder;
+import dev.enjarai.minitardis.component.flight.FlightState;
 import dev.enjarai.minitardis.component.screen.app.ScreenApp;
 import dev.enjarai.minitardis.component.screen.app.ScreenAppType;
 import dev.enjarai.minitardis.item.FloppyItem;
@@ -19,11 +21,15 @@ import net.minecraft.command.argument.UuidArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
@@ -63,6 +69,25 @@ public class TardisCommand {
                                 )
                         )
                 )
+                .then(CommandManager.literal("refuel")
+                        .executes(context -> refuel(context, null))
+                        .then(CommandManager.argument("tardis", UuidArgumentType.uuid())
+                                .suggests(TardisCommand::suggestTardii)
+                                .executes(context -> refuel(context, UuidArgumentType.getUuid(context, "tardis")))
+                        )
+                )
+                .then(CommandManager.literal("state")
+                        .then(CommandManager.literal("set")
+                                .then(CommandManager.argument("state", IdentifierArgumentType.identifier())
+                                        .suggests(TardisCommand::suggestStates)
+                                        .executes(context -> setState(context, IdentifierArgumentType.getIdentifier(context, "state"), null))
+                                        .then(CommandManager.argument("tardis", UuidArgumentType.uuid())
+                                                .suggests(TardisCommand::suggestTardii)
+                                                .executes(context -> setState(context, IdentifierArgumentType.getIdentifier(context, "state"), UuidArgumentType.getUuid(context, "tardis")))
+                                        )
+                                )
+                        )
+                )
         );
     }
 
@@ -88,12 +113,35 @@ public class TardisCommand {
         return 1;
     }
 
+    private static int refuel(CommandContext<ServerCommandSource> context, @Nullable UUID uuid) {
+        var tardis = uuid == null ? getTardis(context.getSource().getWorld()) : getHolder(context).getTardis(uuid);
+        tardis.ifPresent(t -> t.addOrDrainFuel(1000));
+        return 1;
+    }
+
+    private static int setState(CommandContext<ServerCommandSource> context, Identifier stateId, @Nullable UUID uuid) {
+        if (FlightState.CONSTRUCTORS.containsKey(stateId)) {
+            var state = FlightState.CONSTRUCTORS.get(stateId);
+            var tardis = uuid == null ? getTardis(context.getSource().getWorld()) : getHolder(context).getTardis(uuid);
+            tardis.ifPresent(t -> t.forceSetState(state.get()));
+        }
+        return 1;
+    }
+
     private static CompletableFuture<Suggestions> suggestTardii(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
         return CommandSource.suggestMatching(
                 ModComponents.TARDIS_HOLDER.get(context.getSource().getServer().getSaveProperties())
                         .getAllTardii().stream()
                         .map(Tardis::uuid)
                         .map(UUID::toString),
+                builder
+        );
+    }
+
+    private static CompletableFuture<Suggestions> suggestStates(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
+        return CommandSource.suggestMatching(
+                FlightState.CONSTRUCTORS.keySet().stream()
+                        .map(Identifier::toString),
                 builder
         );
     }
@@ -116,5 +164,9 @@ public class TardisCommand {
 
     private static TardisHolder getHolder(CommandContext<ServerCommandSource> context) {
         return ModComponents.TARDIS_HOLDER.get(context.getSource().getServer().getSaveProperties());
+    }
+
+    private static Optional<Tardis> getTardis(World world) {
+        return world.getComponent(ModComponents.TARDIS_REFERENCE).getTardis();
     }
 }

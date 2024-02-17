@@ -73,6 +73,11 @@ public class ModBlocks {
             register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create()
                     .strength(3.0F)
                     .nonOpaque()));
+    public static final WallScreenBlock WALL_SCREEN =
+            register("wall_screen", new WallScreenBlock(FabricBlockSettings.create()
+                    .strength(3.0F)
+                    .breakInstantly()
+                    .nonOpaque()));
     public static final ConsoleButtonBlock RESET_DESTINATION_BUTTON =
             register("reset_destination_button", new ConsoleButtonBlock(FabricBlockSettings.create()
                     .noCollision()
@@ -154,6 +159,8 @@ public class ModBlocks {
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);
     public static final BlockEntityType<ConsoleScreenBlockEntity> CONSOLE_SCREEN_ENTITY =
             registerEntity("console_screen", ConsoleScreenBlockEntity::new, CONSOLE_SCREEN);
+    public static final BlockEntityType<WallScreenBlockEntity> WALL_SCREEN_ENTITY =
+            registerEntity("wall_screen", WallScreenBlockEntity::new, WALL_SCREEN);
     public static final BlockEntityType<MakeshiftEngineBlockEntity> MAKESHIFT_ENGINE_ENTITY =
             registerEntity("makeshift_engine", MakeshiftEngineBlockEntity::new, MAKESHIFT_ENGINE);
 
@@ -171,6 +178,7 @@ public class ModBlocks {
         builder.put(INTERIOR_DOOR, Optional.of(PolymerModels.INTERIOR_DOOR_ITEM));
         builder.put(HANDBRAKE, Optional.empty());
         builder.put(CONSOLE_SCREEN, Optional.of(PolymerModels.ROTATING_MONITOR_PACKED));
+        builder.put(WALL_SCREEN, Optional.of(PolymerModels.WALL_MONITOR));
         builder.put(RESET_DESTINATION_BUTTON, Optional.empty());
         builder.put(NUDGE_DESTINATION_BUTTON_1, Optional.empty());
         builder.put(NUDGE_DESTINATION_BUTTON_2, Optional.empty());

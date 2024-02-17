@@ -19,6 +19,7 @@ public class PolymerModels {
     public static final PolymerModelData INTERIOR_DOOR_ITEM = get(Items.BARRIER, "item/interior_door_item");
     public static final PolymerModelData ROTATING_MONITOR = get(Items.BARRIER, "item/rotating_monitor");
     public static final PolymerModelData ROTATING_MONITOR_PACKED = get(Items.BARRIER, "item/rotating_monitor_packed");
+    public static final PolymerModelData WALL_MONITOR = get(Items.BARRIER, "item/wall_monitor");
     public static final PolymerModelData EXTERIOR_DOOR_OPEN = get(Items.BARRIER, "item/exterior_door_open");
     public static final PolymerModelData INTERIOR_DOOR_OPEN = get(Items.BARRIER, "item/interior_door_open");
     public static final PolymerModelData TARDIS_PLATING_ITEM = get(Items.BARRIER, "item/tardis_plating");

@@ -1,13 +1,8 @@
 package dev.enjarai.minitardis.block.console;
 
 import dev.enjarai.minitardis.block.ModBlocks;
-import dev.enjarai.minitardis.block.TardisAware;
-import dev.enjarai.minitardis.item.FloppyItem;
 import dev.enjarai.minitardis.item.ModItems;
 import dev.enjarai.minitardis.item.PolymerModels;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
-import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
-import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.attachment.BlockBoundAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
@@ -18,12 +13,10 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -31,7 +24,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
@@ -40,9 +32,16 @@ import org.joml.Vector3f;
 
 @SuppressWarnings("deprecation")
 public class ConsoleScreenBlock extends ScreenBlock {
+    public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
 
     public ConsoleScreenBlock(Settings settings) {
         super(settings);
+        setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(HAS_FLOPPY, false));
+    }
+
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(FACING, HAS_FLOPPY);
     }
 
     @Override
@@ -68,30 +67,34 @@ public class ConsoleScreenBlock extends ScreenBlock {
             }
 
             return ActionResult.SUCCESS;
-        } else if (hand == Hand.MAIN_HAND && hitSide == Direction.DOWN && world.getBlockEntity(pos) instanceof ScreenBlockEntity blockEntity) {
-            var handStack = player.getStackInHand(hand);
-            var blockStack = blockEntity.inventory.getStack(0);
-            @SuppressWarnings("DataFlowIssue")
-            var elementHolder = (ConsoleScreenElementHolder) BlockBoundAttachment.get(world, pos).holder();
-
-            if (handStack.isOf(ModItems.FLOPPY) && blockStack.isEmpty()) {
-                blockEntity.inventory.setStack(0, handStack.split(1));
-                world.setBlockState(pos, state.with(HAS_FLOPPY, true));
-                elementHolder.setFloppyVisible(true);
-
-                world.playSound(null, pos, SoundEvents.BLOCK_DISPENSER_DISPENSE, SoundCategory.BLOCKS, 1, 2);
-                return ActionResult.SUCCESS;
-            } else if (handStack.isEmpty() && !blockStack.isEmpty()) {
-                player.setStackInHand(hand, blockStack.split(1));
-                world.setBlockState(pos, state.with(HAS_FLOPPY, false));
-                elementHolder.setFloppyVisible(false);
-
-                world.playSound(null, pos, SoundEvents.BLOCK_DISPENSER_FAIL, SoundCategory.BLOCKS, 1, 1.5f);
+        } else if (hand == Hand.MAIN_HAND && hitSide == Direction.DOWN) {
+            if (trySwitchFloppy(state, world, pos, player, hand)) {
                 return ActionResult.SUCCESS;
             }
         }
 
         return super.onUse(state, world, pos, player, hand, hit);
+    }
+
+    @Nullable
+    @Override
+    public BlockState getPlacementState(ItemPlacementContext ctx) {
+        BlockState blockState = this.getDefaultState();
+        WorldView worldView = ctx.getWorld();
+        BlockPos blockPos = ctx.getBlockPos();
+        Direction[] directions = ctx.getPlacementDirections();
+
+        for (Direction direction : directions) {
+            if (direction.getAxis().isHorizontal()) {
+                Direction direction2 = direction.getOpposite();
+                blockState = blockState.with(FACING, direction2);
+                if (blockState.canPlaceAt(worldView, blockPos)) {
+                    return blockState;
+                }
+            }
+        }
+
+        return null;
     }
 
     @Nullable
@@ -128,4 +131,25 @@ public class ConsoleScreenBlock extends ScreenBlock {
                 : super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
     }
 
+    @Override
+    public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
+        return new ScreenElementHolder(initialBlockState, PolymerModels.ROTATING_MONITOR) {
+            @Override
+            void applyModelTranslations(ItemDisplayElement element, BlockState state) {
+                var facing = state.get(FACING);
+
+                element.setTranslation(facing.getOpposite().getUnitVector().mul(0.5f));
+                element.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
+            }
+
+            @Override
+            void applyFloppyTranslations(ItemDisplayElement element, BlockState state) {
+                var facing = state.get(FACING);
+
+                element.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
+                element.setScale(new Vector3f(0.6f));
+                element.setTranslation(facing.getUnitVector().mul(0.4f).add(0, -0.3f, 0));
+            }
+        };
+    }
 }

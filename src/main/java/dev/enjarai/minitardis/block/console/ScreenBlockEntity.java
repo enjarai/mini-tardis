@@ -26,6 +26,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.ClickType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -63,7 +64,8 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
         super(type, pos, state);
         var facing = getFacing(pos, state);
         this.display = VirtualDisplay
-                .builder(DrawableCanvas.create(), pos.offset(facing), facing)
+                .builder(DrawableCanvas.create(), getPos(pos, state), facing)
+                .rotation(getRotation(pos, state))
                 .glowing()
                 .invisible()
                 .callback(this::handleClick)
@@ -72,7 +74,11 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
         this.canvas = new TardisScreenView(new SubView(backingCanvas, 0, 16, 128, 96));
     }
 
+    protected abstract BlockPos getPos(BlockPos pos, BlockState state);
+
     protected abstract Direction getFacing(BlockPos pos, BlockState state);
+
+    protected abstract BlockRotation getRotation(BlockPos pos, BlockState state);
 
     @Override
     protected void writeNbt(NbtCompound nbt) {
@@ -111,7 +117,23 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
 
             var isDisabled = getTardis(world).map(t -> !t.getState().isPowered(t)).orElse(true);
             var viewOverridden = getTardis(world).map(t -> t.getState().overrideScreenImage(t)).orElse(false);
-            var nearbyPlayers = isDisabled && !viewOverridden ? List.of() : serverWorld.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
+            List<ServerPlayerEntity> nearbyPlayers = isDisabled && !viewOverridden ? List.of() : serverWorld.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
+
+            addedPlayers.removeIf(player -> {
+                if (!nearbyPlayers.contains(player)) {
+                    display.removePlayer(player);
+                    display.getCanvas().removePlayer(player);
+                    return true;
+                }
+                return false;
+            });
+            nearbyPlayers.forEach(player -> {
+                if (!addedPlayers.contains(player)) {
+                    display.addPlayer(player);
+                    display.getCanvas().addPlayer(player);
+                    addedPlayers.add(player);
+                }
+            });
 
             if (addedPlayers.isEmpty() && nearbyPlayers.isEmpty() && threadFuture != null) {
                 threadFuture.cancel(true);
@@ -121,7 +143,6 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
             if (!nearbyPlayers.isEmpty() && threadFuture == null) {
                 getTardis(world).ifPresent(tardis -> threadFuture = executor.scheduleAtFixedRate(() -> {
                     try {
-                        refreshPlayers(serverWorld);
                         refresh(tardis);
                     } catch (Exception e) {
                         MiniTardis.LOGGER.error("Tardis screen draw thread failed:", e);
@@ -147,28 +168,6 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
         if (currentView != null) {
             currentView.screenClose(this);
         }
-    }
-
-    private void refreshPlayers(ServerWorld world) {
-        var isDisabled = getTardis(world).map(t -> !t.getState().isPowered(t)).orElse(true);
-        var viewOverridden = getTardis(world).map(t -> t.getState().overrideScreenImage(t)).orElse(false);
-        List<ServerPlayerEntity> nearbyPlayers = isDisabled && !viewOverridden ? List.of() : world.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
-
-        addedPlayers.removeIf(player -> {
-            if (!nearbyPlayers.contains(player)) {
-                display.removePlayer(player);
-                display.getCanvas().removePlayer(player);
-                return true;
-            }
-            return false;
-        });
-        nearbyPlayers.forEach(player -> {
-            if (!addedPlayers.contains(player)) {
-                display.addPlayer(player);
-                display.getCanvas().addPlayer(player);
-                addedPlayers.add(player);
-            }
-        });
     }
 
     private void refresh(Tardis tardis) {

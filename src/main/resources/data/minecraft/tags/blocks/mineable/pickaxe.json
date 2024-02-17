@@ -3,6 +3,7 @@
   "values": [
     "mini_tardis:tardis_plating",
     "mini_tardis:console_screen",
+    "mini_tardis:wall_screen",
     "mini_tardis:coordinate_lock",
     "mini_tardis:interior_light",
     "mini_tardis:power_coupling",

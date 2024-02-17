@@ -148,60 +148,66 @@ publishMods {
 	def min = property('target_min')
 	def max = property('target_max')
 
-	modrinth {
-		projectId = property('modrinth_id')
-		accessToken = providers.gradleProperty('enjaraiModrinthToken').get()
+	if (providers.gradleProperty('enjaraiModrinthToken').present) {
+		modrinth {
+			projectId = property('modrinth_id')
+			accessToken = providers.gradleProperty('enjaraiModrinthToken').get()
 
-		if (min == max) {
-			minecraftVersions.add(min)
-		} else {
-			minecraftVersionRange {
-				start = min
-				end = max
+			if (min == max) {
+				minecraftVersions.add(min)
+			} else {
+				minecraftVersionRange {
+					start = min
+					end = max
+				}
 			}
-		}
 
-		requires {
-			slug = "fabric-api"
-		}
-		embeds {
-			slug = "cardinal-components-api"
-		}
-		embeds {
-			slug = "polymer"
+			requires {
+				slug = "fabric-api"
+			}
+			embeds {
+				slug = "cardinal-components-api"
+			}
+			embeds {
+				slug = "polymer"
+			}
 		}
 	}
 
-	curseforge {
-		projectId = property('curseforge_id')
-		accessToken = providers.gradleProperty('enjaraiCurseforgeToken').get()
+	if (providers.gradleProperty('enjaraiCurseforgeToken').present) {
+		curseforge {
+			projectId = property('curseforge_id')
+			accessToken = providers.gradleProperty('enjaraiCurseforgeToken').get()
 
-		if (min == max) {
-			minecraftVersions.add(min)
-		} else {
-			minecraftVersionRange {
-				start = min
-				end = max
+			if (min == max) {
+				minecraftVersions.add(min)
+			} else {
+				minecraftVersionRange {
+					start = min
+					end = max
+				}
 			}
-		}
 
-		requires {
-			slug = "fabric-api"
-		}
-		embeds {
-			slug = "cardinal-components-api"
-		}
-		embeds {
-			slug = "polymer"
+			requires {
+				slug = "fabric-api"
+			}
+			embeds {
+				slug = "cardinal-components-api"
+			}
+			embeds {
+				slug = "polymer"
+			}
 		}
 	}
 
-	github {
-		repository = property('github_repo')
-		accessToken = providers.gradleProperty('enjaraiGithubToken').get()
+	if (providers.gradleProperty('enjaraiGithubToken').present) {
+		github {
+			repository = property('github_repo')
+			accessToken = providers.gradleProperty('enjaraiGithubToken').get()
 
-		commitish = "master"
-		tagName = project.version
+			commitish = "master"
+			tagName = project.version
+		}
 	}
 }
 

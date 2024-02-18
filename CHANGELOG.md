@@ -1,4 +1,3 @@
-- Added some extra operator commands.
-- Added a "time to full" display to the refueling state.
-- Made interior lights pickblockable, keeping their order state.
-- Renamed "Floppy" to "Floppy Disk".
+- Made the refueling ETA more accurate.
+- Added some mild inaccuracy to the stability bar.
+- Updated interior door texture slightly to more easily distinguish between the front and sides.

@@ -33,6 +33,7 @@ public class StatusApp implements ScreenApp {
             @Override
             public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var tardis = controls.getTardis();
+                var time = tardis.getInteriorWorld().getTime();
 
                 DefaultFonts.VANILLA.drawText(canvas, tardis.getState().getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
 
@@ -74,9 +75,9 @@ public class StatusApp implements ScreenApp {
                 });
 
                 tardis.getState(RefuelingState.class).ifPresent(state -> {
-                    etaRandom.setSeed(tardis.getInteriorWorld().getTime() / 40);
+                    etaRandom.setSeed(time / 40);
 
-                    var seconds = 1000 - tardis.getFuel() * etaRandom.nextBetween(95, 105) / 100;
+                    var seconds = 1000 - tardis.getFuel() * etaRandom.nextBetween(99, 101) / 100;
                     var minutes = seconds / 60;
                     seconds %= 60;
 
@@ -88,7 +89,16 @@ public class StatusApp implements ScreenApp {
                 var state = tardis.getState();
                 var isSolid = state.isSolid(tardis);
                 var stutterOffsetStability = isSolid ? 0 : random.nextBetween(-1, 1);
-                drawVerticalBar(canvas, tardis.getStability() * 480 / 10000 + stutterOffsetStability, 96, 16, TardisCanvasUtils.getSprite("vertical_bar_orange"), "STB");
+
+                int waveOffsetStability = 0;
+                if (!isSolid) {
+                    var wave1 = (Math.sin(time / 30.0) - 1) * 2.5;
+                    var wave2 = (Math.sin(time / 13.0 + 0.5) - 1) * 1.5;
+                    var wave3 = (Math.sin(time / 8.0 + 0.3) - 1) * 1;
+                    waveOffsetStability = (int) (wave1 + wave2 + wave3);
+                }
+
+                drawVerticalBar(canvas, tardis.getStability() * 480 / 10000 + stutterOffsetStability + waveOffsetStability, 96, 16, TardisCanvasUtils.getSprite("vertical_bar_orange"), "STB");
                 var stutterOffsetFuel = isSolid || (state instanceof RefuelingState && tardis.getFuel() < 1000) ? 0 : random.nextBetween(-1, 1);
                 drawVerticalBar(canvas, tardis.getFuel() * 480 / 10000 + stutterOffsetFuel, 72, 16, TardisCanvasUtils.getSprite("vertical_bar_blue"), "ART");
 

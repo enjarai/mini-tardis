@@ -25,7 +25,7 @@ as these will be able to identify controls for you at a glance.
 7. [Localization Scale Interpreter](#localization-scale-interpreter)
 8. [Target Localization Corrector 3](#target-localization-corrector) (Negative Z)
 9. [Handbrake](#handbrake)
-10. [Power Coupling](#power-coupling) (Under the console)
+10. [Power Coupling](#power-coupling) (Under the trapdoor)
 11. [Target Localization Corrector 4](#target-localization-corrector) (Positive Z)
 12. [Space-time Destination Reset Switch](#space-time-destination-reset-switch)
 13. [Centrifugal Facing Modifier](#centrifugal-facing-modifier)

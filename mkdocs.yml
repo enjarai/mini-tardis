@@ -6,6 +6,16 @@ nav:
   - Basics:
       - basics/console_layout.md
       - basics/flying_a_tardis_101.md
+  - screen.md
+  - Apps:
+      - apps/dimensions.md
+      - apps/gps.md
+      - apps/look_and_feel.md
+      - apps/package_manager.md
+      - apps/past_locations.md
+      - apps/scanner.md
+      - apps/status.md
+      - apps/waypoints.md
 
 theme:
   name: material

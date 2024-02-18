@@ -17,6 +17,8 @@
   "block.mini_tardis.handbrake.tooltip": "Triggers both takeoff and landing sequences.",
   "block.mini_tardis.console_screen": "Console Screen",
   "block.mini_tardis.console_screen.tooltip": "Displays critical information about your Tardis",
+  "block.mini_tardis.wall_screen": "Wall Screen (WIP)",
+  "block.mini_tardis.wall_screen.tooltip": "Displays critical information about your Tardis",
   "block.mini_tardis.tardis_exterior": "Tardis Exterior",
   "block.mini_tardis.tardis_exterior_extension": "Tardis Exterior",
   "block.mini_tardis.reset_destination_button": "Space-time Destination Reset Switch",

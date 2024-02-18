@@ -32,11 +32,11 @@ The direction it moves in is dependent on the attached state switch (the compara
     
     If you have access to the [Terrain Scanner] app, you can use that to verify and fine-tune your landing location.
 
-[GPS]: # (TODO)
+[GPS]: ../apps/gps.md
 [Localization Corrector]: console_layout.md#target-localization-corrector
 [Lateral Corrector]: console_layout.md#lateral-target-localization-corrector
 [Scale Interpreter]: console_layout.md#localization-scale-interpreter
-[Terrain Scanner]: # (TODO)
+[Terrain Scanner]: ../apps/scanner.md
 
 ## Pre-flight Checklist
 
@@ -57,7 +57,7 @@ All immediately flight-relevant information is shown in the [Status] app.
 
 ![Tardis in lava](../img/tardis_in_lava.png)
 
-[Status]: # (TODO)
+[Status]: ../apps/status.md
 [Artron Conduits]: console_layout.md#artron-conduit-controller
 [Artron Scoop]: console_layout.md#artron-scoop-activator
 
@@ -76,6 +76,13 @@ pull the [Handbrake] to engage flight! Once you do this,
 your TARDIS will start the take-off sequence and will enter flight soon after.
 
 ![Takeoff visuals](../img/takeoff.apng)
+
+!!! warning
+
+    Take care to avoid touching any critical controls,
+    such as the Handbrake, Conduit Controller, and Target Lock-in,
+    during the takeoff and landing sequences.
+    Doing this might disrupt the TARDIS' normal operation and significantly decreases your stability.
 
 !!! tip
 
@@ -147,5 +154,5 @@ The [Status] app helpfully provides a visual indicator for the amount of repetit
     Once your stability reaches zero, you will enter a [Crashing] state.
     **This should be avoided if at all possible.**
 
-[Dimensions]: # (TODO)
+[Dimensions]: ../apps/dimensions.md
 [Crashing]: # (TODO)

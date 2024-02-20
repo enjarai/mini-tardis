@@ -42,6 +42,8 @@ Note that some additional easter egg apps are not documented here.
 [Status]: apps/status.md
 [Floppy Disk]: #floppy-disks
 
+<!-- /execute in mini_tardis:tardis/ed02c60e-9264-4af7-b6ab-56ebab0a5b7e run tp @s -0.52 61.92 3.29 -179.23 0.30 -->
+
 ## Floppy Disks
 
 Floppies containing various apps can be found spread around your world in dungeon chests and other such places, 

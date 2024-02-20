@@ -10,6 +10,7 @@ import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import eu.pb4.mapcanvas.impl.view.Rotate90ClockwiseView;
+import net.minecraft.block.MapColor;
 
 public class ScannerApp implements ScreenApp {
     public static final Codec<ScannerApp> CODEC = Codec.unit(ScannerApp::new);
@@ -27,16 +28,8 @@ public class ScannerApp implements ScreenApp {
                 for (int x = 0; x < DestinationScanner.RANGE; x++) {
                     for (int y = 0; y < DestinationScanner.RANGE; y++) {
                         byte value = controls.getTardis().getDestinationScanner().getFor(x, y);
-                        canvas.set(
-                                x, -y - 1 + DestinationScanner.RANGE,
-                                switch (value) {
-                                    case 0 -> CanvasColor.BLACK_HIGH;
-                                    case 1 -> CanvasColor.DEEPSLATE_GRAY_HIGH;
-                                    case 2 -> CanvasColor.BLUE_NORMAL;
-                                    case 3 -> CanvasColor.LIGHT_BLUE_NORMAL;
-                                    case 4 -> CanvasColor.ORANGE_HIGH;
-                                    default -> CanvasColor.WHITE_HIGH;
-                                });
+                        var color = CanvasColor.from(MapColor.get(value), MapColor.Brightness.NORMAL);
+                        canvas.set(x, -y - 1 + DestinationScanner.RANGE, color);
                     }
                 }
                 canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2, CanvasColor.ORANGE_NORMAL);

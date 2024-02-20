@@ -2,6 +2,7 @@ package dev.enjarai.minitardis.component;
 
 import dev.enjarai.minitardis.block.ModBlocks;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.MapColor;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -88,19 +89,19 @@ public class DestinationScanner {
             pos2.add(RANGE / 2 - 1, RANGE / 2 - 1);
 
             var state = world.getBlockState(pos3);
-            byte value = getValue(state);
+            byte value = getValue(state, world, pos3);
             axis[getIndex(pos2)] = value;
         }
 
         return iterator;
     }
 
-    private byte getValue(BlockState state) {
-        if (state.getFluidState().isOf(Fluids.WATER)) return 3;
-        if (state.getFluidState().isOf(Fluids.LAVA)) return 4;
-        if (state.isReplaceable()) return 0;
-        if (state.isIn(ModBlocks.TARDIS_EXTERIOR_PARTS)) return 2;
-        return 1;
+    private byte getValue(BlockState state, ServerWorld world, BlockPos pos) {
+        if (state.getFluidState().isOf(Fluids.WATER)) return (byte) MapColor.BLUE.id;
+        if (state.getFluidState().isOf(Fluids.LAVA)) return (byte) MapColor.ORANGE.id;
+        if (state.isReplaceable()) return (byte) MapColor.BLACK.id;
+        if (state.isIn(ModBlocks.TARDIS_EXTERIOR_PARTS)) return (byte) MapColor.LAPIS_BLUE.id;
+        return (byte) state.getMapColor(world, pos).id;
     }
 
     public static int getIndex(Vector2i pos) {

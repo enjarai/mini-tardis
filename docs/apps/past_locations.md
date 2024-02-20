@@ -6,6 +6,7 @@ letting you easily reselect them as a destination to return to.
 Locations are sorted in chronological order from newest to oldest.
 Multiple pages can be browsed using the buttons in the top-left, 
 and a desired destination can be selected using the "Set" button.
+If any entries match the currently selected destination, they will be highlighted with a yellow border.
 
 As with other places in the TdOS UI, the x, y, and z axes are represented with red, blue, and green respectively.
 

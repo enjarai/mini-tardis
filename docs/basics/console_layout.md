@@ -46,9 +46,13 @@ Refueling mode slowly refills the artron batteries of the TARDIS over time, whic
 
 ### Target Localization Corrector
 
-These buttons are used to offset your target destination in their assigned directions.
+These buttons are used to offset your target destination.
 They are intended to be used in conjunction with the [Scale Interpreter](#localization-scale-interpreter) 
 to easily cover larger distances.
+
+One of these buttons will always offset your destination in the direction you face when placing it.
+They can be placed on floors, walls, and ceilings, but when placed on walls, 
+they offset in the direction facing away from the face they're placed on instead.
 
 To modify your destination vertically, use the [Lateral Target Localization Corrector](#lateral-target-localization-corrector).
 

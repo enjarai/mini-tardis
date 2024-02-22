@@ -50,7 +50,12 @@ For your own safety, please make sure to stay inside the dematerialization zone 
 
     Using the makeshift TARDIS will deposit it and you into a fully-fledged Model 82-4 timeship,
     which will be in flight at your moment of entry. As you will have limited time to safely land your new TARDIS, 
-    it is highly recommended that you read at least the [Basics of Flight] page of this manual before operating
+    it is highly recommended that you read at least the [Flying a TARDIS 101] page of this manual before operating
     your makeshift timeship.
 
-[Basics of Flight]: basics/basics_of_flight.md
+When you enter your new timeship, you can perform a basic landing by just pulling the [Handbrake] on the main console.
+This will, however, most likely land you quite far away from the position you entered the vortex from.
+To combat this, it is recommended to correct any Error before landing, as explained in the [Flying a TARDIS 101] page.
+
+[Flying a TARDIS 101]: basics/flying_a_tardis_101.md
+[Handbrake]: basics/console_layout.md#handbrake

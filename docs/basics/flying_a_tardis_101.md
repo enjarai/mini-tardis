@@ -110,7 +110,8 @@ The more of these switches are centered and thus green, the smaller your Error w
 
 The state of the correction switches can be changed by selecting a set and using the [Localization Corrector] buttons,
 each set of buttons able to shift one of the switches. 
-This might seem complex, but once understand how it works, It's really quite simple.
+The North/South (Z axis) correctors will shift the upper switch, while the East/West (X axis) ones will change the lower.
+An audible ding can be heard when a switch is successfully centered.
 
 Once your error reaches zero or a value you're sufficiently happy with, 
 pull the [Handbrake] again at any time to initiate a landing.

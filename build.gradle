@@ -29,6 +29,9 @@ repositories {
 
 	// CCA
 	maven { url 'https://maven.ladysnake.org/releases' }
+
+	// Crash pipe
+	maven { url "https://maven.kikugie.dev/releases"}
 }
 
 loom {
@@ -78,6 +81,8 @@ dependencies {
 	include(modApi("me.lucko:fabric-permissions-api:${property('deps.permissions_api')}"))
 	modApi include("xyz.nucleoid:fantasy:${property('deps.fantasy')}")
 	modApi include("eu.pb4:map-canvas-api:${property('deps.map_api')}")
+
+	include(modImplementation "dev.kikugie:crash-pipe:0.1.0")
 }
 
 processResources {

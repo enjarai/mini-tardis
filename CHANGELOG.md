@@ -1,4 +1,1 @@
-- Significantly improved the color palette used by the Terrain Scanner app.
-- Made the refueling ETA more accurate.
-- Added some mild inaccuracy to the stability bar.
-- Updated interior door texture slightly to more easily distinguish between the front and sides.
+- Changed the facing widget on the terrain scanner app slightly to more easily distinguish directions.

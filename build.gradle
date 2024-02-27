@@ -72,6 +72,10 @@ dependencies {
 	include modApi("dev.onyxstudios.cardinal-components-api:cardinal-components-level:${project.cca_version}")
 	include modApi("dev.onyxstudios.cardinal-components-api:cardinal-components-world:${project.cca_version}")
 
+	include modImplementation("nl.enjarai:cicada-lib:${project.cicada_version}") {
+		exclude group: "net.fabricmc.fabric-api"
+	}
+
 	modApi include("eu.pb4:polymer-core:${property('deps.polymer')}")
 	modApi include("eu.pb4:polymer-virtual-entity:${property('deps.polymer')}")
 	modApi include("eu.pb4:polymer-resource-pack:${property('deps.polymer')}")

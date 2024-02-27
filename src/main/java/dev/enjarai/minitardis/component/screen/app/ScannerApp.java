@@ -35,10 +35,16 @@ public class ScannerApp implements ScreenApp {
                 canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2, CanvasColor.ORANGE_NORMAL);
                 canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2 - 1, CanvasColor.ORANGE_NORMAL);
 
-                CanvasUtils.draw(canvas, 96, 64, controls.getTardis().getDestinationScanner().isZAxis() ? TardisCanvasUtils.getSprite("coord_widget_z") : TardisCanvasUtils.getSprite("coord_widget_x"));
+                var isZ = controls.getTardis().getDestinationScanner().isZAxis();
+                CanvasUtils.draw(canvas, 96, 64, isZ ? TardisCanvasUtils.getSprite("coord_widget_z") : TardisCanvasUtils.getSprite("coord_widget_x"));
                 controls.getTardis().getDestination().ifPresent(destination -> {
+                    var rotation = destination.facing().getHorizontal();
+                    if (isZ) {
+                        rotation = (rotation + 3) % 4;
+                    }
+
                     DrawableCanvas view = TardisCanvasUtils.getSprite("destination_facing_widget");
-                    for (int i = 0; i < destination.facing().getHorizontal(); i++) {
+                    for (int i = 0; i < rotation; i++) {
                         view = new Rotate90ClockwiseView(view);
                     }
                     CanvasUtils.draw(canvas, 96, 64, view);

@@ -64,7 +64,7 @@ public class InteriorDoorBlock extends HorizontalFacingBlock implements PerhapsP
     }
 
     @Override
-    protected MapCodec<? extends FacingBlock> getCodec() {
+    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
         return CODEC;
     }
 

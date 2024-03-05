@@ -1,5 +1,6 @@
 package dev.enjarai.minitardis.block;
 
+import com.mojang.serialization.MapCodec;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -14,8 +15,14 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class MakeshiftEngineBlock extends BlockWithEntity implements PolymerBlock {
+    MapCodec<MakeshiftEngineBlock> CODEC = createCodec(MakeshiftEngineBlock::new);
     public MakeshiftEngineBlock(Settings settings) {
         super(settings);
+    }
+
+    @Override
+    protected MapCodec<? extends BlockWithEntity> getCodec() {
+        return CODEC;
     }
 
     @Override
@@ -32,7 +39,7 @@ public class MakeshiftEngineBlock extends BlockWithEntity implements PolymerBloc
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, ModBlocks.MAKESHIFT_ENGINE_ENTITY, (world1, pos, state1, blockEntity) -> {
+        return validateTicker(type, ModBlocks.MAKESHIFT_ENGINE_ENTITY, (world1, pos, state1, blockEntity) -> {
             if (world1 instanceof ServerWorld serverWorld) {
                 blockEntity.tick(serverWorld, pos, state1);
             }

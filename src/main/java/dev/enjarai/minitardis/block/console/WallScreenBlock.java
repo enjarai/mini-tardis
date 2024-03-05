@@ -1,5 +1,7 @@
 package dev.enjarai.minitardis.block.console;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.item.ModItems;
 import dev.enjarai.minitardis.item.PolymerModels;
@@ -11,7 +13,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.enums.WallMountLocation;
+import net.minecraft.block.enums.BlockFace;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.nbt.NbtCompound;
@@ -41,8 +43,9 @@ import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
 public class WallScreenBlock extends ScreenBlock implements PerhapsPolymerBlock {
+    public static final MapCodec<WallScreenBlock> CODEC = createCodec(WallScreenBlock::new);
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
-    public static final EnumProperty<WallMountLocation> FACE = WallMountedBlock.FACE;
+    public static final EnumProperty<BlockFace> FACE = WallMountedBlock.FACE;
 
     public static final VoxelShape NORTH_SHAPE = Stream.of(
             Block.createCuboidShape(-0.95, 1, 15, 0.050000000000000044, 15, 17),
@@ -103,7 +106,12 @@ public class WallScreenBlock extends ScreenBlock implements PerhapsPolymerBlock 
 
     public WallScreenBlock(Settings settings) {
         super(settings);
-        setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(FACE, WallMountLocation.FLOOR).with(HAS_FLOPPY, false));
+        setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(FACE, BlockFace.FLOOR).with(HAS_FLOPPY, false));
+    }
+
+    @Override
+    protected MapCodec<? extends BlockWithEntity> getCodec() {
+        return CODEC;
     }
 
 //    @Override
@@ -168,7 +176,7 @@ public class WallScreenBlock extends ScreenBlock implements PerhapsPolymerBlock 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, ModBlocks.WALL_SCREEN_ENTITY, (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1));
+        return validateTicker(type, ModBlocks.WALL_SCREEN_ENTITY, (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1));
     }
 
     @Nullable
@@ -178,10 +186,10 @@ public class WallScreenBlock extends ScreenBlock implements PerhapsPolymerBlock 
             BlockState blockState;
             if (direction.getAxis() == Direction.Axis.Y) {
                 blockState = this.getDefaultState()
-                        .with(FACE, direction == Direction.UP ? WallMountLocation.CEILING : WallMountLocation.FLOOR)
+                        .with(FACE, direction == Direction.UP ? BlockFace.CEILING : BlockFace.FLOOR)
                         .with(FACING, ctx.getHorizontalPlayerFacing());
             } else {
-                blockState = this.getDefaultState().with(FACE, WallMountLocation.WALL).with(FACING, direction.getOpposite());
+                blockState = this.getDefaultState().with(FACE, BlockFace.WALL).with(FACING, direction.getOpposite());
             }
 
             if (blockState.canPlaceAt(ctx.getWorld(), ctx.getBlockPos())) {
@@ -235,7 +243,7 @@ public class WallScreenBlock extends ScreenBlock implements PerhapsPolymerBlock 
                 var face = state.get(FACE);
                 var facing = state.get(FACING);
 
-                element.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(face == WallMountLocation.WALL ? facing.asRotation() : facing.getOpposite().asRotation())
+                element.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(face == BlockFace.WALL ? facing.asRotation() : facing.getOpposite().asRotation())
                         .mul(RotationAxis.POSITIVE_X.rotationDegrees((face.ordinal() - 1) * 90)));
             }
 

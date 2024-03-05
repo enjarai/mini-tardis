@@ -6,7 +6,7 @@ import eu.pb4.mapcanvas.api.core.CanvasColor;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.WallMountedBlock;
-import net.minecraft.block.enums.WallMountLocation;
+import net.minecraft.block.enums.BlockFace;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
@@ -29,19 +29,19 @@ public class WallScreenBlockEntity extends ScreenBlockEntity {
     @Override
     protected Direction getFacing(BlockPos pos, BlockState state) {
         var faceState = state.get(WallScreenBlock.FACE);
-        return faceState == WallMountLocation.WALL ? state.get(WallScreenBlock.FACING) :
-                faceState == WallMountLocation.FLOOR ? Direction.UP : Direction.DOWN;
+        return faceState == BlockFace.WALL ? state.get(WallScreenBlock.FACING) :
+                faceState == BlockFace.FLOOR ? Direction.UP : Direction.DOWN;
     }
 
     @Override
     protected BlockRotation getRotation(BlockPos pos, BlockState state) {
         var face = state.get(WallScreenBlock.FACE);
-        if (face == WallMountLocation.WALL) {
+        if (face == BlockFace.WALL) {
             return BlockRotation.NONE;
         }
 
         var facing = state.get(WallScreenBlock.FACING);
-        if (face == WallMountLocation.FLOOR) {
+        if (face == BlockFace.FLOOR) {
             return BlockRotation.values()[(2 + facing.getHorizontal()) % 4];
         } else {
             return BlockRotation.values()[(6 - facing.getHorizontal()) % 4];

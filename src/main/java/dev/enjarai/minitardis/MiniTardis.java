@@ -10,7 +10,9 @@ import dev.enjarai.minitardis.data.ModDataStuff;
 import dev.enjarai.minitardis.data.TardisInteriorManager;
 import dev.enjarai.minitardis.item.ModItems;
 import dev.enjarai.minitardis.item.PolymerModels;
-import eu.pb4.polymer.networking.api.PolymerServerNetworking;
+import dev.enjarai.minitardis.net.ICanHasMiniTardisPayload;
+import eu.pb4.polymer.networking.api.PolymerNetworking;
+import eu.pb4.polymer.networking.api.server.PolymerServerNetworking;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -67,7 +69,7 @@ public class MiniTardis implements ModInitializer {
 		PolymerResourcePackUtils.markAsRequired();
 		PolymerModels.load();
 
-		PolymerServerNetworking.registerSendPacket(HANDSHAKE_CHANNEL, 0);
+		PolymerNetworking.registerCommonPayload(MiniTardis.HANDSHAKE_CHANNEL, 0, ICanHasMiniTardisPayload::read);
 	}
 
 	@Nullable

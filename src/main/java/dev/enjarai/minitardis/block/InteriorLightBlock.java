@@ -28,6 +28,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
@@ -45,9 +46,10 @@ public class InteriorLightBlock extends RedstoneLampBlock implements PerhapsPoly
         return getDefaultState();
     }
 
+
     @Override
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
-        var stack = super.getPickStack(world, pos, state);
+    public ItemStack getPickStack(WorldView worldView, BlockPos pos, BlockState state) {
+        var stack = super.getPickStack(worldView, pos, state);
 
         var order = state.get(ORDER);
         if (order != 0) {

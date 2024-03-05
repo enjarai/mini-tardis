@@ -83,21 +83,21 @@ public class ModBlocks {
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.DARK_OAK, Blocks.DARK_OAK_BUTTON, true,
+                    BlockSetType.DARK_OAK, Blocks.DARK_OAK_BUTTON,
                     (controls, facing) -> controls.resetDestination()));
     public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_1 =
             register("nudge_destination_button_1", new ConsoleButtonBlock(FabricBlockSettings.create()
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.OAK, Blocks.OAK_BUTTON, true,
+                    BlockSetType.OAK, Blocks.OAK_BUTTON,
                     TardisControl::nudgeDestination));
     public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_2 =
             register("nudge_destination_button_2", new ConsoleButtonBlock(FabricBlockSettings.create()
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.SPRUCE, Blocks.SPRUCE_BUTTON, true,
+                    BlockSetType.SPRUCE, Blocks.SPRUCE_BUTTON,
                     TardisControl::nudgeDestination));
     public static final ConsoleRepeaterBlock COORDINATE_SCALE_SELECTOR =
             register("coordinate_scale_selector", new ConsoleRepeaterBlock(FabricBlockSettings.create()
@@ -129,7 +129,7 @@ public class ModBlocks {
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.STONE, Blocks.STONE_BUTTON, false,
+                    BlockSetType.STONE, Blocks.STONE_BUTTON,
                     (controls, value) -> controls.setDestinationLocked(value, false)));
     public static final ConsoleLeverBlock REFUEL_TOGGLE =
             register("refuel_toggle", new ConsoleLeverBlock(FabricBlockSettings.create()

@@ -1,5 +1,6 @@
 package dev.enjarai.minitardis.block;
 
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.item.PolymerModels;
 import dev.enjarai.minitardis.util.PerhapsElementHolder;
@@ -35,6 +36,7 @@ import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
 public class InteriorDoorBlock extends HorizontalFacingBlock implements PerhapsPolymerBlock, TardisAware, BlockWithElementHolder {
+    public static final MapCodec<InteriorDoorBlock> CODEC = createCodec(InteriorDoorBlock::new);
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
 
     public static final VoxelShape[] OUTLINE_SHAPES = new VoxelShape[]{
@@ -59,6 +61,11 @@ public class InteriorDoorBlock extends HorizontalFacingBlock implements PerhapsP
     protected InteriorDoorBlock(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(HALF, DoubleBlockHalf.LOWER));
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+        return CODEC;
     }
 
     @Nullable

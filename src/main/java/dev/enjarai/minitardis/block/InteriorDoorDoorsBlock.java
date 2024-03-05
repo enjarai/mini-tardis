@@ -1,5 +1,6 @@
 package dev.enjarai.minitardis.block;
 
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.item.PolymerModels;
 import dev.enjarai.minitardis.util.PerhapsElementHolder;
@@ -38,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("deprecation")
 public class InteriorDoorDoorsBlock extends HorizontalFacingBlock implements PerhapsPolymerBlock, TardisAware, BlockWithElementHolder {
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
+    public static final MapCodec<InteriorDoorDoorsBlock> CODEC = createCodec(InteriorDoorDoorsBlock::new);
 
     public static final VoxelShape[][] OUTLINE_SHAPES = new VoxelShape[][]{
             new VoxelShape[]{
@@ -83,6 +85,11 @@ public class InteriorDoorDoorsBlock extends HorizontalFacingBlock implements Per
         setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(HALF, DoubleBlockHalf.LOWER));
     }
 
+    @Override
+    protected MapCodec<? extends HorizontalFacingBlock> getCodec() {
+        return CODEC;
+    }
+
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
@@ -116,8 +123,9 @@ public class InteriorDoorDoorsBlock extends HorizontalFacingBlock implements Per
     }
 
     @Override
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
         closeTardisDoor(world, pos);
+        return super.onBreak(world, pos, state, player);
     }
 
     @Override

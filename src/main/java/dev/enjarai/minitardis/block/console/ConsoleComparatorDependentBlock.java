@@ -18,7 +18,7 @@ public class ConsoleComparatorDependentBlock extends ButtonBlock implements Poly
     private BiFunction<TardisControl, Boolean, Boolean> controlInput;
 
     public ConsoleComparatorDependentBlock(Settings settings, BiFunction<TardisControl, Boolean, Boolean> controlInput) {
-        super(settings, BlockSetType.JUNGLE, 2, true);
+        super(BlockSetType.JUNGLE, 2, settings);
         this.controlInput = controlInput;
     }
 

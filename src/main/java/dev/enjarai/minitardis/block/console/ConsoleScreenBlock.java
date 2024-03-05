@@ -1,5 +1,6 @@
 package dev.enjarai.minitardis.block.console;
 
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.item.ModItems;
 import dev.enjarai.minitardis.item.PolymerModels;
@@ -32,11 +33,17 @@ import org.joml.Vector3f;
 
 @SuppressWarnings("deprecation")
 public class ConsoleScreenBlock extends ScreenBlock {
+    public static final MapCodec<ConsoleScreenBlock> CODEC = createCodec(ConsoleScreenBlock::new);
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
 
     public ConsoleScreenBlock(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH).with(HAS_FLOPPY, false));
+    }
+
+    @Override
+    protected MapCodec<? extends BlockWithEntity> getCodec() {
+        return CODEC;
     }
 
     @Override
@@ -106,7 +113,7 @@ public class ConsoleScreenBlock extends ScreenBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, ModBlocks.CONSOLE_SCREEN_ENTITY, (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1));
+        return validateTicker(type, ModBlocks.CONSOLE_SCREEN_ENTITY, (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1));
     }
 
     @Override

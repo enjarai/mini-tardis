@@ -20,8 +20,8 @@ import java.util.function.BiFunction;
 public class ConsoleToggleButtonBlock extends ConsoleButtonBlock {
     private final BiFunction<TardisControl, Boolean, Boolean> controlInput;
 
-    public ConsoleToggleButtonBlock(Settings settings, BlockSetType buttonType, Block polymerBlock, boolean wooden, BiFunction<TardisControl, Boolean, Boolean> controlInput) {
-        super(settings, buttonType, polymerBlock, wooden, null);
+    public ConsoleToggleButtonBlock(Settings settings, BlockSetType buttonType, Block polymerBlock, BiFunction<TardisControl, Boolean, Boolean> controlInput) {
+        super(settings, buttonType, polymerBlock, null);
         this.controlInput = controlInput;
     }
 

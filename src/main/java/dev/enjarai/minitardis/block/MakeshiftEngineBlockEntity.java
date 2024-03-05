@@ -130,8 +130,8 @@ public class MakeshiftEngineBlockEntity extends BlockEntity {
         }
 
         var entityBox = new Box(
-                pos.down().south(2).east(2),
-                pos.up(3).north(2).west(2)
+                pos.down().south(2).east(2).toCenterPos(),
+                pos.up(3).north(2).west(2).toCenterPos()
         );
         for (var entity : world.getEntitiesByClass(Entity.class, entityBox, e -> true)) {
             var relativePos = entity.getPos().subtract(pos.toCenterPos());

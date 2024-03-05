@@ -2,6 +2,14 @@ package dev.enjarai.minitardis.block;
 
 import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
 import net.minecraft.block.*;
+import com.mojang.serialization.MapCodec;
+import dev.enjarai.minitardis.item.PolymerModels;
+import eu.pb4.polymer.core.api.block.PolymerBlock;
+import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
+import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
+import eu.pb4.polymer.virtualentity.api.ElementHolder;
+import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -23,6 +31,7 @@ import static dev.enjarai.minitardis.block.TardisExteriorExtensionBlock.VISIBLEN
 
 @SuppressWarnings("deprecation")
 public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolymerBlock {
+    public static final MapCodec<TardisExteriorBlock> CODEC = createCodec(TardisExteriorBlock::new);
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
     public static final VoxelShape OUTLINE_SHAPE = VoxelShapes.union(
@@ -37,6 +46,11 @@ public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolym
     protected TardisExteriorBlock(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState().with(FACING, Direction.NORTH));
+    }
+
+    @Override
+    protected MapCodec<? extends BlockWithEntity> getCodec() {
+        return CODEC;
     }
 
     @Override
@@ -85,7 +99,7 @@ public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolym
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, ModBlocks.TARDIS_EXTERIOR_ENTITY, (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1));
+        return validateTicker(type, ModBlocks.TARDIS_EXTERIOR_ENTITY, (world1, pos, state1, blockEntity) -> blockEntity.tick(world1, pos, state1));
     }
 
     @Override

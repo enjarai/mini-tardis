@@ -5,7 +5,9 @@
 	"name": "Mini Tardis",
 	"description": "A different take on the ever-growing TARDIS mod genre",
 	"authors": [
-		"enjarai"
+		"enjarai",
+		"Louis",
+		"Benonardo"
 	],
 	"contact": {
 		"homepage": "https://enjarai.dev/mini-tardis",

@@ -1,0 +1,36 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [128, 128],
+	"textures": {
+		"0": "mini_tardis:item/interior_door",
+		"1": "mini_tardis:item/tardis",
+		"particle": "mini_tardis:item/interior_door"
+	},
+	"elements": [
+		{
+			"from": [0, -15, 6],
+			"to": [1, 16, 14],
+			"faces": {
+				"north": {"uv": [4.75, 0, 4.875, 4], "texture": "#0"},
+				"east": {"uv": [0.125, 0, 1.125, 3.875], "texture": "#1"},
+				"south": {"uv": [1.125, 0, 1.25, 3.875], "texture": "#1"},
+				"west": {"uv": [1.125, 0, 2.125, 3.875], "texture": "#0"},
+				"up": {"uv": [4.5, 0, 4.625, 1], "texture": "#0"},
+				"down": {"uv": [4.625, 1, 4.75, 2], "texture": "#0"}
+			}
+		},
+		{
+			"from": [15, -15, 6],
+			"to": [16, 16, 14],
+			"rotation": {"angle": 0, "axis": "y", "origin": [16, 0, 0]},
+			"faces": {
+				"north": {"uv": [4.875, 0, 4.75, 4], "texture": "#0"},
+				"east": {"uv": [0.125, 0, 1.125, 3.875], "texture": "#0"},
+				"south": {"uv": [1.125, 0, 1, 3.875], "texture": "#1"},
+				"west": {"uv": [1.125, 0, 2.125, 3.875], "texture": "#1"},
+				"up": {"uv": [4.625, 0, 4.5, 1], "texture": "#0"},
+				"down": {"uv": [4.75, 1, 4.625, 2], "texture": "#0"}
+			}
+		}
+	]
+}

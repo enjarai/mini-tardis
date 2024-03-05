@@ -1,5 +1,6 @@
 package dev.enjarai.minitardis.block.console;
 
+import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
@@ -34,10 +35,23 @@ public class ConsoleLeverBlock extends LeverBlock implements PolymerBlock, Tardi
     @Override
     public BlockState togglePower(BlockState state, World world, BlockPos pos) {
         var state2 = super.togglePower(state, world, pos);
-        if (!getTardis(world).map(tardis -> controlInput.apply(tardis.getControls(), state2.get(POWERED))).orElse(false)) {
+        if (!getTardis(world)
+                .map(tardis -> controlInput.apply(tardis.getControls(), state2.get(POWERED)))
+                .orElseGet(() -> tryActivateMakeshiftEngine(state, world, pos, state2.get(POWERED)))) {
             inputFailure(world, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, 0);
         }
         return state2;
+    }
+
+    protected boolean tryActivateMakeshiftEngine(BlockState state, World world, BlockPos pos, boolean active) {
+        for (var direction : Direction.Type.HORIZONTAL) {
+            var targetPos = pos.offset(direction).down();
+            if (world.getBlockState(targetPos).isOf(ModBlocks.MAKESHIFT_ENGINE)) {
+                return world.getBlockEntity(targetPos, ModBlocks.MAKESHIFT_ENGINE_ENTITY)
+                        .map(be -> be.tryHandbrake(active)).orElse(false);
+            }
+        }
+        return false;
     }
 
     @Override

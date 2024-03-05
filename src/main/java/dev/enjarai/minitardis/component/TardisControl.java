@@ -1,17 +1,13 @@
 package dev.enjarai.minitardis.component;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.component.flight.*;
-import dev.enjarai.minitardis.component.screen.app.GpsApp;
-import dev.enjarai.minitardis.component.screen.app.PackageManagerApp;
-import dev.enjarai.minitardis.component.screen.app.ScreenApp;
-import dev.enjarai.minitardis.component.screen.app.StatusApp;
+import dev.enjarai.minitardis.component.screen.app.*;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +25,7 @@ public class TardisControl {
     ).apply(instance, TardisControl::new));
 
     private int coordinateScale;
-    private final Map<Identifier, ScreenApp> screenApps;
+    private final Map<ScreenAppType<?>, ScreenApp> screenApps;
     private boolean destinationLocked;
     private boolean energyConduitsUnlocked;
 
@@ -39,7 +35,7 @@ public class TardisControl {
         this.coordinateScale = coordinateScale;
         this.screenApps = new HashMap<>();
 //        ScreenApp.CONSTRUCTORS.forEach((key, value) -> builder.put(key, value.get()));
-        screenApps.forEach(app -> this.screenApps.put(app.id(), app));
+        screenApps.forEach(app -> this.screenApps.put(app.getType(), app));
         this.destinationLocked = destinationLocked;
         this.energyConduitsUnlocked = energyConduitsUnlocked;
     }
@@ -50,7 +46,7 @@ public class TardisControl {
     }
 
     public TardisControl() {
-        this(1, List.of(new PackageManagerApp(), new StatusApp(), new GpsApp()), false, false);
+        this(1, List.of(new PackageManagerApp(), new StatusApp(), new GpsApp(), new HistoryApp()), false, false);
     }
 
 
@@ -73,7 +69,21 @@ public class TardisControl {
         return true;
     }
 
+    public int getScaleState() {
+        return (int) Math.log10(coordinateScale);
+    }
+
     public boolean nudgeDestination(Direction direction) {
+        if (isDestinationLocked() && !direction.getAxis().isVertical()) {
+            return tardis.getState(FlyingState.class).map(state -> {
+                var axis = direction.getAxis().ordinal() == 0 ? 1 : 0;
+                var i = state.scaleState * 2 + axis;
+                var original = state.offsets[i];
+                state.offsets[i] = MathHelper.clamp(original - direction.getDirection().offset(), -1, 1);
+                return true;
+            }).orElse(false);
+        }
+
         var success = tardis.setDestination(tardis.getDestination()
                 .map(d -> {
                     if (direction.getAxis().isVertical()) {
@@ -92,6 +102,13 @@ public class TardisControl {
     private TardisLocation snapLocationVertically(TardisLocation location, Direction direction) {
         var world = tardis.getDestinationWorld();
         if (world.isPresent()) {
+            if (!world.get().isInBuildLimit(location.pos())) {
+                location = location.with(location.pos().withY(MathHelper.clamp(
+                        location.pos().getY(),
+                        world.get().getBottomY(),
+                        world.get().getTopY()
+                )));
+            }
             for (var pos = location.pos().offset(direction); world.get().isInBuildLimit(pos); pos = pos.offset(direction)) {
                 var checkLocation = location.with(pos);
                 if (tardis.canSnapDestinationTo(checkLocation)) {
@@ -115,10 +132,13 @@ public class TardisControl {
     public boolean handbrake(boolean state) {
         if (!state && tardis.getState() instanceof FlyingState && !isDestinationLocked()) {
             return tardis.suggestStateTransition(new DriftingState());
-        } else if (state && tardis.getState() instanceof DriftingState) {
-            return tardis.suggestStateTransition(new FlyingState());
+        } else if (tardis.getState() instanceof DriftingState driftingState) {
+            return driftingState.toggleFlyLever(tardis, state) || tardis.suggestStateTransition(new FlyingState(tardis.getRandom().nextInt()));
         }
-        return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState(false));
+
+        if (tardis.isDoorOpen()) return false;
+
+        return tardis.suggestStateTransition(state ? new TakingOffState() : new SearchingForLandingState(false, 0));
     }
 
     public boolean isDestinationLocked() {
@@ -138,12 +158,16 @@ public class TardisControl {
     }
 
     public boolean setEnergyConduits(boolean unlocked) {
-        if (!unlocked && !tardis.getState().isSolid(tardis)) {
-            majorMalfunction();
-            return false;
-        }
-
-        if (unlocked && tardis.getState() instanceof RefuelingState) {
+        if (!tardis.getState().isSolid(tardis)) {
+            if (!unlocked && tardis.getState(FlyingState.class).isPresent()) {
+                tardis.suggestStateTransition(new SuspendedFlightState());
+            } else if (unlocked && tardis.getState(SuspendedFlightState.class).isPresent()) {
+                tardis.suggestStateTransition(new FlyingState(tardis.getState(SuspendedFlightState.class).get().distance));
+            } else if (!unlocked) {
+                majorMalfunction();
+                return false;
+            }
+        } else if (unlocked && tardis.getState() instanceof RefuelingState) {
             return false;
         }
 
@@ -186,29 +210,31 @@ public class TardisControl {
         return tardis;
     }
 
-    public Optional<ScreenApp> getScreenApp(@Nullable Identifier id) {
-        return Optional.ofNullable(screenApps.get(id));
+    public Optional<ScreenApp> getScreenApp(@Nullable ScreenAppType<?> type) {
+        return Optional.ofNullable(screenApps.get(type));
     }
+
+
 
     public List<ScreenApp> getAllApps() {
-        return screenApps.values().stream().sorted(Comparator.comparing(ScreenApp::id)).toList();
+        return screenApps.values().stream().sorted(Comparator.comparing(ScreenApp::getId)).toList();
     }
 
-    public boolean canUninstallApp(Identifier id) {
-        return screenApps.containsKey(id) && screenApps.get(id).canBeUninstalled();
+    public boolean canUninstallApp(ScreenAppType<?> type) {
+        return screenApps.containsKey(type) && screenApps.get(type).canBeUninstalled();
     }
 
-    public Optional<ScreenApp> uninstallApp(Identifier id) {
-        return Optional.ofNullable(screenApps.remove(id));
+    public Optional<ScreenApp> uninstallApp(ScreenAppType<?> type) {
+        return Optional.ofNullable(screenApps.remove(type));
     }
 
     public boolean canInstallApp(ScreenApp app) {
-        return !screenApps.containsKey(app.id());
+        return !screenApps.containsKey(app.getType());
     }
 
     public boolean installApp(ScreenApp app) {
-        if (!screenApps.containsKey(app.id())) {
-            screenApps.put(app.id(), app);
+        if (!screenApps.containsKey(app.getType()) && screenApps.size() < 12) {
+            screenApps.put(app.getType(), app);
             return true;
         }
         return false;

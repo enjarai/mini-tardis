@@ -1,0 +1,64 @@
+site_name: Mini Tardis Manual
+
+nav:
+  - index.md
+  - getting_started.md
+  - Basics:
+      - basics/console_layout.md
+      - basics/flying_a_tardis_101.md
+  - screen.md
+  - Apps:
+      - apps/dimensions.md
+      - apps/gps.md
+      - apps/look_and_feel.md
+      - apps/package_manager.md
+      - apps/past_locations.md
+      - apps/scanner.md
+      - apps/status.md
+      - apps/waypoints.md
+
+theme:
+  name: material
+  features:
+  favicon: img/tardis_icon.png
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: blue
+      features:
+        - navigation.expand
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: blue
+      features:
+        - navigation.expand
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+
+repo_url: https://github.com/enjarai/mini-tardis
+repo_name: enjarai/mini-tardis
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+plugins:
+  - search
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/enjarai/mini-tardis
+      name: Github
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/WcYsDDQtyR
+      name: enjarai's library Discord server
+  generator: false

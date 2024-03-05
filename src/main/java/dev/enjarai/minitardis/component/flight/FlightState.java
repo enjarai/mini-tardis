@@ -1,7 +1,10 @@
 package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.component.Tardis;
+import dev.enjarai.minitardis.component.TardisControl;
+import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.sound.SoundCategory;
@@ -10,6 +13,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 public interface FlightState {
     Map<Identifier, Codec<? extends FlightState>> ALL = Map.ofEntries(
@@ -23,7 +27,17 @@ public interface FlightState {
             Map.entry(DriftingState.ID, DriftingState.CODEC),
             Map.entry(DisabledState.ID, DisabledState.CODEC),
             Map.entry(BootingUpState.ID, BootingUpState.CODEC),
-            Map.entry(CrashedState.ID, CrashedState.CODEC)
+            Map.entry(CrashedState.ID, CrashedState.CODEC),
+            Map.entry(SuspendedFlightState.ID, SuspendedFlightState.CODEC)
+    );
+    Map<Identifier, Supplier<? extends FlightState>> CONSTRUCTORS = Map.of(
+            LandedState.ID, LandedState::new,
+            RefuelingState.ID, RefuelingState::new,
+            DriftingState.ID, DriftingState::new,
+            DisabledState.ID, DisabledState::new,
+            BootingUpState.ID, BootingUpState::new,
+            CrashedState.ID, CrashedState::new,
+            SuspendedFlightState.ID, SuspendedFlightState::new
     );
     Codec<FlightState> CODEC = Identifier.CODEC.dispatch(FlightState::id, ALL::get);
 
@@ -72,6 +86,20 @@ public interface FlightState {
      */
     default boolean isPowered(Tardis tardis) {
         return true;
+    }
+
+    /**
+     * Whether the screen should delegate to this state's special drawing function.
+     * This lets us do things like show an error in the crashed state, or a loading screen during boot.
+     */
+    default boolean overrideScreenImage(Tardis tardis) {
+        return false;
+    }
+
+    /**
+     * The function that will be used to draw the custom screen image if `overrideScreenImage` returns true.
+     */
+    default void drawScreenImage(TardisControl controls, DrawableCanvas canvas, ScreenBlockEntity blockEntity) {
     }
 
     /**

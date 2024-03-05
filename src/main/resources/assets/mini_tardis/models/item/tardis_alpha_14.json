@@ -1,6 +1,7 @@
 {
     "parent": "mini_tardis:item/tardis",
     "textures": {
-        "0": "mini_tardis:item/tardis_alpha_14"
+        "0": "mini_tardis:item/tardis_alpha_14",
+        "particle": "mini_tardis:item/tardis_alpha_0"
     }
 }

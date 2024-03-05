@@ -1,0 +1,110 @@
+{
+  "variants": {
+    "face=ceiling,facing=east,has_floppy=false": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 180,
+      "y": 270
+    },
+    "face=ceiling,facing=east,has_floppy=true": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 180,
+      "y": 270
+    },
+    "face=ceiling,facing=north,has_floppy=false": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 180,
+      "y": 180
+    },
+    "face=ceiling,facing=north,has_floppy=true": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 180,
+      "y": 180
+    },
+    "face=ceiling,facing=south,has_floppy=false": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 180
+    },
+    "face=ceiling,facing=south,has_floppy=true": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 180
+    },
+    "face=ceiling,facing=west,has_floppy=false": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 180,
+      "y": 90
+    },
+    "face=ceiling,facing=west,has_floppy=true": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 180,
+      "y": 90
+    },
+    "face=floor,facing=east,has_floppy=false": {
+      "model": "mini_tardis:item/wall_screen",
+      "y": 90
+    },
+    "face=floor,facing=east,has_floppy=true": {
+      "model": "mini_tardis:item/wall_screen",
+      "y": 90
+    },
+    "face=floor,facing=north,has_floppy=false": {
+      "model": "mini_tardis:item/wall_screen"
+    },
+    "face=floor,facing=north,has_floppy=true": {
+      "model": "mini_tardis:item/wall_screen"
+    },
+    "face=floor,facing=south,has_floppy=false": {
+      "model": "mini_tardis:item/wall_screen",
+      "y": 180
+    },
+    "face=floor,facing=south,has_floppy=true": {
+      "model": "mini_tardis:item/wall_screen",
+      "y": 180
+    },
+    "face=floor,facing=west,has_floppy=false": {
+      "model": "mini_tardis:item/wall_screen",
+      "y": 270
+    },
+    "face=floor,facing=west,has_floppy=true": {
+      "model": "mini_tardis:item/wall_screen",
+      "y": 270
+    },
+    "face=wall,facing=east,has_floppy=false": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=east,has_floppy=true": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 90,
+      "y": 90
+    },
+    "face=wall,facing=north,has_floppy=false": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 90
+    },
+    "face=wall,facing=north,has_floppy=true": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 90
+    },
+    "face=wall,facing=south,has_floppy=false": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 90,
+      "y": 180
+    },
+    "face=wall,facing=south,has_floppy=true": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 90,
+      "y": 180
+    },
+    "face=wall,facing=west,has_floppy=false": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 90,
+      "y": 270
+    },
+    "face=wall,facing=west,has_floppy=true": {
+      "model": "mini_tardis:item/wall_screen",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

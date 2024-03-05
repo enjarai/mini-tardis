@@ -14,7 +14,8 @@ for i in range(0, 16):
     model = {
               "parent": "mini_tardis:item/tardis",
               "textures": {
-                "0": "mini_tardis:item/tardis_alpha_" + str(i)
+                "0": "mini_tardis:item/tardis_alpha_" + str(i),
+                "particle": "mini_tardis:item/tardis_alpha_0"
               }
             }
     with open(models_path + "tardis_alpha_" + str(i) + ".json", 'w', encoding='utf-8') as f:

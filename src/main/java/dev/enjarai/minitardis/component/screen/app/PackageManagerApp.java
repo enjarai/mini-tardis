@@ -1,9 +1,8 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.MiniTardis;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.element.AppSelectorElement;
 import dev.enjarai.minitardis.component.screen.element.InstallableAppElement;
@@ -13,11 +12,9 @@ import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
 
 public class PackageManagerApp implements ScreenApp {
     public static final Codec<PackageManagerApp> CODEC = Codec.unit(PackageManagerApp::new);
-    public static final Identifier ID = MiniTardis.id("package_manager");
 
     @Override
     public AppView getView(TardisControl controls) {
@@ -34,29 +31,29 @@ public class PackageManagerApp implements ScreenApp {
             }
 
             @Override
-            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var selected = leftElement.selected == null ? rightElement.selected : leftElement.selected;
                 if (selected != null) {
                     DefaultFonts.VANILLA.drawText(canvas, selected.app.getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
                 }
 
                 if (!floppyInserted) {
-                    ModCanvasUtils.drawCenteredText(canvas, "Insert", 2 + 26, 30, CanvasColor.WHITE_HIGH);
-                    ModCanvasUtils.drawCenteredText(canvas, "Floppy", 2 + 26, 40, CanvasColor.WHITE_HIGH);
+                    TardisCanvasUtils.drawCenteredText(canvas, "Insert", 2 + 26, 30, CanvasColor.WHITE_HIGH);
+                    TardisCanvasUtils.drawCenteredText(canvas, "Floppy", 2 + 26, 40, CanvasColor.WHITE_HIGH);
                 } else if (leftElement.getElements().isEmpty()) {
-                    ModCanvasUtils.drawCenteredText(canvas, "Empty", 2 + 26, 30, CanvasColor.LIGHT_GRAY_HIGH);
+                    TardisCanvasUtils.drawCenteredText(canvas, "Empty", 2 + 26, 30, CanvasColor.LIGHT_GRAY_HIGH);
                 }
 
                 super.draw(blockEntity, canvas);
             }
 
             @Override
-            public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
+            public void screenOpen(ScreenBlockEntity blockEntity) {
                 updateInstalledApps();
             }
 
             @Override
-            public void screenTick(ConsoleScreenBlockEntity blockEntity) {
+            public void screenTick(ScreenBlockEntity blockEntity) {
                 var floppyStack = blockEntity.inventory.getStack(0);
                 var newFloppyState = !floppyStack.isEmpty();
                 if (floppyInserted != newFloppyState) {
@@ -93,7 +90,7 @@ public class PackageManagerApp implements ScreenApp {
                 }
             }
 
-            private boolean installApp(ConsoleScreenBlockEntity blockEntity, InstallableAppElement element) {
+            private boolean installApp(ScreenBlockEntity blockEntity, InstallableAppElement element) {
                 var i = leftElement.getElements().indexOf(element);
                 var floppyStack = blockEntity.inventory.getStack(0);
 
@@ -109,13 +106,13 @@ public class PackageManagerApp implements ScreenApp {
                 return false;
             }
 
-            private boolean uninstallApp(ConsoleScreenBlockEntity blockEntity, InstallableAppElement element) {
+            private boolean uninstallApp(ScreenBlockEntity blockEntity, InstallableAppElement element) {
                 if (floppyInserted) {
                     var floppyStack = blockEntity.inventory.getStack(0);
 
-                    if (controls.canUninstallApp(element.app.id())) {
+                    if (controls.canUninstallApp(element.app.getType())) {
                         FloppyItem.addApp(floppyStack, element.app);
-                        controls.uninstallApp(element.app.id());
+                        controls.uninstallApp(element.app.getType());
 
                         updateInstalledApps();
                         updateSourceApps(floppyStack);
@@ -127,15 +124,15 @@ public class PackageManagerApp implements ScreenApp {
             }
 
             @Override
-            public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.PACKAGE_MANAGER_BACKGROUND);
+            public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("package_manager_background"));
             }
         };
     }
 
     @Override
-    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.PACKAGE_MANAGER_APP);
+    public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/package_manager"));
     }
 
     @Override
@@ -144,7 +141,7 @@ public class PackageManagerApp implements ScreenApp {
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.PACKAGE_MANAGER;
     }
 }

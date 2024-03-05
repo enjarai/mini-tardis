@@ -1,11 +1,10 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.BadApple;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -14,12 +13,10 @@ import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ClickType;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 public class BadAppleApp implements ScreenApp {
     public static final Codec<BadAppleApp> CODEC = Codec.unit(BadAppleApp::new);
-    public static final Identifier ID = MiniTardis.id("bad_apple");
 
     @Override
     public AppView getView(TardisControl controls) {
@@ -41,20 +38,20 @@ public class BadAppleApp implements ScreenApp {
     }
 
     @Override
-    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.BAD_APPLE_APP);
+    public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/bad_apple"));
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.BAD_APPLE;
     }
 
     public static class BadAppleView implements AppView {
         int badAppleFrameCounter;
 
         @Override
-        public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
             var frame = MathHelper.clamp(badAppleFrameCounter, 0, BadApple.getFrameCount());
 
             for (int x = 0; x < BadApple.width; x++) {
@@ -72,7 +69,7 @@ public class BadAppleApp implements ScreenApp {
         }
 
         @Override
-        public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
+        public void screenOpen(ScreenBlockEntity blockEntity) {
             badAppleFrameCounter = -5; // temporary fix for apple grab beat drop sync, we go out of sync as song goes on though, gotta fix that
             var pos = blockEntity.getPos();
             //noinspection DataFlowIssue
@@ -80,7 +77,7 @@ public class BadAppleApp implements ScreenApp {
         }
 
         @Override
-        public void screenClose(ConsoleScreenBlockEntity blockEntity) {
+        public void screenClose(ScreenBlockEntity blockEntity) {
             badAppleFrameCounter = 0;
             StopSoundS2CPacket stopSoundS2CPacket = new StopSoundS2CPacket(ModSounds.BAD_APPLE.getId(), SoundCategory.RECORDS);
 
@@ -92,12 +89,12 @@ public class BadAppleApp implements ScreenApp {
             }
         }
 
-        public void endAnimation(ConsoleScreenBlockEntity blockEntity) {
+        public void endAnimation(ScreenBlockEntity blockEntity) {
             blockEntity.closeApp();
         }
 
         @Override
-        public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+        public boolean onClick(ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
             return false;
         }
     };

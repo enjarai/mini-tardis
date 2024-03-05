@@ -23,12 +23,11 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.poi.PointOfInterestType;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -41,6 +40,7 @@ public class ModBlocks {
                     .strength(-1.0F, 3600000.0F)
                     .dropsNothing()
                     .nonOpaque()
+                    .blockVision(Blocks::never)
                     .allowsSpawning(Blocks::never)));
     public static final TardisExteriorExtensionBlock TARDIS_EXTERIOR_EXTENSION =
             register("tardis_exterior_extension", new TardisExteriorExtensionBlock(FabricBlockSettings.create()
@@ -48,14 +48,19 @@ public class ModBlocks {
                     .strength(-1.0F, 3600000.0F)
                     .dropsNothing()
                     .nonOpaque()
+                    .blockVision(Blocks::never)
                     .allowsSpawning(Blocks::never)));
-    public static final SimplePolymerBlock TARDIS_PLATING =
-            register("tardis_plating", new SimplePolymerBlock(FabricBlockSettings.create()
+    public static final TardisPlatingBlock TARDIS_PLATING =
+            register("tardis_plating", new TardisPlatingBlock(FabricBlockSettings.create()
                     .mapColor(MapColor.BLACK)
                     .requiresTool()
-                    .strength(3.0F, 6.0F), Blocks.DEAD_BRAIN_CORAL_BLOCK));
+                    .strength(3.0F, 6.0F)));
     public static final InteriorDoorBlock INTERIOR_DOOR =
             register("interior_door", new InteriorDoorBlock(FabricBlockSettings.create()
+                    .strength(3.0F)
+                    .nonOpaque()));
+    public static final InteriorDoorDoorsBlock INTERIOR_DOOR_DOORS =
+            register("interior_door_doors", new InteriorDoorDoorsBlock(FabricBlockSettings.create()
                     .strength(3.0F)
                     .nonOpaque()));
     public static final ConsoleLeverBlock HANDBRAKE =
@@ -67,6 +72,11 @@ public class ModBlocks {
     public static final ConsoleScreenBlock CONSOLE_SCREEN =
             register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create()
                     .strength(3.0F)
+                    .nonOpaque()));
+    public static final WallScreenBlock WALL_SCREEN =
+            register("wall_screen", new WallScreenBlock(FabricBlockSettings.create()
+                    .strength(3.0F)
+                    .breakInstantly()
                     .nonOpaque()));
     public static final ConsoleButtonBlock RESET_DESTINATION_BUTTON =
             register("reset_destination_button", new ConsoleButtonBlock(FabricBlockSettings.create()
@@ -139,25 +149,36 @@ public class ModBlocks {
                     .requiresTool()
                     .strength(3.0F, 6.0F),
                     TardisControl::toggleDisabledState));
+    public static final MakeshiftEngineBlock MAKESHIFT_ENGINE =
+            register("makeshift_engine", new MakeshiftEngineBlock(FabricBlockSettings.create()
+                    .requiresTool()
+                    .luminance(state -> 15)
+                    .strength(3.0F, 6.0F)));
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);
     public static final BlockEntityType<ConsoleScreenBlockEntity> CONSOLE_SCREEN_ENTITY =
             registerEntity("console_screen", ConsoleScreenBlockEntity::new, CONSOLE_SCREEN);
+    public static final BlockEntityType<WallScreenBlockEntity> WALL_SCREEN_ENTITY =
+            registerEntity("wall_screen", WallScreenBlockEntity::new, WALL_SCREEN);
+    public static final BlockEntityType<MakeshiftEngineBlockEntity> MAKESHIFT_ENGINE_ENTITY =
+            registerEntity("makeshift_engine", MakeshiftEngineBlockEntity::new, MAKESHIFT_ENGINE);
 
     public static final PointOfInterestType TARDIS_EXTERIOR_POI =
             PointOfInterestHelper.register(MiniTardis.id("tardis_exterior"), 0, 1, TARDIS_EXTERIOR);
     public static final PointOfInterestType INTERIOR_DOOR_POI =
             PointOfInterestHelper.register(MiniTardis.id("interior_door"), 0, 1,
-                    Arrays.stream(Direction.values()).map(d -> INTERIOR_DOOR.getDefaultState().with(InteriorDoorBlock.FACING, d)).toList());
+                    Arrays.stream(Direction.values())
+                            .filter(d -> d.getHorizontal() != -1)
+                            .map(d -> INTERIOR_DOOR.getDefaultState().with(InteriorDoorBlock.FACING, d)).toList());
 
     public static final Map<? extends Block, Optional<PolymerModelData>> ITEM_BLOCKS;
     static {
         var builder = ImmutableMap.<Block, Optional<PolymerModelData>>builder();
-        builder.put(TARDIS_PLATING, Optional.empty());
-        builder.put(INTERIOR_DOOR, Optional.empty());
+        builder.put(INTERIOR_DOOR, Optional.of(PolymerModels.INTERIOR_DOOR_ITEM));
         builder.put(HANDBRAKE, Optional.empty());
         builder.put(CONSOLE_SCREEN, Optional.of(PolymerModels.ROTATING_MONITOR_PACKED));
+        builder.put(WALL_SCREEN, Optional.of(PolymerModels.WALL_MONITOR));
         builder.put(RESET_DESTINATION_BUTTON, Optional.empty());
         builder.put(NUDGE_DESTINATION_BUTTON_1, Optional.empty());
         builder.put(NUDGE_DESTINATION_BUTTON_2, Optional.empty());
@@ -171,6 +192,7 @@ public class ModBlocks {
         builder.put(INTERIOR_LIGHT, Optional.empty());
 //        builder.put(INTERIOR_VENT, Optional.empty());
         builder.put(POWER_COUPLING, Optional.empty());
+        builder.put(MAKESHIFT_ENGINE, Optional.empty());
         ITEM_BLOCKS = builder.buildOrThrow();
     }
 

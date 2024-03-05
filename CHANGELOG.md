@@ -1,0 +1,3 @@
+- Changed the facing widget on the terrain scanner app slightly to more easily distinguish directions.
+- Fixed a minor compatibility bug with the future immersive portals compat addon.
+  - The lil prick snuck in just before release.

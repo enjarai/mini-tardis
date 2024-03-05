@@ -1,18 +1,14 @@
 package dev.enjarai.minitardis.component.screen.element;
 
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ScrollableContainerElement<T extends PlacedElement> extends PlacedElement {
-    private final List<T> elements = new ArrayList<>();
+public class ScrollableContainerElement<T extends PlacedElement> extends AbstractParentElement<T> {
     public int scrolledness;
 
     public ScrollableContainerElement(int x, int y, int width, int height) {
@@ -20,17 +16,17 @@ public class ScrollableContainerElement<T extends PlacedElement> extends PlacedE
     }
 
     @Override
-    protected void drawElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    protected void drawElement(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         var scrolledCanvas = new ScrolledView(canvas, getScrollableHeight());
         for (var element : elements) {
             element.draw(controls, blockEntity, scrolledCanvas);
         }
-        CanvasUtils.draw(canvas, width - 8, 0, ModCanvasUtils.SCROLL_BUTTON_UP);
-        CanvasUtils.draw(canvas, width - 8, height - 38, ModCanvasUtils.SCROLL_BUTTON_DOWN);
+        CanvasUtils.draw(canvas, width - 8, 0, TardisCanvasUtils.getSprite("scroll_button_up"));
+        CanvasUtils.draw(canvas, width - 8, height - 38, TardisCanvasUtils.getSprite("scroll_button_down"));
     }
 
     @Override
-    protected boolean onClickElement(TardisControl controls, ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+    protected boolean onClickElement(TardisControl controls, ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
         if (x >= width - 8) {
             if (y < 38) {
                 scrolledness = Math.max(0, scrolledness - 16);
@@ -47,22 +43,6 @@ public class ScrollableContainerElement<T extends PlacedElement> extends PlacedE
             }
         }
         return false;
-    }
-
-    public void addElement(T element) {
-        elements.add(element);
-    }
-
-    public void removeElement(T element) {
-        elements.remove(element);
-    }
-
-    public List<T> getElements() {
-        return elements;
-    }
-
-    public void clearElements() {
-        elements.clear();
     }
 
     public int getScrollableHeight() {

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "I#I",
+    "ISI"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:compass"
+    },
+    "S": {
+      "item": "minecraft:black_stained_glass_pane"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "item": "mini_tardis:console_screen",
+    "count": 1
+  }
+}

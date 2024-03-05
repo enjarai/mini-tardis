@@ -1,11 +1,9 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.BadApple;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.element.AppleElement;
 import dev.enjarai.minitardis.component.screen.element.SnakeElement;
@@ -13,22 +11,16 @@ import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ClickType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
 import org.joml.Vector2i;
 
-import static java.lang.Math.abs;
-
 public class SnakeApp implements ScreenApp {
     public static final Codec<SnakeApp> CODEC = Codec.unit(SnakeApp::new);
-    public static final Identifier ID = MiniTardis.id("snake");
 
     @Override
     public AppView getView(TardisControl controls) {
@@ -36,13 +28,13 @@ public class SnakeApp implements ScreenApp {
     }
 
     @Override
-    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SNAKE_APP);
+    public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/snake"));
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.SNAKE;
     }
 
     public static class SnakeAppView implements AppView {
@@ -64,7 +56,7 @@ public class SnakeApp implements ScreenApp {
         }
 
         @Override
-        public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
             //if(died)return;
             if(pausedTicks % 16 > 7)return;
             snake.draw(tardisControl, blockEntity, canvas);
@@ -76,7 +68,7 @@ public class SnakeApp implements ScreenApp {
         }
 
         @Override
-        public void screenTick(ConsoleScreenBlockEntity blockEntity) {
+        public void screenTick(ScreenBlockEntity blockEntity) {
             if(won) {
                 wonTicks++;
                 if(wonTicks > 10)blockEntity.closeApp();
@@ -96,7 +88,7 @@ public class SnakeApp implements ScreenApp {
         }
 
         @Override
-        public boolean onClick(ConsoleScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
+        public boolean onClick(ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
             if(this.won)return false;
             if(this.died)return false;
             if(type == ClickType.LEFT) {
@@ -115,21 +107,21 @@ public class SnakeApp implements ScreenApp {
         }
 
         @Override
-        public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-            CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.DIMENSIONS_BACKGROUND);
+        public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("dimensions_background"));
         }
 
-        public void snakeDied(ConsoleScreenBlockEntity blockEntity) {
+        public void snakeDied(ScreenBlockEntity blockEntity) {
             blockEntity.getWorld().playSound(null, blockEntity.getPos(), ModSounds.DIE_SNAKE, SoundCategory.AMBIENT, 1f, 1);
             this.died = true;
         }
 
-        public void won(ConsoleScreenBlockEntity blockEntity) {
+        public void won(ScreenBlockEntity blockEntity) {
             blockEntity.getWorld().playSound(null, blockEntity.getPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.AMBIENT, 0.3f, 1);
             this.won = true;
         }
 
-        public void ateApple(ConsoleScreenBlockEntity blockEntity) {
+        public void ateApple(ScreenBlockEntity blockEntity) {
             this.snake.ateApple();
             blockEntity.getWorld().playSound(null, blockEntity.getPos(), ModSounds.EAT_APPLE, SoundCategory.AMBIENT, 0.3f, 1);
         }

@@ -1,40 +1,92 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.MiniTardis;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.element.DimensionStarElement;
+import dev.enjarai.minitardis.component.screen.element.SmallButtonElement;
+import dev.enjarai.minitardis.data.RandomAppLootFunction;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.font.DefaultFonts;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.World;
+import org.apache.commons.lang3.text.WordUtils;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class DimensionsApp implements ScreenApp {
-    public static final Codec<DimensionsApp> CODEC = Codec.unit(DimensionsApp::new);
-    public static final Identifier ID = MiniTardis.id("dimensions");
+    public static final Codec<DimensionsApp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            RegistryKey.createCodec(RegistryKeys.WORLD).listOf().optionalFieldOf("accessible_dimensions", List.of()).forGetter(app -> app.accessibleDimensions)
+    ).apply(instance, DimensionsApp::new));
+
+    public final List<RegistryKey<World>> accessibleDimensions;
+
+    private DimensionsApp(List<RegistryKey<World>> accessibleDimensions) {
+        this.accessibleDimensions = new ArrayList<>(accessibleDimensions);
+    }
+
+    public DimensionsApp() {
+        this.accessibleDimensions = new ArrayList<>();
+    }
 
     @Override
     public AppView getView(TardisControl controls) {
         return new ElementHoldingView(controls) {
             private final Random deterministicRandom = new LocalRandom(69420);
+            private final SmallButtonElement saveDimButton = addElement(new SmallButtonElement(68, 2, "Add", controls1 -> {
+                controls1.getTardis().getDestination().ifPresent(destination -> {
+                    if (!accessibleDimensions.contains(destination.worldKey())) {
+                        accessibleDimensions.add(destination.worldKey());
+                        refreshStars();
+                    }
+                });
+            }));
+
+            {
+                controls.getTardis().getServer().getWorldRegistryKeys().stream()
+                        .filter(key -> canAddAsAccessible(key))
+                        .sorted(Comparator.comparing(RegistryKey::getValue))
+                        .forEachOrdered(world -> {
+                            var star = new DimensionStarElement(0, 0, world);
+                            do {
+                                star.x = deterministicRandom.nextBetween(2, 128 - 2 - 11);
+                                star.y = deterministicRandom.nextBetween(18, 96 - 2 - 11);
+                            } while (children.stream().anyMatch(el -> el instanceof DimensionStarElement pel && star.overlapsWith(pel)));
+
+                            star.visible = accessibleDimensions.contains(world);
+                            addElement(star);
+                        });
+            }
 
             @Override
-            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+                saveDimButton.visible = false;
+
                 controls.getTardis().getDestination().ifPresentOrElse(destination -> {
-                    var worldId = destination.worldKey().getValue();
-                    DefaultFonts.VANILLA.drawText(
-                            canvas, Text.translatable("dimension." + worldId.getNamespace() + "." + worldId.getPath()).getString(),
-                            5, 6, 8, CanvasColor.LIGHT_GRAY_HIGH
-                    );
+                    var worldId = destination.worldKey();
+
+                    if (!accessibleDimensions.contains(worldId)) {
+                        saveDimButton.visible = true;
+                        DefaultFonts.VANILLA.drawText(canvas, "Unknown", 5, 6, 8, CanvasColor.LIGHT_GRAY_HIGH);
+                    } else {
+                        DefaultFonts.VANILLA.drawText(
+                                canvas, translateWorldId(worldId).getString(),
+                                5, 6, 8, CanvasColor.LIGHT_GRAY_HIGH
+                        );
+                    }
                 }, () -> {
                     DefaultFonts.VANILLA.drawText(canvas, "None", 5, 6, 8, CanvasColor.LIGHT_GRAY_HIGH);
                 });
@@ -43,34 +95,57 @@ public class DimensionsApp implements ScreenApp {
                 super.draw(blockEntity, canvas);
             }
 
-            @Override
-            public void screenOpen(ConsoleScreenBlockEntity blockEntity) {
-                if (children.isEmpty()) {
-                    controls.getTardis().getServer().getWorldRegistryKeys().stream()
-                            .filter(key -> !key.getValue().getPath().startsWith("tardis/"))
-                            .sorted(Comparator.comparing(RegistryKey::getValue))
-                            .forEachOrdered(world -> {
-                                var x = deterministicRandom.nextBetween(2, 128 - 2 - 11);
-                                var y = deterministicRandom.nextBetween(18, 96 - 2 - 11);
-                                addElement(new DimensionStarElement(x, y, world));
-                            });
+            private void refreshStars() {
+                for (var element : children()) {
+                    if (element instanceof DimensionStarElement star) {
+                        star.visible = accessibleDimensions.contains(star.worldKey);
+                    }
                 }
             }
 
             @Override
-            public void drawBackground(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.DIMENSIONS_BACKGROUND);
+            public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("dimensions_background"));
             }
         };
     }
 
-    @Override
-    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.DIMENSIONS_APP);
+    public boolean canAddAsAccessible(RegistryKey<World> worldKey) {
+        return !worldKey.getValue().getPath().startsWith("tardis/");
+    }
+
+    @SuppressWarnings("deprecation")
+    public static Text translateWorldId(RegistryKey<World> key) {
+        var id = key.getValue();
+        return Text.translatableWithFallback("dimension." + id.getNamespace() + "." + id.getPath(),
+                WordUtils.capitalize(id.getPath().replace('_', ' ')));
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/dimensions"));
+    }
+
+    @Override
+    public void appendTooltip(List<Text> tooltip) {
+        for (var dimension : accessibleDimensions) {
+            tooltip.add(Text.literal(" ").append(translateWorldId(dimension))
+                    .fillStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)));
+        }
+    }
+
+    @Override
+    public void applyLootModifications(LootContext context, RandomAppLootFunction lootFunction) {
+        accessibleDimensions.add(context.getWorld().getRegistryKey());
+        for (var dimension : lootFunction.additionalDimensions()) {
+            if (!accessibleDimensions.contains(dimension)) {
+                accessibleDimensions.add(dimension);
+            }
+        }
+    }
+
+    @Override
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.DIMENSIONS;
     }
 }

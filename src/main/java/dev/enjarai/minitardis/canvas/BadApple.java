@@ -20,7 +20,7 @@ public class BadApple {
         // Header: width byte, height byte
         // Content: array of pixel byte values
         try (var stream = new GZIPInputStream(Files.newInputStream(FabricLoader.getInstance().getModContainer(MiniTardis.MOD_ID)
-                .flatMap(container -> container.findPath("assets/" + MiniTardis.MOD_ID + "/bad_apple.bin.gz")).orElseThrow()))) {
+                .flatMap(container -> container.findPath("data/" + MiniTardis.MOD_ID + "/bad_apple.bin.gz")).orElseThrow()))) {
             // stream.read() returns an int but only reads a byte
             width = stream.read();
             height = stream.read();

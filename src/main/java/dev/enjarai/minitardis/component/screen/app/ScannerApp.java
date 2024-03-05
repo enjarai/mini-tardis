@@ -1,9 +1,8 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.MiniTardis;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
-import dev.enjarai.minitardis.canvas.ModCanvasUtils;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.DestinationScanner;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.element.SmallButtonElement;
@@ -11,11 +10,10 @@ import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import eu.pb4.mapcanvas.impl.view.Rotate90ClockwiseView;
-import net.minecraft.util.Identifier;
+import net.minecraft.block.MapColor;
 
 public class ScannerApp implements ScreenApp {
     public static final Codec<ScannerApp> CODEC = Codec.unit(ScannerApp::new);
-    public static final Identifier ID = MiniTardis.id("scanner");
 
     @Override
     public AppView getView(TardisControl controls) {
@@ -26,29 +24,27 @@ public class ScannerApp implements ScreenApp {
             }
 
             @Override
-            public void draw(ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+            public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 for (int x = 0; x < DestinationScanner.RANGE; x++) {
                     for (int y = 0; y < DestinationScanner.RANGE; y++) {
                         byte value = controls.getTardis().getDestinationScanner().getFor(x, y);
-                        canvas.set(
-                                x, -y - 1 + DestinationScanner.RANGE,
-                                switch (value) {
-                                    case 0 -> CanvasColor.BLACK_HIGH;
-                                    case 1 -> CanvasColor.DEEPSLATE_GRAY_HIGH;
-                                    case 2 -> CanvasColor.BLUE_NORMAL;
-                                    case 3 -> CanvasColor.LIGHT_BLUE_NORMAL;
-                                    case 4 -> CanvasColor.ORANGE_HIGH;
-                                    default -> CanvasColor.WHITE_HIGH;
-                                });
+                        var color = CanvasColor.from(MapColor.get(value), MapColor.Brightness.NORMAL);
+                        canvas.set(x, -y - 1 + DestinationScanner.RANGE, color);
                     }
                 }
                 canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2, CanvasColor.ORANGE_NORMAL);
                 canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2 - 1, CanvasColor.ORANGE_NORMAL);
 
-                CanvasUtils.draw(canvas, 96, 64, controls.getTardis().getDestinationScanner().isZAxis() ? ModCanvasUtils.COORD_WIDGET_Z : ModCanvasUtils.COORD_WIDGET_X);
+                var isZ = controls.getTardis().getDestinationScanner().isZAxis();
+                CanvasUtils.draw(canvas, 96, 64, isZ ? TardisCanvasUtils.getSprite("coord_widget_z") : TardisCanvasUtils.getSprite("coord_widget_x"));
                 controls.getTardis().getDestination().ifPresent(destination -> {
-                    DrawableCanvas view = ModCanvasUtils.DESTINATION_FACING_WIDGET;
-                    for (int i = 0; i < destination.facing().getHorizontal(); i++) {
+                    var rotation = destination.facing().getHorizontal();
+                    if (isZ) {
+                        rotation = (rotation + 3) % 4;
+                    }
+
+                    DrawableCanvas view = TardisCanvasUtils.getSprite("destination_facing_widget");
+                    for (int i = 0; i < rotation; i++) {
                         view = new Rotate90ClockwiseView(view);
                     }
                     CanvasUtils.draw(canvas, 96, 64, view);
@@ -58,7 +54,7 @@ public class ScannerApp implements ScreenApp {
             }
 
             @Override
-            public void screenTick(ConsoleScreenBlockEntity blockEntity) {
+            public void screenTick(ScreenBlockEntity blockEntity) {
                 controls.getTardis().getDestinationScanner().shouldScanNextTick();
             }
         };
@@ -66,12 +62,12 @@ public class ScannerApp implements ScreenApp {
 
 
     @Override
-    public void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, ModCanvasUtils.SCANNER_APP);
+    public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/scanner"));
     }
 
     @Override
-    public Identifier id() {
-        return ID;
+    public ScreenAppType<?> getType() {
+        return ScreenAppTypes.SCANNER;
     }
 }

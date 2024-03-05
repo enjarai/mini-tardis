@@ -1,12 +1,20 @@
 package dev.enjarai.minitardis.block;
 
+import dev.enjarai.minitardis.MiniTardis;
+import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
+import eu.pb4.polymer.blocks.api.PolymerTexturedBlock;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
+import eu.pb4.polymer.core.api.utils.PolymerClientDecoded;
+import eu.pb4.polymer.core.api.utils.PolymerKeepModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneLampBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -23,7 +31,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
-public class InteriorLightBlock extends RedstoneLampBlock implements PolymerBlock, TardisAware {
+public class InteriorLightBlock extends RedstoneLampBlock implements PerhapsPolymerBlock, TardisAware {
     public static final IntProperty ORDER = IntProperty.of("order", 0, 12);
 
     public InteriorLightBlock(Settings settings) {
@@ -35,6 +43,20 @@ public class InteriorLightBlock extends RedstoneLampBlock implements PolymerBloc
     @Override
     public BlockState getPlacementState(ItemPlacementContext ctx) {
         return getDefaultState();
+    }
+
+    @Override
+    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state) {
+        var stack = super.getPickStack(world, pos, state);
+
+        var order = state.get(ORDER);
+        if (order != 0) {
+            NbtCompound nbtCompound = new NbtCompound();
+            nbtCompound.putString(ORDER.getName(), String.valueOf(order));
+            stack.setSubNbt("BlockStateTag", nbtCompound);
+        }
+
+        return stack;
     }
 
     @Override
@@ -92,12 +114,12 @@ public class InteriorLightBlock extends RedstoneLampBlock implements PolymerBloc
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
+    public Block getPerhapsPolymerBlock(BlockState state) {
         return Blocks.REDSTONE_LAMP;
     }
 
     @Override
-    public BlockState getPolymerBlockState(BlockState state) {
+    public BlockState getPerhapsPolymerBlockState(BlockState state) {
         return getPolymerBlock(state).getStateWithProperties(state);
     }
 }

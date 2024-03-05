@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "#C#",
+    "#N#",
+    "#E#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:glass"
+    },
+    "C": {
+      "item": "minecraft:compass"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "result": {
+    "item": "mini_tardis:makeshift_engine",
+    "count": 1
+  }
+}

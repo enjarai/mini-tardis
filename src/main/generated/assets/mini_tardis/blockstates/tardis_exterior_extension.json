@@ -1,0 +1,276 @@
+{
+  "variants": {
+    "facing=east,visibleness=0": {
+      "model": "mini_tardis:item/tardis_alpha_0",
+      "y": 90
+    },
+    "facing=east,visibleness=1": {
+      "model": "mini_tardis:item/tardis_alpha_1",
+      "y": 90
+    },
+    "facing=east,visibleness=10": {
+      "model": "mini_tardis:item/tardis_alpha_10",
+      "y": 90
+    },
+    "facing=east,visibleness=11": {
+      "model": "mini_tardis:item/tardis_alpha_11",
+      "y": 90
+    },
+    "facing=east,visibleness=12": {
+      "model": "mini_tardis:item/tardis_alpha_12",
+      "y": 90
+    },
+    "facing=east,visibleness=13": {
+      "model": "mini_tardis:item/tardis_alpha_13",
+      "y": 90
+    },
+    "facing=east,visibleness=14": {
+      "model": "mini_tardis:item/tardis_alpha_14",
+      "y": 90
+    },
+    "facing=east,visibleness=15": {
+      "model": "mini_tardis:item/tardis_alpha_15",
+      "y": 90
+    },
+    "facing=east,visibleness=16": {
+      "model": "mini_tardis:item/tardis",
+      "y": 90
+    },
+    "facing=east,visibleness=2": {
+      "model": "mini_tardis:item/tardis_alpha_2",
+      "y": 90
+    },
+    "facing=east,visibleness=3": {
+      "model": "mini_tardis:item/tardis_alpha_3",
+      "y": 90
+    },
+    "facing=east,visibleness=4": {
+      "model": "mini_tardis:item/tardis_alpha_4",
+      "y": 90
+    },
+    "facing=east,visibleness=5": {
+      "model": "mini_tardis:item/tardis_alpha_5",
+      "y": 90
+    },
+    "facing=east,visibleness=6": {
+      "model": "mini_tardis:item/tardis_alpha_6",
+      "y": 90
+    },
+    "facing=east,visibleness=7": {
+      "model": "mini_tardis:item/tardis_alpha_7",
+      "y": 90
+    },
+    "facing=east,visibleness=8": {
+      "model": "mini_tardis:item/tardis_alpha_8",
+      "y": 90
+    },
+    "facing=east,visibleness=9": {
+      "model": "mini_tardis:item/tardis_alpha_9",
+      "y": 90
+    },
+    "facing=north,visibleness=0": {
+      "model": "mini_tardis:item/tardis_alpha_0",
+      "y": 0
+    },
+    "facing=north,visibleness=1": {
+      "model": "mini_tardis:item/tardis_alpha_1",
+      "y": 0
+    },
+    "facing=north,visibleness=10": {
+      "model": "mini_tardis:item/tardis_alpha_10",
+      "y": 0
+    },
+    "facing=north,visibleness=11": {
+      "model": "mini_tardis:item/tardis_alpha_11",
+      "y": 0
+    },
+    "facing=north,visibleness=12": {
+      "model": "mini_tardis:item/tardis_alpha_12",
+      "y": 0
+    },
+    "facing=north,visibleness=13": {
+      "model": "mini_tardis:item/tardis_alpha_13",
+      "y": 0
+    },
+    "facing=north,visibleness=14": {
+      "model": "mini_tardis:item/tardis_alpha_14",
+      "y": 0
+    },
+    "facing=north,visibleness=15": {
+      "model": "mini_tardis:item/tardis_alpha_15",
+      "y": 0
+    },
+    "facing=north,visibleness=16": {
+      "model": "mini_tardis:item/tardis",
+      "y": 0
+    },
+    "facing=north,visibleness=2": {
+      "model": "mini_tardis:item/tardis_alpha_2",
+      "y": 0
+    },
+    "facing=north,visibleness=3": {
+      "model": "mini_tardis:item/tardis_alpha_3",
+      "y": 0
+    },
+    "facing=north,visibleness=4": {
+      "model": "mini_tardis:item/tardis_alpha_4",
+      "y": 0
+    },
+    "facing=north,visibleness=5": {
+      "model": "mini_tardis:item/tardis_alpha_5",
+      "y": 0
+    },
+    "facing=north,visibleness=6": {
+      "model": "mini_tardis:item/tardis_alpha_6",
+      "y": 0
+    },
+    "facing=north,visibleness=7": {
+      "model": "mini_tardis:item/tardis_alpha_7",
+      "y": 0
+    },
+    "facing=north,visibleness=8": {
+      "model": "mini_tardis:item/tardis_alpha_8",
+      "y": 0
+    },
+    "facing=north,visibleness=9": {
+      "model": "mini_tardis:item/tardis_alpha_9",
+      "y": 0
+    },
+    "facing=south,visibleness=0": {
+      "model": "mini_tardis:item/tardis_alpha_0",
+      "y": 180
+    },
+    "facing=south,visibleness=1": {
+      "model": "mini_tardis:item/tardis_alpha_1",
+      "y": 180
+    },
+    "facing=south,visibleness=10": {
+      "model": "mini_tardis:item/tardis_alpha_10",
+      "y": 180
+    },
+    "facing=south,visibleness=11": {
+      "model": "mini_tardis:item/tardis_alpha_11",
+      "y": 180
+    },
+    "facing=south,visibleness=12": {
+      "model": "mini_tardis:item/tardis_alpha_12",
+      "y": 180
+    },
+    "facing=south,visibleness=13": {
+      "model": "mini_tardis:item/tardis_alpha_13",
+      "y": 180
+    },
+    "facing=south,visibleness=14": {
+      "model": "mini_tardis:item/tardis_alpha_14",
+      "y": 180
+    },
+    "facing=south,visibleness=15": {
+      "model": "mini_tardis:item/tardis_alpha_15",
+      "y": 180
+    },
+    "facing=south,visibleness=16": {
+      "model": "mini_tardis:item/tardis",
+      "y": 180
+    },
+    "facing=south,visibleness=2": {
+      "model": "mini_tardis:item/tardis_alpha_2",
+      "y": 180
+    },
+    "facing=south,visibleness=3": {
+      "model": "mini_tardis:item/tardis_alpha_3",
+      "y": 180
+    },
+    "facing=south,visibleness=4": {
+      "model": "mini_tardis:item/tardis_alpha_4",
+      "y": 180
+    },
+    "facing=south,visibleness=5": {
+      "model": "mini_tardis:item/tardis_alpha_5",
+      "y": 180
+    },
+    "facing=south,visibleness=6": {
+      "model": "mini_tardis:item/tardis_alpha_6",
+      "y": 180
+    },
+    "facing=south,visibleness=7": {
+      "model": "mini_tardis:item/tardis_alpha_7",
+      "y": 180
+    },
+    "facing=south,visibleness=8": {
+      "model": "mini_tardis:item/tardis_alpha_8",
+      "y": 180
+    },
+    "facing=south,visibleness=9": {
+      "model": "mini_tardis:item/tardis_alpha_9",
+      "y": 180
+    },
+    "facing=west,visibleness=0": {
+      "model": "mini_tardis:item/tardis_alpha_0",
+      "y": 270
+    },
+    "facing=west,visibleness=1": {
+      "model": "mini_tardis:item/tardis_alpha_1",
+      "y": 270
+    },
+    "facing=west,visibleness=10": {
+      "model": "mini_tardis:item/tardis_alpha_10",
+      "y": 270
+    },
+    "facing=west,visibleness=11": {
+      "model": "mini_tardis:item/tardis_alpha_11",
+      "y": 270
+    },
+    "facing=west,visibleness=12": {
+      "model": "mini_tardis:item/tardis_alpha_12",
+      "y": 270
+    },
+    "facing=west,visibleness=13": {
+      "model": "mini_tardis:item/tardis_alpha_13",
+      "y": 270
+    },
+    "facing=west,visibleness=14": {
+      "model": "mini_tardis:item/tardis_alpha_14",
+      "y": 270
+    },
+    "facing=west,visibleness=15": {
+      "model": "mini_tardis:item/tardis_alpha_15",
+      "y": 270
+    },
+    "facing=west,visibleness=16": {
+      "model": "mini_tardis:item/tardis",
+      "y": 270
+    },
+    "facing=west,visibleness=2": {
+      "model": "mini_tardis:item/tardis_alpha_2",
+      "y": 270
+    },
+    "facing=west,visibleness=3": {
+      "model": "mini_tardis:item/tardis_alpha_3",
+      "y": 270
+    },
+    "facing=west,visibleness=4": {
+      "model": "mini_tardis:item/tardis_alpha_4",
+      "y": 270
+    },
+    "facing=west,visibleness=5": {
+      "model": "mini_tardis:item/tardis_alpha_5",
+      "y": 270
+    },
+    "facing=west,visibleness=6": {
+      "model": "mini_tardis:item/tardis_alpha_6",
+      "y": 270
+    },
+    "facing=west,visibleness=7": {
+      "model": "mini_tardis:item/tardis_alpha_7",
+      "y": 270
+    },
+    "facing=west,visibleness=8": {
+      "model": "mini_tardis:item/tardis_alpha_8",
+      "y": 270
+    },
+    "facing=west,visibleness=9": {
+      "model": "mini_tardis:item/tardis_alpha_9",
+      "y": 270
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "ultrawarm": false,
-  "natural": false,
+  "natural": true,
   "piglin_safe": true,
   "respawn_anchor_works": true,
   "bed_works": true,

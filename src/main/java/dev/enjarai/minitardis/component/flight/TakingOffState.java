@@ -61,7 +61,12 @@ public class TakingOffState extends TransitionalFlightState {
 
     @Override
     public FlightState getNextState(Tardis tardis) {
-        return new FlyingState();
+        return new FlyingState(tardis.getCurrentLandedLocation()
+                .flatMap(current -> tardis.getDestination()
+                        .map(destination -> Math.sqrt(current.pos().getSquaredDistance(destination.pos())))
+                )
+                .orElse(0.0)
+                .intValue());
     }
 
     @Override

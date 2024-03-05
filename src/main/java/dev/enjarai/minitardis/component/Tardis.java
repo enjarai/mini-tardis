@@ -10,10 +10,14 @@ import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisExteriorBlock;
 import dev.enjarai.minitardis.block.TardisExteriorBlockEntity;
 import dev.enjarai.minitardis.component.flight.*;
+import dev.enjarai.minitardis.component.screen.app.HistoryApp;
+import dev.enjarai.minitardis.component.screen.app.ScreenAppTypes;
 import net.minecraft.block.FacingBlock;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -26,6 +30,7 @@ import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeKeys;
@@ -57,7 +62,7 @@ public class Tardis {
             FlightState.CODEC.optionalFieldOf("flight_state", new LandedState()).forGetter(t -> t.state),
             Codec.INT.optionalFieldOf("stability", 1000).forGetter(t -> t.stability),
             Codec.INT.optionalFieldOf("fuel", 500).forGetter(t -> t.fuel),
-            HistoryEntry.CODEC.listOf().optionalFieldOf("history", List.of()).forGetter(t -> t.history)
+            Codec.BOOL.optionalFieldOf("door_open", false).forGetter(t -> t.doorOpen)
     ).apply(instance, Tardis::new));
 
     TardisHolder holder;
@@ -76,9 +81,9 @@ public class Tardis {
     private FlightState state;
     private int stability;
     private int fuel;
-    private final List<HistoryEntry> history;
+    private boolean doorOpen;
 
-    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Either<TardisLocation, PartialTardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability, int fuel, List<HistoryEntry> history) {
+    private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Either<TardisLocation, PartialTardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability, int fuel, boolean doorOpen) {
         this.uuid = uuid;
         this.interiorPlaced = interiorPlaced;
         this.interior = interior;
@@ -89,20 +94,20 @@ public class Tardis {
         this.state = state;
         this.stability = stability;
         this.fuel = fuel;
-        this.history = new ArrayList<>(history);
+        this.doorOpen = doorOpen;
 
         this.controls.tardis = this;
     }
 
-    public Tardis(TardisHolder holder, @Nullable TardisLocation location) {
+    public Tardis(TardisHolder holder, @Nullable TardisLocation location, Identifier interior) {
         this(
-                UUID.randomUUID(), false, DEFAULT_INTERIOR,
+                UUID.randomUUID(), false, interior,
                 location == null ?
                         Either.right(new PartialTardisLocation(holder.getServer().getOverworld().getRegistryKey())) :
                         Either.left(location),
                 Optional.ofNullable(location), BlockPos.ORIGIN, new TardisControl(),
                 location == null ? new DisabledState() : new LandingState(location, true),
-                1000, 500, List.of()
+                1000, 500, false
         );
 
         holder.addTardis(this);
@@ -111,6 +116,24 @@ public class Tardis {
 
         buildExterior();
         getInteriorWorld();
+    }
+
+    public Tardis(TardisHolder holder, TardisLocation destination) {
+        this(
+                UUID.randomUUID(), false, DEFAULT_INTERIOR,
+                Either.right(new PartialTardisLocation(destination.worldKey())),
+                Optional.of(destination), BlockPos.ORIGIN, new TardisControl(),
+                new FlyingState(holder.getServer().getOverworld().getRandom().nextInt()),
+                842, 567, false
+        );
+
+        holder.addTardis(this);
+
+        state.init(this);
+
+        getInteriorWorld();
+
+        controls.setEnergyConduits(true);
     }
 
 
@@ -140,6 +163,10 @@ public class Tardis {
 
         if (stability < 200 && world.getRandom().nextBetween(0, 20000) < 800 - stability * 4 && sparksQueued < 5) {
             sparksQueued++;
+        }
+
+        if (!state.isSolid(this)) {
+            setDoorOpen(false, true);
         }
 
         destinationScanner.tick();
@@ -230,7 +257,7 @@ public class Tardis {
 
             do {
                 if (interiorDoorState.isOf(ModBlocks.INTERIOR_DOOR) && interiorDoorState.get(InteriorDoorBlock.HALF) == DoubleBlockHalf.LOWER) {
-                    var facing = interiorDoorState.get(FacingBlock.FACING);
+                    var facing = interiorDoorState.get(HorizontalFacingBlock.FACING);
                     interiorDoorPosition = targetPos;
 
                     targetPos = targetPos.add(facing.getVector());
@@ -239,9 +266,9 @@ public class Tardis {
                     break;
                 } else {
                     targetPos = world.getPointOfInterestStorage().getInSquare(
-                            poi -> poi.value().equals(ModBlocks.INTERIOR_DOOR_POI), INTERIOR_CENTER,
+                            poi -> poi.value().equals(ModBlocks.INTERIOR_DOOR_POI), interiorDoorPosition,
                             64, PointOfInterestStorage.OccupationStatus.ANY
-                    ).findAny().map(PointOfInterest::getPos).orElse(INTERIOR_CENTER);
+                    ).findAny().map(PointOfInterest::getPos).orElse(interiorDoorPosition);
                     interiorDoorState = world.getBlockState(targetPos);
                 }
             } while (interiorDoorState.isOf(ModBlocks.INTERIOR_DOOR));
@@ -256,7 +283,7 @@ public class Tardis {
         }
     }
 
-    public void teleportEntityOut(Entity entity) {
+    public void teleportEntityOut(Entity entity, BlockPos doorPos) {
         if (state.isSolid(this)) {
             currentLocation.ifLeft(location -> {
                 var world = location.getWorld(holder.getServer());
@@ -268,6 +295,8 @@ public class Tardis {
                     buildExterior();
                     blockEntity = world.getBlockEntity(pos);
                 }
+
+                interiorDoorPosition = doorPos;
 
                 if (blockEntity instanceof TardisExteriorBlockEntity exteriorEntity && this.equals(exteriorEntity.getLinkedTardis())) {
                     var facing = exteriorEntity.getCachedState().get(TardisExteriorBlock.FACING);
@@ -287,6 +316,7 @@ public class Tardis {
         var facing = location.facing();
 
         return world.getBlockState(pos).isReplaceable()
+                && (world.getFluidState(pos).isEmpty() || world.getFluidState(pos).isOf(Fluids.WATER))
                 && world.getBlockState(pos.up()).isReplaceable()
                 && world.getBlockState(pos.down()).isSideSolidFullSquare(world, pos, Direction.UP)
                 && world.getBlockState(pos.offset(facing)).getCollisionShape(world, pos).isEmpty()
@@ -308,6 +338,10 @@ public class Tardis {
 
     public MinecraftServer getServer() {
         return holder.getServer();
+    }
+
+    public Random getRandom() {
+        return getInteriorWorld().getRandom();
     }
 
     public BlockPos getInteriorCenter() {
@@ -347,7 +381,7 @@ public class Tardis {
     }
 
     public boolean setDestination(Optional<TardisLocation> destination, boolean force) {
-        if (!force && !state.tryChangeCourse(this)) return false;
+        if (!force && (!state.tryChangeCourse(this) || controls.isDestinationLocked())) return false;
 
         this.destination = destination;
         destinationScanner.resetIterators();
@@ -370,6 +404,12 @@ public class Tardis {
             newState.init(this);
         }
         return accepted;
+    }
+
+    public void forceSetState(FlightState newState) {
+        state.complete(this);
+        state = newState;
+        newState.init(this);
     }
 
     public FlightState getState() {
@@ -411,12 +451,21 @@ public class Tardis {
         return fuel != oldFuel;
     }
 
-    public List<HistoryEntry> getHistory() {
-        return history;
+    public void addHistoryEntry(HistoryEntry entry) {
+        controls.getScreenApp(ScreenAppTypes.HISTORY).ifPresent(app -> ((HistoryApp) app).history.add(0, entry));
     }
 
-    public void addHistoryEntry(HistoryEntry entry) {
-        history.add(0, entry);
+    public boolean isDoorOpen() {
+        return doorOpen;
+    }
+
+    public boolean setDoorOpen(boolean open, boolean force) {
+        if (!force && !state.isSolid(this)) {
+            return false;
+        }
+
+        this.doorOpen = open;
+        return true;
     }
 
     public void createInteriorSparks(boolean damage) {

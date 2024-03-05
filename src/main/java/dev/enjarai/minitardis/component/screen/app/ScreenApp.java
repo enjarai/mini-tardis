@@ -1,41 +1,20 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
-import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
+import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.data.RandomAppLootFunction;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
+import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.util.Map;
-import java.util.function.Supplier;
+import java.util.List;
 
 public interface ScreenApp {
-    Map<Identifier, Codec<? extends ScreenApp>> ALL = Map.of(
-            SnakeApp.ID, SnakeApp.CODEC,
-            ScannerApp.ID, ScannerApp.CODEC,
-            GpsApp.ID, GpsApp.CODEC,
-            BadAppleApp.ID, BadAppleApp.CODEC,
-            StatusApp.ID, StatusApp.CODEC,
-            HistoryApp.ID, HistoryApp.CODEC,
-            DimensionsApp.ID, DimensionsApp.CODEC,
-            PackageManagerApp.ID, PackageManagerApp.CODEC,
-            WaypointsApp.ID, WaypointsApp.CODEC,
-            DummyApp.ID, DummyApp.CODEC
-    );
-    Map<Identifier, Supplier<? extends ScreenApp>> CONSTRUCTORS = Map.of(
-            SnakeApp.ID, SnakeApp::new,
-            ScannerApp.ID, ScannerApp::new,
-            GpsApp.ID, GpsApp::new,
-            BadAppleApp.ID, BadAppleApp::new,
-            StatusApp.ID, StatusApp::new,
-            HistoryApp.ID, HistoryApp::new,
-            DimensionsApp.ID, DimensionsApp::new,
-            PackageManagerApp.ID, PackageManagerApp::new,
-            WaypointsApp.ID, WaypointsApp::new,
-            DummyApp.ID, DummyApp::new
-    );
-    Codec<ScreenApp> CODEC = Identifier.CODEC.dispatch(ScreenApp::id, key -> ALL.getOrDefault(key, DummyApp.CODEC));
+    Codec<ScreenApp> CODEC = ScreenAppType.REGISTRY.getCodec().dispatch(ScreenApp::getType, ScreenAppType::codec);
 
     AppView getView(TardisControl controls);
 
@@ -43,15 +22,42 @@ public interface ScreenApp {
      * Draw the icon of the application to the provided canvas, the canvas provided is limited to the available area.
      * THIS IS CALLED OFF-THREAD, DON'T INTERACT WITH THE WORLD IF AT ALL POSSIBLE.
      */
-    void drawIcon(TardisControl controls, ConsoleScreenBlockEntity blockEntity, DrawableCanvas canvas);
+    default void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+        var id = getId();
+        var sprite = TardisCanvasUtils.getSprite(new Identifier(id.getNamespace(), "app/" + id.getPath()));
+        if (sprite.getWidth() == 0 && sprite.getHeight() == 0) {
+            sprite = TardisCanvasUtils.getSprite("app/dummy");
+        }
+        CanvasUtils.draw(canvas, 0, 0, sprite);
+    }
 
     default boolean canBeUninstalled() {
         return true;
     }
 
     default Text getName() {
-        return Text.translatable("mini_tardis.app." + id().getNamespace() + "." + id().getPath());
+        var id = getId();
+        return Text.translatable("mini_tardis.app." + id.getNamespace() + "." + id.getPath());
     }
 
-    Identifier id();
+    /**
+     * Append extra lines to the tooltip entry of this app when loaded onto a floppy.
+     * This can be used to display extra information on the persistent state of the app.
+     */
+    default void appendTooltip(List<Text> tooltip) {
+    }
+
+    /**
+     * Use this function to initialize data when this app is spawned in a loot floppy.
+     */
+    default void applyLootModifications(LootContext context, RandomAppLootFunction lootFunction) {
+    }
+
+    ScreenAppType<?> getType();
+
+    default Identifier getId() {
+        return ScreenAppType.REGISTRY.getKey(getType())
+                .orElseThrow(() -> new IllegalStateException("Illegal unregistered screen app detected, a SWAT unit is being dispatched to your location."))
+                .getValue();
+    }
 }

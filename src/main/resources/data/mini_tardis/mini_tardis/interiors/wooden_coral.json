@@ -1,4 +1,5 @@
 {
   "template": "mini_tardis:interiors/wooden_coral",
-  "template_center": [17, 9, 17]
+  "template_center": [17, 9, 17],
+  "scrappy_landing_position": [-5, -3, 3]
 }

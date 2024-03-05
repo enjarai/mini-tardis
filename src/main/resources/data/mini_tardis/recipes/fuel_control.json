@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "###",
+    " D "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:lever"
+    },
+    "D": {
+      "item": "minecraft:daylight_detector"
+    }
+  },
+  "result": {
+    "item": "mini_tardis:fuel_control",
+    "count": 1
+  }
+}

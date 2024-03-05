@@ -3,22 +3,26 @@
 	"id": "mini_tardis",
 	"version": "${version}",
 	"name": "Mini Tardis",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "A different take on the ever-growing TARDIS mod genre",
 	"authors": [
 		"enjarai",
 		"Louis",
 		"Benonardo"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://enjarai.dev/mini-tardis",
+		"sources": "https://github.com/${github_repo}",
+		"issues": "https://github.com/${github_repo}/issues"
 	},
-	"license": "",
+	"license": "ARR",
 	"icon": "assets/mini_tardis/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
 			"dev.enjarai.minitardis.MiniTardis"
+		],
+		"client": [
+			"dev.enjarai.minitardis.client.MiniTardisClient"
 		],
 		"fabric-datagen": [
           "dev.enjarai.minitardis.datagen.MiniTardisDataGenerator"
@@ -41,6 +45,15 @@
 		"cardinal-components": [
 			"mini_tardis:tardis_holder",
 			"mini_tardis:tardis_reference"
-		]
+		],
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.gg/WcYsDDQtyR"
+			}
+		},
+		"projects": {
+			"modrinth": "${modrinth_id}",
+			"curseforge": "${curseforge_id}"
+		}
 	}
 }

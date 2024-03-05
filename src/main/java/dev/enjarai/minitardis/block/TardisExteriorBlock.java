@@ -1,5 +1,7 @@
 package dev.enjarai.minitardis.block;
 
+import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
+import net.minecraft.block.*;
 import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.item.PolymerModels;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
@@ -12,8 +14,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
@@ -21,14 +21,27 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.*;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import static dev.enjarai.minitardis.block.TardisExteriorExtensionBlock.VISIBLENESS;
+
 @SuppressWarnings("deprecation")
-public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock, BlockWithElementHolder {
+public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolymerBlock {
     public static final MapCodec<TardisExteriorBlock> CODEC = createCodec(TardisExteriorBlock::new);
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
+
+    public static final VoxelShape OUTLINE_SHAPE = VoxelShapes.union(
+            Block.createCuboidShape(-1, 2, -1, 17, 16, 17),
+            Block.createCuboidShape(-3, 0, -3, 19, 2, 19),
+            Block.createCuboidShape(-2, 2, -2, 0, 16, 0),
+            Block.createCuboidShape(16, 2, -2, 18, 16, 0),
+            Block.createCuboidShape(16, 2, 16, 18, 16, 18),
+            Block.createCuboidShape(-2, 2, 16, 0, 16, 18)
+    );
 
     protected TardisExteriorBlock(Settings settings) {
         super(settings);
@@ -52,13 +65,8 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
+    public Block getPerhapsPolymerBlock(BlockState state) {
         return Blocks.BARRIER;
-    }
-
-    @Override
-    public Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
-        return PolymerResourcePackUtils.hasMainPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.LAPIS_BLOCK;
     }
 
     @Override
@@ -72,9 +80,20 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
         return super.onUse(state, world, pos, player, hand, hit);
     }
 
+    // Disabled because of silly transparency issues on block outlines
+//    @Override
+//    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+//        return OUTLINE_SHAPE;
+//    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return VoxelShapes.fullCube();
+    }
+
     @Override
     public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
-        world.setBlockState(pos.up(), ModBlocks.TARDIS_EXTERIOR_EXTENSION.getDefaultState());
+        world.setBlockState(pos.up(), ModBlocks.TARDIS_EXTERIOR_EXTENSION.getStateWithProperties(state).with(VISIBLENESS, 0));
     }
 
     @Nullable
@@ -86,42 +105,5 @@ public class TardisExteriorBlock extends BlockWithEntity implements PolymerBlock
     @Override
     public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
         return true;
-    }
-
-    @Override
-    public boolean tickElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        return true;
-    }
-
-    @Override
-    public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        var exteriorElement = new ItemDisplayElement();
-        exteriorElement.setItem(PolymerModels.getStack(PolymerModels.TARDIS_ALPHA[0]));
-        exteriorElement.setOffset(new Vec3d(0, 1, 0));
-        exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(initialBlockState.get(FACING).asRotation()));
-
-        return new ElementHolder() {
-            byte currentAlpha = 0;
-
-            {
-                addElement(exteriorElement);
-            }
-
-            @Override
-            protected void onTick() {
-                if (world.getTime() % 20 == 0) {
-                    exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(world.getBlockState(pos).get(FACING).asRotation()));
-                }
-
-                if (world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity && blockEntity.getLinkedTardis() != null) {
-                    byte alpha = (byte) MathHelper.clamp(blockEntity.getLinkedTardis().getState()
-                            .getExteriorAlpha(blockEntity.getLinkedTardis()), -1, 15);
-                    if (alpha != currentAlpha) {
-                        exteriorElement.setItem(PolymerModels.getStack(alpha < 0 ? PolymerModels.TARDIS : PolymerModels.TARDIS_ALPHA[alpha]));
-                        currentAlpha = alpha;
-                    }
-                }
-            }
-        };
     }
 }

@@ -7,7 +7,6 @@ import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.flight.RefuelingState;
 import dev.enjarai.minitardis.item.PolymerModels;
 import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
-import eu.pb4.polymer.core.api.block.SimplePolymerBlock;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -23,7 +22,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.poi.PointOfInterestType;
 
@@ -154,6 +152,10 @@ public class ModBlocks {
                     .requiresTool()
                     .luminance(state -> 15)
                     .strength(3.0F, 6.0F)));
+    public static final ArcNodeBlock ARC_NODE =
+            register("arc_node", new ArcNodeBlock(FabricBlockSettings.create()
+                    .requiresTool()
+                    .strength(3.0F, 6.0F)));
 
     public static final BlockEntityType<TardisExteriorBlockEntity> TARDIS_EXTERIOR_ENTITY =
             registerEntity("tardis_exterior", TardisExteriorBlockEntity::new, TARDIS_EXTERIOR);
@@ -171,6 +173,10 @@ public class ModBlocks {
                     Arrays.stream(Direction.values())
                             .filter(d -> d.getHorizontal() != -1)
                             .map(d -> INTERIOR_DOOR.getDefaultState().with(InteriorDoorBlock.FACING, d)).toList());
+    public static final PointOfInterestType ARC_NODE_POI =
+            PointOfInterestHelper.register(MiniTardis.id("arc_node"), 0, 1,
+                    Arrays.stream(Direction.values())
+                            .map(d -> ARC_NODE.getDefaultState().with(ArcNodeBlock.FACING, d)).toList());
 
     public static final Map<? extends Block, Optional<PolymerModelData>> ITEM_BLOCKS;
     static {
@@ -193,6 +199,7 @@ public class ModBlocks {
 //        builder.put(INTERIOR_VENT, Optional.empty());
         builder.put(POWER_COUPLING, Optional.empty());
         builder.put(MAKESHIFT_ENGINE, Optional.empty());
+        builder.put(ARC_NODE, Optional.empty());
         ITEM_BLOCKS = builder.buildOrThrow();
     }
 

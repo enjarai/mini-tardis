@@ -69,6 +69,7 @@ public class Tardis {
     @Nullable
     RuntimeWorldHandle interiorWorld;
     DestinationScanner destinationScanner = new DestinationScanner(this, 128);
+    BiomeScanner biomeScanner = new BiomeScanner(this, 128);
     private int sparksQueued;
 
     private final UUID uuid;
@@ -170,6 +171,7 @@ public class Tardis {
         }
 
         destinationScanner.tick();
+        biomeScanner.tick();
     }
 
     public ServerWorld getInteriorWorld() {
@@ -193,6 +195,10 @@ public class Tardis {
 
     public DestinationScanner getDestinationScanner() {
         return destinationScanner;
+    }
+    
+    public BiomeScanner getBiomeScanner() {
+        return biomeScanner;
     }
 
     private void initializeInteriorWorld() {

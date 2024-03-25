@@ -72,7 +72,7 @@ dependencies {
 	include modApi("dev.onyxstudios.cardinal-components-api:cardinal-components-level:${project.cca_version}")
 	include modApi("dev.onyxstudios.cardinal-components-api:cardinal-components-world:${project.cca_version}")
 
-	include modImplementation("nl.enjarai:cicada-lib:${project.cicada_version}") {
+	modImplementation("nl.enjarai:cicada-lib:${project.cicada_version}") {
 		exclude group: "net.fabricmc.fabric-api"
 	}
 

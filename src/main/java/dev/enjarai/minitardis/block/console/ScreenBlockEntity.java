@@ -157,6 +157,17 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
         }
     }
 
+    @Override
+    public void markRemoved() {
+        super.markRemoved();
+
+        display.destroy();
+        addedPlayers.clear();
+        if (threadFuture != null) {
+            threadFuture.cancel(true);
+        }
+    }
+
     public void cleanUpForRemoval() {
         display.destroy();
         addedPlayers.clear();

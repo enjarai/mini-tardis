@@ -23,12 +23,13 @@ public class ArcWorldPlacement {
 
     public Stream<ArcNode> getNodes(ServerWorld world) {
         return box.streamChunkPos().flatMap(chunkPos -> world.getPointOfInterestStorage().getInChunk(
-                poiType -> poiType.value().equals(ModBlocks.ARC_NODE_POI),
-                chunkPos, PointOfInterestStorage.OccupationStatus.ANY
-        )).map(poi -> new ArcNode(
-                poi.getPos(),
-                world.getBlockState(poi.getPos()).get(ArcNodeBlock.FACING),
-                this
-        ));
+                        poiType -> poiType.value().equals(ModBlocks.ARC_NODE_POI),
+                        chunkPos, PointOfInterestStorage.OccupationStatus.ANY
+                ))
+                .filter(poi -> box.contains(poi.getPos()))
+                .map(poi -> new ArcNode(
+                        poi.getPos(),
+                        world.getBlockState(poi.getPos()).get(ArcNodeBlock.FACING)
+                ));
     }
 }

@@ -3,6 +3,8 @@
 	"package": "dev.enjarai.minitardis.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
+		"CompassItemInvoker",
+		"CompassItemMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

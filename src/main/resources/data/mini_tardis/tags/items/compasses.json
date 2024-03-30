@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:compass",
+    "mini_tardis:tardis_lodestone_compass"
+  ]
+}

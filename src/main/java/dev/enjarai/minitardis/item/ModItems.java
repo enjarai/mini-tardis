@@ -33,6 +33,8 @@ public class ModItems {
     public static final TardisPlatingItem TARDIS_PLATING = register("tardis_plating", new TardisPlatingItem(new FabricItemSettings()));
     public static final InteriorLightItem INTERIOR_LIGHT = register("interior_light",
             new InteriorLightItem(ModBlocks.INTERIOR_LIGHT, new FabricItemSettings(), Items.REDSTONE_LAMP));
+    public static final TardisLodestoneCompassItem TARDIS_LODESTONE_COMPASS = register("tardis_lodestone_compass",
+            new TardisLodestoneCompassItem(new FabricItemSettings()));
 
     public static void load() {
         ModBlocks.ITEM_BLOCKS.forEach((block, modelData) -> {

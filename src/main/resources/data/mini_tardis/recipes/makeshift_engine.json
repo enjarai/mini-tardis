@@ -11,7 +11,7 @@
       "item": "minecraft:glass"
     },
     "C": {
-      "item": "minecraft:compass"
+      "tag": "mini_tardis:compasses"
     },
     "N": {
       "item": "minecraft:nether_star"

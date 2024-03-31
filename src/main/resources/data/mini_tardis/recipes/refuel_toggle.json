@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:compass"
+      "tag": "mini_tardis:compasses"
     },
     "L": {
       "item": "minecraft:lever"

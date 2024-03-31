@@ -6,7 +6,7 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:compass"
+      "tag": "mini_tardis:compasses"
     },
     "R": {
       "item": "minecraft:repeater"

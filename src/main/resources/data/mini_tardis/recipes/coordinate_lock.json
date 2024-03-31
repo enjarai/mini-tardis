@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:compass"
+      "tag": "mini_tardis:compasses"
     },
     "$": {
       "item": "minecraft:clock"

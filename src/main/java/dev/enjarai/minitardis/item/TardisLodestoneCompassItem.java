@@ -2,7 +2,6 @@ package dev.enjarai.minitardis.item;
 
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.component.ModComponents;
-import dev.enjarai.minitardis.mixin.CompassItemInvoker;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.CompassItem;
@@ -35,7 +34,7 @@ public class TardisLodestoneCompassItem extends CompassItem implements PolymerIt
         // Interestingly enough the lodestone NBT keys are in PolymerItemUtils.NBT_TO_COPY,
         // so we don't need to copy them manually (or figure out what LODESTONE_TRACKED_KEY even does).
         var polymerStack = PolymerItem.super.getPolymerItemStack(realStack, context, player);
-        var optionalRealDimKey = CompassItemInvoker.invokeGetLodestoneDimension(realStack.getOrCreateNbt());
+        var optionalRealDimKey = World.CODEC.parse(NbtOps.INSTANCE, realStack.getOrCreateNbt().get("LodestoneDimension")).result();
         optionalRealDimKey.ifPresent(realDimKey -> {
             // If the player is in a TARDIS or the compass is not pointing to a TARDIS, return.
             if (player == null ||

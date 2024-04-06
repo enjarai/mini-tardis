@@ -39,6 +39,7 @@ import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.FlatChunkGeneratorLayer;
 import net.minecraft.world.poi.PointOfInterest;
 import net.minecraft.world.poi.PointOfInterestStorage;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.nucleoid.fantasy.RuntimeWorldConfig;
 import xyz.nucleoid.fantasy.RuntimeWorldHandle;
@@ -335,6 +336,16 @@ public class Tardis {
         return !floorState.isReplaceable() && !floorState.isIn(ModBlocks.TARDIS_EXTERIOR_PARTS);
     }
 
+    public static boolean isTardis(@NotNull RegistryKey<World> regKey) {
+        return regKey.getValue().getNamespace().equals(MiniTardis.MOD_ID) && regKey.getValue().getPath().startsWith("tardis/");
+    }
+
+    public static Optional<Tardis> getTardis(@NotNull RegistryKey<World> regKey, MinecraftServer server) {
+        var tardisID = UUID.fromString(regKey.getValue().getPath().replaceAll("tardis/", ""));
+        return ModComponents.TARDIS_HOLDER
+                .get(server.getSaveProperties())
+                .getTardis(tardisID);
+    }
 
     public MinecraftServer getServer() {
         return holder.getServer();

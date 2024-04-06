@@ -2,6 +2,7 @@ package dev.enjarai.minitardis.item;
 
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.component.ModComponents;
+import dev.enjarai.minitardis.component.Tardis;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.CompassItem;
@@ -37,14 +38,11 @@ public class TardisLodestoneCompassItem extends CompassItem implements PolymerIt
         var optionalRealDimKey = World.CODEC.parse(NbtOps.INSTANCE, realStack.getOrCreateNbt().get("LodestoneDimension")).result();
         optionalRealDimKey.ifPresent(realDimKey -> {
             // If the player is in a TARDIS or the compass is not pointing to a TARDIS, return.
-            if (player == null ||
-                    Objects.equals(player.getWorld().getRegistryKey().getValue().getNamespace(), MiniTardis.MOD_ID) ||
-                    !Objects.equals(realDimKey.getValue().getNamespace(), MiniTardis.MOD_ID)) return;
-            var tardisID = UUID.fromString(realDimKey.getValue().getPath().replaceAll("tardis/", ""));
-            var tardis = ModComponents.TARDIS_HOLDER
-                    .get(player.server.getSaveProperties())
-                    .getTardis(tardisID)
-                    .orElseThrow(() -> new IllegalStateException("Could not find tardis " + tardisID));
+            if (player == null
+                    || Tardis.isTardis(player.getWorld().getRegistryKey())
+                    || !Tardis.isTardis(realDimKey)) return;
+            var tardis = Tardis.getTardis(realDimKey, player.server)
+                    .orElseThrow(() -> new IllegalStateException("Could not find TARDIS " + player.getWorld().getRegistryKey()));
             tardis.getCurrentLandedLocation().ifPresent(tardisLocation -> {
                 polymerStack.getOrCreateNbt().put(LODESTONE_POS_KEY, NbtHelper.fromBlockPos(tardisLocation.pos()));
                 World.CODEC.encodeStart(NbtOps.INSTANCE, tardisLocation.worldKey())

@@ -37,7 +37,8 @@ public class TardisArc {
         var placedNodes = getNodes().filter(n -> n.facing().getAxis() != Direction.Axis.Y).toList();
         var placedNode = placedNodes.get(placedNodeIndex % placedNodes.size());
 
-        var templateNodes = template.getNodes().filter(n -> n.facing().getAxis() != Direction.Axis.Y).toList();
+        var templateNodes = template.getNodes(tardis.getServer().getStructureTemplateManager())
+                .filter(n -> n.facing().getAxis() != Direction.Axis.Y).toList();
         var templateNode = templateNodes.get(templateNodeIndex % templateNodes.size());
 
         // I can't be bothered to be clever here and its just 4 iterations, so eh.

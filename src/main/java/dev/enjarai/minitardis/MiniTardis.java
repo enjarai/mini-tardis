@@ -7,6 +7,7 @@ import dev.enjarai.minitardis.component.ModComponents;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.screen.app.ScreenAppTypes;
 import dev.enjarai.minitardis.data.ModDataStuff;
+import dev.enjarai.minitardis.data.TardisArcTemplatesManager;
 import dev.enjarai.minitardis.data.TardisInteriorManager;
 import dev.enjarai.minitardis.item.ModItems;
 import dev.enjarai.minitardis.item.PolymerModels;
@@ -43,6 +44,7 @@ public class MiniTardis implements ModInitializer {
 	@Nullable
 	private static MinecraftServer server;
 	private static final TardisInteriorManager interiorManager = new TardisInteriorManager();
+	private static final TardisArcTemplatesManager arcTemplatesManager = new TardisArcTemplatesManager();
 
 	@Override
 	public void onInitialize() {
@@ -55,6 +57,7 @@ public class MiniTardis implements ModInitializer {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> MiniTardis.server = null);
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(interiorManager);
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(arcTemplatesManager);
 
 		ModBlocks.load();
 		ModItems.load();
@@ -79,6 +82,10 @@ public class MiniTardis implements ModInitializer {
 
 	public static TardisInteriorManager getInteriorManager() {
 		return interiorManager;
+	}
+
+	public static TardisArcTemplatesManager getArcTemplatesManager() {
+		return arcTemplatesManager;
 	}
 
 	public static boolean playerIsRealGamer(ServerPlayNetworkHandler player) {

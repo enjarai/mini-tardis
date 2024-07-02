@@ -40,9 +40,9 @@ public class BadAppleConverter {
         }
 
         var badApple = new byte[mediumApple.length / 2];
-        for (var frame = 0; frame < frames; frame++) {
-            for (var x = 0; x < width; x++) {
-                for (var y = 0; y < height / 2; y++) {
+        for (int frame = 0; frame < frames; frame++) {
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height / 2; y++) {
                     var index = frame * width * height + x * height + y * 2;
                     var pixel1 = mediumApple[index] << 4;
                     var pixel2 = mediumApple[index + 1];

@@ -13,6 +13,7 @@ import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -21,6 +22,7 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -31,7 +33,6 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-@SuppressWarnings("deprecation")
 public class ConsoleScreenBlock extends ScreenBlock {
     public static final MapCodec<ConsoleScreenBlock> CODEC = createCodec(ConsoleScreenBlock::new);
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
@@ -52,10 +53,11 @@ public class ConsoleScreenBlock extends ScreenBlock {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         var facing = state.get(FACING);
         var hitSide = hit.getSide();
 
+        // empty hand
         if (hitSide == facing.rotateYClockwise() || hitSide == facing.rotateYCounterclockwise()) {
             var newPos = pos.offset(hitSide).offset(facing.getOpposite());
 
@@ -64,8 +66,8 @@ public class ConsoleScreenBlock extends ScreenBlock {
 
                 if (world.getBlockEntity(pos) instanceof ScreenBlockEntity oldEntity && world.getBlockEntity(newPos) instanceof ScreenBlockEntity newEntity) {
                     var tempNbt = new NbtCompound();
-                    oldEntity.writeNbt(tempNbt);
-                    newEntity.readNbt(tempNbt);
+                    oldEntity.writeNbt(tempNbt, world.getRegistryManager());
+                    newEntity.readNbt(tempNbt, world.getRegistryManager());
                     newEntity.currentView = oldEntity.currentView;
                 }
 
@@ -74,13 +76,21 @@ public class ConsoleScreenBlock extends ScreenBlock {
             }
 
             return ActionResult.SUCCESS;
-        } else if (hand == Hand.MAIN_HAND && hitSide == Direction.DOWN) {
-            if (trySwitchFloppy(state, world, pos, player, hand)) {
-                return ActionResult.SUCCESS;
-            }
         }
 
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hit);
+    }
+
+    @Override
+    protected ItemActionResult onUseWithItem(ItemStack stack, BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+        var hitSide = hit.getSide();
+        // floppy item
+        if (hand == Hand.MAIN_HAND && hitSide == Direction.DOWN) {
+            if (trySwitchFloppy(state, world, pos, player, hand)) {
+                return ItemActionResult.SUCCESS;
+            }
+        }
+        return super.onUseWithItem(stack, state, world, pos, player, hand, hit);
     }
 
     @Nullable

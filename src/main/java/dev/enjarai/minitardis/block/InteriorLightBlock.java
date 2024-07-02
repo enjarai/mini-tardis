@@ -1,20 +1,16 @@
 package dev.enjarai.minitardis.block;
 
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
-import eu.pb4.polymer.blocks.api.PolymerTexturedBlock;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
-import eu.pb4.polymer.core.api.utils.PolymerClientDecoded;
-import eu.pb4.polymer.core.api.utils.PolymerKeepModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneLampBlock;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.BlockStateComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -22,6 +18,7 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -31,7 +28,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("deprecation")
+import java.util.Map;
+
 public class InteriorLightBlock extends RedstoneLampBlock implements PerhapsPolymerBlock, TardisAware {
     public static final IntProperty ORDER = IntProperty.of("order", 0, 12);
 
@@ -53,9 +51,8 @@ public class InteriorLightBlock extends RedstoneLampBlock implements PerhapsPoly
 
         var order = state.get(ORDER);
         if (order != 0) {
-            NbtCompound nbtCompound = new NbtCompound();
-            nbtCompound.putString(ORDER.getName(), String.valueOf(order));
-            stack.setSubNbt("BlockStateTag", nbtCompound);
+            BlockStateComponent blockStateComponent = new BlockStateComponent(Map.of(ORDER.getName(), order.toString()));
+            stack.set(DataComponentTypes.BLOCK_STATE, blockStateComponent);
         }
 
         return stack;
@@ -66,8 +63,8 @@ public class InteriorLightBlock extends RedstoneLampBlock implements PerhapsPoly
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (!player.getAbilities().allowModifyWorld || hand == Hand.OFF_HAND) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        if (!player.getAbilities().allowModifyWorld) {
             return ActionResult.PASS;
         } else {
             var newState = state.cycle(ORDER);
@@ -122,6 +119,6 @@ public class InteriorLightBlock extends RedstoneLampBlock implements PerhapsPoly
 
     @Override
     public BlockState getPerhapsPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).getStateWithProperties(state);
+        return getPerhapsPolymerBlock(state).getStateWithProperties(state);
     }
 }

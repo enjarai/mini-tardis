@@ -14,8 +14,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-// ඞ
-@SuppressWarnings("deprecation")
+// ඞ sus
 public class InteriorVentBlock extends Block implements PolymerBlock {
     protected static final VoxelShape SHAPE = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0);
 
@@ -46,7 +45,8 @@ public class InteriorVentBlock extends Block implements PolymerBlock {
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.IRON_TRAPDOOR;
+    public BlockState getPolymerBlockState(BlockState state) {
+        return Blocks.IRON_TRAPDOOR.getDefaultState();
     }
+
 }

@@ -122,11 +122,11 @@ public class DestinationScanner {
             // direction in which we move right now
             final Vector2i direction = new Vector2i(1, 0);
             // length of current segment
-            int segment_length = 1;
+            int segmentLength = 1;
 
             // current position and how much of current segment we passed
             final Vector2i current = new Vector2i(0, 0);
-            int segment_passed = 0;
+            int segmentPassed = 0;
             int k = 0;
 
             @Override
@@ -139,11 +139,11 @@ public class DestinationScanner {
                 k++;
                 // make a step, add direction vector to current position
                 current.add(direction);
-                ++segment_passed;
+                ++segmentPassed;
 
-                if (segment_passed == segment_length) {
+                if (segmentPassed == segmentLength) {
                     // done with current segment
-                    segment_passed = 0;
+                    segmentPassed = 0;
 
                     // 'rotate' directions
                     //noinspection SuspiciousNameCombination
@@ -151,7 +151,7 @@ public class DestinationScanner {
 
                     // increase segment length if necessary
                     if (direction.y == 0) {
-                        ++segment_length;
+                        ++segmentLength;
                     }
                 }
 

@@ -20,6 +20,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.Version;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -37,6 +39,7 @@ public class MiniTardis implements ModInitializer {
 	public static final Version VERSION = FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata().getVersion();
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final Identifier HANDSHAKE_CHANNEL = id("handshake/2");
+	public static final CustomPayload.Id<ICanHasMiniTardisPayload> HANDSHAKE_PAYLOAD_ID = new CustomPayload.Id<>(id("handshake/2"));
 //	public static final HandshakeServer<Unit> HANDSHAKE_SERVER = new HandshakeServer<>(
 //			Codec.unit(Unit.INSTANCE), MiniTardis.HANDSHAKE_CHANNEL, () -> Unit.INSTANCE);
 
@@ -69,7 +72,8 @@ public class MiniTardis implements ModInitializer {
 		PolymerResourcePackUtils.markAsRequired();
 		PolymerModels.load();
 
-		PolymerNetworking.registerCommonPayload(MiniTardis.HANDSHAKE_CHANNEL, 0, ICanHasMiniTardisPayload::read);
+		PolymerNetworking.registerCommonVersioned(HANDSHAKE_PAYLOAD_ID, 0, PacketCodec.of((value, buf) -> {}, ICanHasMiniTardisPayload::read));
+		//PolymerNetworking.registerCommonPayload(MiniTardis.HANDSHAKE_CHANNEL, 0, ICanHasMiniTardisPayload::read);
 	}
 
 	@Nullable
@@ -86,6 +90,6 @@ public class MiniTardis implements ModInitializer {
 	}
 
 	public static Identifier id(String path) {
-		return new Identifier(MOD_ID, path);
+		return Identifier.of(MOD_ID, path);
 	}
 }

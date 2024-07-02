@@ -65,13 +65,13 @@ public abstract class ScreenBlock extends BlockWithEntity implements PolymerBloc
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.BARRIER;
+    public BlockState getPolymerBlockState(BlockState state) {
+        return Blocks.COAL_ORE.getDefaultState();
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
-        return PolymerResourcePackUtils.hasMainPack(player) ? PolymerBlock.super.getPolymerBlock(state, player) : Blocks.COAL_BLOCK;
+    public BlockState getPolymerBlockState(BlockState state, ServerPlayerEntity player) {
+        return PolymerResourcePackUtils.hasMainPack(player) ? Blocks.BARRIER.getDefaultState() : Blocks.COAL_ORE.getDefaultState();
     }
 
     @Override

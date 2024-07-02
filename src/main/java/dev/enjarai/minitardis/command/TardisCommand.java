@@ -1,5 +1,6 @@
 package dev.enjarai.minitardis.command;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
@@ -100,23 +101,23 @@ public class TardisCommand {
 
         new Tardis(holder, location, Tardis.DEFAULT_INTERIOR);
 
-        return 1;
+        return Command.SINGLE_SUCCESS;
     }
 
     private static int restoreExterior(CommandContext<ServerCommandSource> context, UUID uuid) {
         getHolder(context).getTardis(uuid).ifPresent(Tardis::buildExterior);
-        return 1;
+        return Command.SINGLE_SUCCESS;
     }
 
     private static int toggleDoor(CommandContext<ServerCommandSource> context, UUID uuid) {
         getHolder(context).getTardis(uuid).ifPresent(t -> t.setDoorOpen(!t.isDoorOpen(), false));
-        return 1;
+        return Command.SINGLE_SUCCESS;
     }
 
     private static int refuel(CommandContext<ServerCommandSource> context, @Nullable UUID uuid) {
         var tardis = uuid == null ? getTardis(context.getSource().getWorld()) : getHolder(context).getTardis(uuid);
         tardis.ifPresent(t -> t.addOrDrainFuel(1000));
-        return 1;
+        return Command.SINGLE_SUCCESS;
     }
 
     private static int setState(CommandContext<ServerCommandSource> context, Identifier stateId, @Nullable UUID uuid) {
@@ -125,7 +126,7 @@ public class TardisCommand {
             var tardis = uuid == null ? getTardis(context.getSource().getWorld()) : getHolder(context).getTardis(uuid);
             tardis.ifPresent(t -> t.forceSetState(state.get()));
         }
-        return 1;
+        return Command.SINGLE_SUCCESS;
     }
 
     private static CompletableFuture<Suggestions> suggestTardii(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {

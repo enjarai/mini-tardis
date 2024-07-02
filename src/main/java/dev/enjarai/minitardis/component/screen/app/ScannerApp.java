@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.DestinationScanner;
@@ -13,7 +14,7 @@ import eu.pb4.mapcanvas.impl.view.Rotate90ClockwiseView;
 import net.minecraft.block.MapColor;
 
 public class ScannerApp implements ScreenApp {
-    public static final Codec<ScannerApp> CODEC = Codec.unit(ScannerApp::new);
+    public static final MapCodec<ScannerApp> CODEC = MapCodec.unit(ScannerApp::new);
 
     @Override
     public AppView getView(TardisControl controls) {

@@ -1,7 +1,7 @@
 plugins {
-	id 'fabric-loom' version '1.5-SNAPSHOT'
+	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
-	id "me.modmuss50.mod-publish-plugin" version "0.4.4"
+	id "me.modmuss50.mod-publish-plugin" version "0.5.1"
 }
 
 version = "${project.mod_version}+${project.minecraft_version}"
@@ -68,9 +68,9 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	include modApi("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}")
-	include modApi("dev.onyxstudios.cardinal-components-api:cardinal-components-level:${project.cca_version}")
-	include modApi("dev.onyxstudios.cardinal-components-api:cardinal-components-world:${project.cca_version}")
+	include modApi("org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}")
+	include modApi("org.ladysnake.cardinal-components-api:cardinal-components-level:${project.cca_version}")
+	include modApi("org.ladysnake.cardinal-components-api:cardinal-components-world:${project.cca_version}")
 
 	include modImplementation("nl.enjarai:cicada-lib:${project.cicada_version}") {
 		exclude group: "net.fabricmc.fabric-api"
@@ -83,7 +83,7 @@ dependencies {
 	modRuntimeOnly("eu.pb4:polymer-autohost:${property('deps.polymer')}")
 	modApi include("xyz.nucleoid:server-translations-api:${property('deps.server_translations_api')}")
 	include(modApi("me.lucko:fabric-permissions-api:${property('deps.permissions_api')}"))
-	modApi include("xyz.nucleoid:fantasy:${property('deps.fantasy')}")
+		modApi include("xyz.nucleoid:fantasy:${property('deps.fantasy')}")
 	modApi include("eu.pb4:map-canvas-api:${property('deps.map_api')}")
 }
 
@@ -101,7 +101,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 17
+	it.options.release = 21
 }
 
 java {
@@ -110,8 +110,8 @@ java {
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {

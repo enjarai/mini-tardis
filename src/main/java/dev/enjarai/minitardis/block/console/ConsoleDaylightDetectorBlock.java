@@ -13,7 +13,6 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
@@ -22,7 +21,6 @@ import net.minecraft.world.World;
 
 import java.util.function.BiFunction;
 
-@SuppressWarnings("deprecation")
 public class ConsoleDaylightDetectorBlock extends Block implements PolymerBlock, ConsoleInput, TardisAware {
     public static final BooleanProperty INVERTED = Properties.INVERTED;
     protected static final VoxelShape SHAPE = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 6.0, 16.0);
@@ -41,7 +39,7 @@ public class ConsoleDaylightDetectorBlock extends Block implements PolymerBlock,
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!player.getAbilities().allowModifyWorld) {
             return ActionResult.PASS;
         } else {
@@ -56,8 +54,7 @@ public class ConsoleDaylightDetectorBlock extends Block implements PolymerBlock,
                 inputFailure(world, pos, SoundEvents.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 3);
             }
             return ActionResult.SUCCESS;
-        }
-    }
+        }    }
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
@@ -65,12 +62,7 @@ public class ConsoleDaylightDetectorBlock extends Block implements PolymerBlock,
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.DAYLIGHT_DETECTOR;
-    }
-
-    @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).getStateWithProperties(state);
+        return Blocks.DAYLIGHT_DETECTOR.getStateWithProperties(state);
     }
 }

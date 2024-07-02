@@ -14,20 +14,23 @@ import net.minecraft.loot.condition.BlockStatePropertyLootCondition;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.predicate.StatePredicate;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
 public class ModLootGeneration extends SimpleFabricLootTableProvider {
 
-    public ModLootGeneration(FabricDataOutput output) {
-        super(output, LootContextTypes.BLOCK);
+    public ModLootGeneration(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+        super(output, registryLookup, LootContextTypes.BLOCK);
     }
 
     @Override
-    public void accept(BiConsumer<Identifier, LootTable.Builder> exporter) {
+    public void accept(BiConsumer<RegistryKey<LootTable>, LootTable.Builder> exporter) {
         var itemBlocks = new ImmutableList.Builder<Block>();
         itemBlocks.addAll(ModBlocks.ITEM_BLOCKS.keySet());
         itemBlocks.add(ModBlocks.TARDIS_PLATING);
@@ -41,7 +44,7 @@ public class ModLootGeneration extends SimpleFabricLootTableProvider {
                                 .exactMatch(Properties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.LOWER)));
             }
 
-            exporter.accept(itemBlock.getLootTableId(), new LootTable.Builder()
+            exporter.accept(itemBlock.getLootTableKey(), new LootTable.Builder()
                     .pool(LootPool.builder()
                             .with(itemEntry)
                     )

@@ -5,7 +5,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
 
-@SuppressWarnings("NonExtendableApiUsage")
 public final class TardisScreenView implements DrawableCanvas {
     private final DrawableCanvas source;
     private final Random localRandom = new LocalRandom(0);

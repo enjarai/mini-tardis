@@ -34,7 +34,6 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("deprecation")
 public class InteriorDoorBlock extends HorizontalFacingBlock implements PerhapsPolymerBlock, TardisAware, BlockWithElementHolder {
     public static final MapCodec<InteriorDoorBlock> CODEC = createCodec(InteriorDoorBlock::new);
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
@@ -93,7 +92,7 @@ public class InteriorDoorBlock extends HorizontalFacingBlock implements PerhapsP
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         // TODO uncomment when polymer fixes the™
 //        if (hit.getSide() == state.get(FACING)) {
             getTardis(world).ifPresent(tardis -> tardis.teleportEntityOut(player, state.get(HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos));

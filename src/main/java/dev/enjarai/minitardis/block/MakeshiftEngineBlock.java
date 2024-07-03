@@ -9,6 +9,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -26,8 +27,8 @@ public class MakeshiftEngineBlock extends BlockWithEntity implements PolymerBloc
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.BEACON;
+    public BlockState getPolymerBlockState(BlockState state) {
+        return Blocks.BEACON.getDefaultState();
     }
 
     @Nullable

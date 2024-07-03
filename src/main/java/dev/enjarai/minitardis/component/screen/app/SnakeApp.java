@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
@@ -20,7 +21,7 @@ import net.minecraft.util.math.random.Random;
 import org.joml.Vector2i;
 
 public class SnakeApp implements ScreenApp {
-    public static final Codec<SnakeApp> CODEC = Codec.unit(SnakeApp::new);
+    public static final MapCodec<SnakeApp> CODEC = MapCodec.unit(SnakeApp::new);
 
     @Override
     public AppView getView(TardisControl controls) {

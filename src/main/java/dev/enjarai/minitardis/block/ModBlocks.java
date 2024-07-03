@@ -12,10 +12,7 @@ import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockSetType;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.MapColor;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.piston.PistonBehavior;
@@ -35,7 +32,7 @@ import static net.minecraft.block.Blocks.createLightLevelFromLitBlockState;
 
 public class ModBlocks {
     public static final TardisExteriorBlock TARDIS_EXTERIOR =
-            register("tardis_exterior", new TardisExteriorBlock(FabricBlockSettings.create()
+            register("tardis_exterior", new TardisExteriorBlock(AbstractBlock.Settings.create()
                     .mapColor(MapColor.LAPIS_BLUE)
                     .strength(-1.0F, 3600000.0F)
                     .dropsNothing()
@@ -43,7 +40,7 @@ public class ModBlocks {
                     .blockVision(Blocks::never)
                     .allowsSpawning(Blocks::never)));
     public static final TardisExteriorExtensionBlock TARDIS_EXTERIOR_EXTENSION =
-            register("tardis_exterior_extension", new TardisExteriorExtensionBlock(FabricBlockSettings.create()
+            register("tardis_exterior_extension", new TardisExteriorExtensionBlock(AbstractBlock.Settings.create()
                     .mapColor(MapColor.LAPIS_BLUE)
                     .strength(-1.0F, 3600000.0F)
                     .dropsNothing()
@@ -51,106 +48,106 @@ public class ModBlocks {
                     .blockVision(Blocks::never)
                     .allowsSpawning(Blocks::never)));
     public static final TardisPlatingBlock TARDIS_PLATING =
-            register("tardis_plating", new TardisPlatingBlock(FabricBlockSettings.create()
+            register("tardis_plating", new TardisPlatingBlock(AbstractBlock.Settings.create()
                     .mapColor(MapColor.BLACK)
                     .requiresTool()
                     .strength(3.0F, 6.0F)));
     public static final InteriorDoorBlock INTERIOR_DOOR =
-            register("interior_door", new InteriorDoorBlock(FabricBlockSettings.create()
+            register("interior_door", new InteriorDoorBlock(AbstractBlock.Settings.create()
                     .strength(3.0F)
                     .nonOpaque()));
     public static final InteriorDoorDoorsBlock INTERIOR_DOOR_DOORS =
-            register("interior_door_doors", new InteriorDoorDoorsBlock(FabricBlockSettings.create()
+            register("interior_door_doors", new InteriorDoorDoorsBlock(AbstractBlock.Settings.create()
                     .strength(3.0F)
                     .nonOpaque()));
     public static final ConsoleLeverBlock HANDBRAKE =
-            register("handbrake", new ConsoleLeverBlock(FabricBlockSettings.create()
+            register("handbrake", new ConsoleLeverBlock(AbstractBlock.Settings.create()
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
                     TardisControl::handbrake, null));
     public static final ConsoleScreenBlock CONSOLE_SCREEN =
-            register("console_screen", new ConsoleScreenBlock(FabricBlockSettings.create()
+            register("console_screen", new ConsoleScreenBlock(AbstractBlock.Settings.create()
                     .strength(3.0F)
                     .nonOpaque()));
     public static final WallScreenBlock WALL_SCREEN =
-            register("wall_screen", new WallScreenBlock(FabricBlockSettings.create()
+            register("wall_screen", new WallScreenBlock(AbstractBlock.Settings.create()
                     .strength(3.0F)
                     .breakInstantly()
                     .nonOpaque()));
     public static final ConsoleButtonBlock RESET_DESTINATION_BUTTON =
-            register("reset_destination_button", new ConsoleButtonBlock(FabricBlockSettings.create()
+            register("reset_destination_button", new ConsoleButtonBlock(AbstractBlock.Settings.create()
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
                     BlockSetType.DARK_OAK, Blocks.DARK_OAK_BUTTON,
                     (controls, facing) -> controls.resetDestination()));
     public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_1 =
-            register("nudge_destination_button_1", new ConsoleButtonBlock(FabricBlockSettings.create()
+            register("nudge_destination_button_1", new ConsoleButtonBlock(AbstractBlock.Settings.create()
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
                     BlockSetType.OAK, Blocks.OAK_BUTTON,
                     TardisControl::nudgeDestination));
     public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_2 =
-            register("nudge_destination_button_2", new ConsoleButtonBlock(FabricBlockSettings.create()
+            register("nudge_destination_button_2", new ConsoleButtonBlock(AbstractBlock.Settings.create()
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
                     BlockSetType.SPRUCE, Blocks.SPRUCE_BUTTON,
                     TardisControl::nudgeDestination));
     public static final ConsoleRepeaterBlock COORDINATE_SCALE_SELECTOR =
-            register("coordinate_scale_selector", new ConsoleRepeaterBlock(FabricBlockSettings.create()
+            register("coordinate_scale_selector", new ConsoleRepeaterBlock(AbstractBlock.Settings.create()
                     .breakInstantly()
                     .pistonBehavior(PistonBehavior.DESTROY),
                     (controls, value) -> controls.updateCoordinateScale((int) Math.pow(10, value) / 10)));
     public static final ConsoleRepeaterBlock ROTATION_SELECTOR =
-            register("rotation_selector", new ConsoleRepeaterBlock(FabricBlockSettings.create()
+            register("rotation_selector", new ConsoleRepeaterBlock(AbstractBlock.Settings.create()
                     .breakInstantly()
                     .pistonBehavior(PistonBehavior.DESTROY),
                     (controls, value) -> controls.rotateDestination(Direction.fromHorizontal(value))));
     public static final ConsoleComparatorBlock STATE_COMPARATOR =
-            register("state_comparator", new ConsoleComparatorBlock(FabricBlockSettings.create()
+            register("state_comparator", new ConsoleComparatorBlock(AbstractBlock.Settings.create()
                     .breakInstantly()
                     .pistonBehavior(PistonBehavior.DESTROY),
                     (controls, value) -> true));
     public static final ConsoleComparatorDependentBlock VERTICAL_NUDGE_DESTINATION_BUTTON =
-            register("vertical_nudge_destination_button", new ConsoleComparatorDependentBlock(FabricBlockSettings.create()
+            register("vertical_nudge_destination_button", new ConsoleComparatorDependentBlock(AbstractBlock.Settings.create()
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
                     (controls, value) -> controls.nudgeDestination(value ? Direction.UP : Direction.DOWN)));
     public static final ConsoleDaylightDetectorBlock FUEL_CONTROL =
-            register("fuel_control", new ConsoleDaylightDetectorBlock(FabricBlockSettings.create()
+            register("fuel_control", new ConsoleDaylightDetectorBlock(AbstractBlock.Settings.create()
                     .strength(0.2F),
                     TardisControl::setEnergyConduits));
     public static final ConsoleToggleButtonBlock COORDINATE_LOCK =
-            register("coordinate_lock", new ConsoleToggleButtonBlock(FabricBlockSettings.create()
+            register("coordinate_lock", new ConsoleToggleButtonBlock(AbstractBlock.Settings.create()
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
                     BlockSetType.STONE, Blocks.STONE_BUTTON,
                     (controls, value) -> controls.setDestinationLocked(value, false)));
     public static final ConsoleLeverBlock REFUEL_TOGGLE =
-            register("refuel_toggle", new ConsoleLeverBlock(FabricBlockSettings.create()
+            register("refuel_toggle", new ConsoleLeverBlock(AbstractBlock.Settings.create()
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
                     TardisControl::refuelToggle, (controls, currentState) -> controls.getTardis().getState() instanceof RefuelingState));
     public static final InteriorLightBlock INTERIOR_LIGHT =
-            register("interior_light", new InteriorLightBlock(FabricBlockSettings.create()
+            register("interior_light", new InteriorLightBlock(AbstractBlock.Settings.create()
                     .luminance(createLightLevelFromLitBlockState(15))
                     .strength(0.3F)));
 //    public static final InteriorVentBlock INTERIOR_VENT = // ඞ
 //            register("interior_vent", new InteriorVentBlock(FabricBlockSettings.create()
 //                    .nonOpaque()));
     public static final ConsoleCircuitryBlock POWER_COUPLING =
-            register("power_coupling", new ConsoleCircuitryBlock(FabricBlockSettings.create()
+            register("power_coupling", new ConsoleCircuitryBlock(AbstractBlock.Settings.create()
                     .requiresTool()
                     .strength(3.0F, 6.0F),
                     TardisControl::toggleDisabledState));
     public static final MakeshiftEngineBlock MAKESHIFT_ENGINE =
-            register("makeshift_engine", new MakeshiftEngineBlock(FabricBlockSettings.create()
+            register("makeshift_engine", new MakeshiftEngineBlock(AbstractBlock.Settings.create()
                     .requiresTool()
                     .luminance(state -> 15)
                     .strength(3.0F, 6.0F)));
@@ -208,8 +205,8 @@ public class ModBlocks {
         return Registry.register(Registries.BLOCK, MiniTardis.id(path), block);
     }
 
-    private static <T extends BlockEntity> BlockEntityType<T> registerEntity(String path, FabricBlockEntityTypeBuilder.Factory<T> factory, Block... blocks) {
-        var blockEntityType = Registry.register(Registries.BLOCK_ENTITY_TYPE, MiniTardis.id(path), FabricBlockEntityTypeBuilder.create(factory, blocks).build());
+    private static <T extends BlockEntity> BlockEntityType<T> registerEntity(String path, BlockEntityType.BlockEntityFactory<T> factory, Block... blocks) {
+        var blockEntityType = Registry.register(Registries.BLOCK_ENTITY_TYPE, MiniTardis.id(path), BlockEntityType.Builder.create(factory, blocks).build());
         PolymerBlockUtils.registerBlockEntity(blockEntityType);
         return blockEntityType;
     }

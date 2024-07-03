@@ -9,9 +9,7 @@ import eu.pb4.polymer.core.api.utils.PolymerKeepModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
 
 public class TardisPlatingBlock extends Block implements PolymerBlock, PolymerClientDecoded, PolymerKeepModel, PolymerTexturedBlock {
     public TardisPlatingBlock(Settings settings) {
@@ -24,23 +22,9 @@ public class TardisPlatingBlock extends Block implements PolymerBlock, PolymerCl
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return this;
-    }
-
-    @Override
-    public Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
-        if (MiniTardis.playerIsRealGamer(player.networkHandler)) {
-            return PolymerTexturedBlock.super.getPolymerBlock(state, player);
-        }
-
-        return Blocks.NETHERITE_BLOCK;
-    }
-
-    @Override
     public BlockState getPolymerBlockState(BlockState state, ServerPlayerEntity player) {
         if (MiniTardis.playerIsRealGamer(player.networkHandler)) {
-            return PolymerTexturedBlock.super.getPolymerBlockState(state, player);
+            return this.getDefaultState();
         }
 
         if (PolymerModels.TARDIS_PLATING_STATE != null) {
@@ -50,7 +34,12 @@ public class TardisPlatingBlock extends Block implements PolymerBlock, PolymerCl
         return Blocks.NETHERITE_BLOCK.getDefaultState();
     }
 
-//    @Override
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        return this.getDefaultState();
+    }
+
+    //    @Override
 //    public boolean handleMiningOnServer(ItemStack tool, BlockState state, BlockPos pos, ServerPlayerEntity player) {
 //        return !MiniTardis.playerIsRealGamer(player.networkHandler);
 //    }

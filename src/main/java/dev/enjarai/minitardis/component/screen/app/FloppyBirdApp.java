@@ -3,6 +3,7 @@ package dev.enjarai.minitardis.component.screen.app;
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class FloppyBirdApp implements ScreenApp {
-    public static final Codec<FloppyBirdApp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<FloppyBirdApp> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.unboundedMap(Uuids.STRING_CODEC, Codec.INT).optionalFieldOf("high_scores", Map.of()).forGetter(app -> app.highScores)
     ).apply(instance, FloppyBirdApp::new));
     public static final int WIN_DURATION = 30;
@@ -130,8 +131,8 @@ public class FloppyBirdApp implements ScreenApp {
                         var vOffset = gamerRandom.nextBetween(0, 76 - 10 - 8 - holeSize);
                         var lowerPipe = new FloppyPipeElement(124, 8 + vOffset + holeSize);
                         var upperPipe = new FloppyPipeElement(124, 8 + vOffset - lowerPipe.height);
-                        children.add(0, lowerPipe);
-                        children.add(0, upperPipe);
+                        children.addFirst(lowerPipe);
+                        children.addFirst(upperPipe);
 
                         pipesSpawned++;
                     }

@@ -6,7 +6,6 @@ import eu.pb4.polymer.networking.api.client.PolymerClientNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtInt;
 
 public class MiniTardisClient implements ClientModInitializer {

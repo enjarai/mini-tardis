@@ -15,6 +15,7 @@ public record TardisInterior(Identifier template, Vec3i templateCenter, Vec3i sc
     ).apply(instance, TardisInterior::new));
 
     public StructureTemplate getStructure(StructureTemplateManager manager) {
-        return manager.getTemplateOrBlank(template);
+        return manager.getTemplate(template).orElseThrow();
+        //return manager.getTemplateOrBlank(template);
     }
 }

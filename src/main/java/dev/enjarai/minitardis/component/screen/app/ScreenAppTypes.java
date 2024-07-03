@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.MiniTardis;
 import net.minecraft.registry.Registry;
 
@@ -20,12 +21,12 @@ public class ScreenAppTypes {
     public static final ScreenAppType<LookAndFeelApp> LOOK_AND_FEEL = register("look_and_feel", LookAndFeelApp.CODEC, LookAndFeelApp::new, true);
     public static final ScreenAppType<FloppyBirdApp> FLOPPY_BIRD = register("floppy_bird", FloppyBirdApp.CODEC, FloppyBirdApp::new, true);
 
-    private static <T extends ScreenApp> ScreenAppType<T> register(String name, Codec<T> codec, Supplier<T> constructor, boolean spawnsAsDungeonLoot) {
-        return Registry.register(ScreenAppType.REGISTRY, MiniTardis.id(name), new ScreenAppType<>(codec, constructor, spawnsAsDungeonLoot));
+    private static <T extends ScreenApp> ScreenAppType<T> register(String name, MapCodec<T> mapCodec, Supplier<T> constructor, boolean spawnsAsDungeonLoot) {
+        return Registry.register(ScreenAppType.REGISTRY, MiniTardis.id(name), new ScreenAppType<>(mapCodec, constructor, spawnsAsDungeonLoot));
     }
 
-    private static <T extends ScreenApp> ScreenAppType<T> register(String name, Codec<T> codec, Supplier<T> constructor) {
-        return register(name, codec, constructor, false);
+    private static <T extends ScreenApp> ScreenAppType<T> register(String name, MapCodec<T> mapCodec, Supplier<T> constructor) {
+        return register(name, mapCodec, constructor, false);
     }
 
     public static void load() {

@@ -14,12 +14,6 @@
   "min_y": 0,
   "height": 256,
   "monster_spawn_block_light_limit": 0,
-  "monster_spawn_light_level": {
-    "type": "minecraft:uniform",
-    "value": {
-      "max_inclusive": 0,
-      "min_inclusive": 0
-    }
-  },
+  "monster_spawn_light_level": 0,
   "effects": "minecraft:overworld"
 }

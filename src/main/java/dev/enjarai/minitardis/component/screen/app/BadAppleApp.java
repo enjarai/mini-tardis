@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.BadApple;
@@ -16,7 +17,7 @@ import net.minecraft.util.ClickType;
 import net.minecraft.util.math.MathHelper;
 
 public class BadAppleApp implements ScreenApp {
-    public static final Codec<BadAppleApp> CODEC = Codec.unit(BadAppleApp::new);
+    public static final MapCodec<BadAppleApp> CODEC = MapCodec.unit(BadAppleApp::new);
 
     @Override
     public AppView getView(TardisControl controls) {

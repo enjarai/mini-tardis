@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 
 import java.util.function.BiFunction;
 
-@SuppressWarnings("deprecation")
 public class ConsoleToggleButtonBlock extends ConsoleButtonBlock {
     private final BiFunction<TardisControl, Boolean, Boolean> controlInput;
 
@@ -26,7 +25,7 @@ public class ConsoleToggleButtonBlock extends ConsoleButtonBlock {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         var isPowered = !state.get(POWERED);
 
         if (!isPowered) {

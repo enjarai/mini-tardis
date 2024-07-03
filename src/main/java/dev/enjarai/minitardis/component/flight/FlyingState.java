@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
@@ -14,7 +15,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class FlyingState implements FlightState {
-    public static final Codec<FlyingState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<FlyingState> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks),
             Codec.INT.fieldOf("errorLoops").forGetter(s -> s.errorLoops),
             Codec.INT_STREAM.fieldOf("offsets").forGetter(s -> Arrays.stream(s.offsets)),

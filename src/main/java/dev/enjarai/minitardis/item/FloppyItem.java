@@ -1,20 +1,16 @@
 package dev.enjarai.minitardis.item;
 
-import com.google.common.collect.ImmutableList;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.component.screen.app.DimensionsApp;
 import dev.enjarai.minitardis.component.screen.app.ScreenApp;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtOps;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -24,6 +20,7 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FloppyItem extends Item implements PolymerItem {
@@ -52,7 +49,7 @@ public class FloppyItem extends Item implements PolymerItem {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType options) {
         for (var app : getApps(stack)) {
             tooltip.addAll(app.getName().getWithStyle(Style.EMPTY.withColor(Formatting.GRAY)));
             app.appendTooltip(tooltip);
@@ -61,8 +58,12 @@ public class FloppyItem extends Item implements PolymerItem {
 
     public static List<ScreenApp> getApps(ItemStack stack) {
         if (stack.isEmpty()) return List.of();
-
-        var nbt = stack.getOrCreateNbt();
+        if(stack.contains(ModDataComponents.SCREEN_APPS_COMPONENT_TYPE)) {
+            return stack.get(ModDataComponents.SCREEN_APPS_COMPONENT_TYPE).screenApps();
+        } else {
+            return List.of();
+        }
+        /*
         if (nbt.contains("apps", NbtElement.LIST_TYPE)) {
             var list = ImmutableList.<ScreenApp>builder();
             for (var appElement : nbt.getList("apps", NbtElement.COMPOUND_TYPE)) {
@@ -72,9 +73,22 @@ public class FloppyItem extends Item implements PolymerItem {
         } else {
             return List.of();
         }
+
+         */
     }
 
     public static void addApp(ItemStack stack, ScreenApp app) {
+
+        List<ScreenApp> appsList;
+        if (stack.contains(ModDataComponents.SCREEN_APPS_COMPONENT_TYPE)) {
+            appsList = new ArrayList<>(stack.get(ModDataComponents.SCREEN_APPS_COMPONENT_TYPE).screenApps());
+        } else {
+            appsList = new ArrayList<>();
+        }
+        appsList.add(app);
+        stack.set(ModDataComponents.SCREEN_APPS_COMPONENT_TYPE, new ScreenApps(appsList.stream().toList()));
+
+        /*
         var nbt = stack.getOrCreateNbt();
 
         NbtList appsList;
@@ -87,9 +101,26 @@ public class FloppyItem extends Item implements PolymerItem {
         ScreenApp.CODEC.encodeStart(NbtOps.INSTANCE, app).result().ifPresent(appsList::add);
 
         nbt.put("apps", appsList);
+
+         */
     }
 
     public static boolean removeApp(ItemStack stack, int index) {
+
+        List<ScreenApp> appsList;
+        if (stack.contains(ModDataComponents.SCREEN_APPS_COMPONENT_TYPE)) {
+            appsList = new ArrayList<>(stack.get(ModDataComponents.SCREEN_APPS_COMPONENT_TYPE).screenApps());
+        } else {
+            appsList = new ArrayList<>();
+        }
+
+        if (appsList.size() > index) {
+            appsList.remove(index);
+            stack.set(ModDataComponents.SCREEN_APPS_COMPONENT_TYPE, new ScreenApps(appsList.stream().toList()));
+            return true;
+        }
+        return false;
+        /*
         var nbt = stack.getOrCreateNbt();
 
         NbtList appsList;
@@ -106,6 +137,8 @@ public class FloppyItem extends Item implements PolymerItem {
         }
 
         return false;
+
+         */
     }
 
     @Override

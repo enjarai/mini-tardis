@@ -7,6 +7,8 @@ import eu.pb4.polymer.blocks.api.PolymerBlockResourceUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -35,7 +37,7 @@ public class PolymerModels {
 
     public static ItemStack getStack(PolymerModelData model) {
         var stack = model.item().getDefaultStack();
-        stack.getOrCreateNbt().putInt("CustomModelData", model.value());
+        stack.set(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(model.value()));
         return stack;
     }
 

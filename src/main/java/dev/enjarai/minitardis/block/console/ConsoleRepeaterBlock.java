@@ -24,7 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 
-@SuppressWarnings("deprecation")
 public class ConsoleRepeaterBlock extends Block implements PolymerBlock, ConsoleInput, TardisAware {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final IntProperty DELAY = Properties.DELAY;
@@ -49,7 +48,7 @@ public class ConsoleRepeaterBlock extends Block implements PolymerBlock, Console
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!player.getAbilities().allowModifyWorld) {
             return ActionResult.PASS;
         } else {
@@ -61,16 +60,10 @@ public class ConsoleRepeaterBlock extends Block implements PolymerBlock, Console
                 inputFailure(world, pos, SoundEvents.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 3);
             }
             return ActionResult.SUCCESS;
-        }
-    }
-
-    @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.REPEATER;
-    }
+        }    }
 
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).getStateWithProperties(state);
+        return Blocks.REPEATER.getStateWithProperties(state);
     }
 }

@@ -16,13 +16,12 @@ import java.util.Objects;
 public class CompassItemMixin {
 
     @ModifyArg(method = "useOnBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;insertStack(Lnet/minecraft/item/ItemStack;)Z"))
-    private ItemStack switchToTardisLodestoneCompassWhenNecessary(ItemStack originalStack,
-                                                                  @Local(argsOnly = true) ItemUsageContext context) {
+    private ItemStack switchToTardisLodestoneCompassWhenNecessary(ItemStack originalStack, @Local(argsOnly = true) ItemUsageContext context) {
         var worldId = context.getWorld().getRegistryKey().getValue();
         if (Objects.equals(worldId.getNamespace(), MiniTardis.MOD_ID) && worldId.getPath().startsWith("tardis/")
                 && context.getPlayer() != null) {
             var newStack = ModItems.TARDIS_LODESTONE_COMPASS.getDefaultStack();
-            newStack.setNbt(originalStack.getNbt());
+            newStack.applyComponentsFrom(originalStack.getComponents());
             // Should always be one, but who knows.
             newStack.setCount(originalStack.getCount());
             return newStack;

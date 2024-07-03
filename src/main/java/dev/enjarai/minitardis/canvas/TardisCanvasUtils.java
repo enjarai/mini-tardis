@@ -1,6 +1,5 @@
 package dev.enjarai.minitardis.canvas;
 
-import com.google.common.collect.ImmutableMap;
 import dev.enjarai.minitardis.MiniTardis;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
@@ -54,7 +53,7 @@ public class TardisCanvasUtils {
                                 CanvasImage.from(ImageIO.read(stream))
                         );
                     } catch (IOException | NoSuchElementException e) {
-                        MiniTardis.LOGGER.error("Failed to load canvas image " + id, e);
+                        MiniTardis.LOGGER.error("Failed to load canvas image {}", id, e);
                     }
                 });
 

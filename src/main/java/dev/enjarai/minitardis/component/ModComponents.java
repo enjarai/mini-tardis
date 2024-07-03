@@ -1,12 +1,12 @@
 package dev.enjarai.minitardis.component;
 
 import dev.enjarai.minitardis.MiniTardis;
-import dev.onyxstudios.cca.api.v3.component.ComponentKey;
-import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
-import dev.onyxstudios.cca.api.v3.level.LevelComponentFactoryRegistry;
-import dev.onyxstudios.cca.api.v3.level.LevelComponentInitializer;
-import dev.onyxstudios.cca.api.v3.world.WorldComponentFactoryRegistry;
-import dev.onyxstudios.cca.api.v3.world.WorldComponentInitializer;
+import org.ladysnake.cca.api.v3.component.ComponentKey;
+import org.ladysnake.cca.api.v3.component.ComponentRegistry;
+import org.ladysnake.cca.api.v3.level.LevelComponentFactoryRegistry;
+import org.ladysnake.cca.api.v3.level.LevelComponentInitializer;
+import org.ladysnake.cca.api.v3.world.WorldComponentFactoryRegistry;
+import org.ladysnake.cca.api.v3.world.WorldComponentInitializer;
 
 public class ModComponents implements LevelComponentInitializer, WorldComponentInitializer {
     public static final ComponentKey<TardisHolder> TARDIS_HOLDER =

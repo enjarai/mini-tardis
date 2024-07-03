@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
@@ -31,7 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class WaypointsApp implements ScreenApp {
-    public static final Codec<WaypointsApp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<WaypointsApp> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.unboundedMap(Codec.STRING.xmap(Integer::parseInt, Object::toString), TardisLocation.CODEC).optionalFieldOf("waypoints", Map.of()).forGetter(app -> app.waypoints)
     ).apply(instance, WaypointsApp::new));
 

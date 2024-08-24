@@ -1,0 +1,15 @@
+package dev.enjarai.minitardis.ccacomponent.screen.element;
+
+import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
+import dev.enjarai.minitardis.ccacomponent.TardisControl;
+import eu.pb4.mapcanvas.api.core.DrawableCanvas;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.ClickType;
+
+public interface AppElement {
+    void draw(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas);
+
+    void tick(TardisControl controls, ScreenBlockEntity blockEntity);
+
+    boolean onClick(TardisControl controls, ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y);
+}

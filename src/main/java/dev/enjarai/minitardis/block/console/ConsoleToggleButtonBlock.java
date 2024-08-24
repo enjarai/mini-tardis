@@ -1,6 +1,6 @@
 package dev.enjarai.minitardis.block.console;
 
-import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.ccacomponent.TardisControl;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSetType;
 import net.minecraft.block.BlockState;
@@ -26,7 +26,7 @@ public class ConsoleToggleButtonBlock extends ConsoleButtonBlock {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         var isPowered = !state.get(POWERED);
 
         if (!isPowered) {

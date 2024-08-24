@@ -2,10 +2,10 @@ package dev.enjarai.minitardis.block;
 
 import com.google.common.collect.Iterables;
 import dev.enjarai.minitardis.ModSounds;
-import dev.enjarai.minitardis.component.ModComponents;
-import dev.enjarai.minitardis.component.Tardis;
-import dev.enjarai.minitardis.component.TardisInterior;
-import dev.enjarai.minitardis.component.TardisLocation;
+import dev.enjarai.minitardis.ccacomponent.ModCCAComponents;
+import dev.enjarai.minitardis.ccacomponent.Tardis;
+import dev.enjarai.minitardis.ccacomponent.TardisInterior;
+import dev.enjarai.minitardis.ccacomponent.TardisLocation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -13,6 +13,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -92,7 +94,7 @@ public class MakeshiftEngineBlockEntity extends BlockEntity {
 
     protected Tardis createTardis(World world) {
         if (world.getServer() == null) return null;
-        var tardisHolder = ModComponents.TARDIS_HOLDER.get(world.getServer().getSaveProperties());
+        var tardisHolder = ModCCAComponents.TARDIS_HOLDER.get(world.getServer().getSaveProperties());
 
         var worldKey = world.getRegistryKey();
         var location = new TardisLocation(worldKey, pos, Direction.NORTH);
@@ -161,13 +163,14 @@ public class MakeshiftEngineBlockEntity extends BlockEntity {
         return true;
     }
 
+
     @Override
-    protected void writeNbt(NbtCompound nbt) {
+    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         nbt.putInt("demat_ticks", dematTicks);
     }
 
     @Override
-    public void readNbt(NbtCompound nbt) {
+    public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         dematTicks = nbt.getInt("demat_ticks");
     }
 }

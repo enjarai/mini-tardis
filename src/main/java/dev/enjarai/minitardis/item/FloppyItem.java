@@ -2,16 +2,16 @@ package dev.enjarai.minitardis.item;
 
 import com.google.common.collect.ImmutableList;
 import dev.enjarai.minitardis.MiniTardis;
-import dev.enjarai.minitardis.component.screen.app.DimensionsApp;
-import dev.enjarai.minitardis.component.screen.app.ScreenApp;
+import dev.enjarai.minitardis.ccacomponent.screen.app.DimensionsApp;
+import dev.enjarai.minitardis.ccacomponent.screen.app.ScreenApp;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtOps;
@@ -52,7 +52,7 @@ public class FloppyItem extends Item implements PolymerItem {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         for (var app : getApps(stack)) {
             tooltip.addAll(app.getName().getWithStyle(Style.EMPTY.withColor(Formatting.GRAY)));
             app.appendTooltip(tooltip);

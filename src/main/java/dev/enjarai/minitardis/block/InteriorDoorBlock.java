@@ -1,7 +1,7 @@
 package dev.enjarai.minitardis.block;
 
 import com.mojang.serialization.MapCodec;
-import dev.enjarai.minitardis.component.Tardis;
+import dev.enjarai.minitardis.ccacomponent.Tardis;
 import dev.enjarai.minitardis.item.PolymerModels;
 import dev.enjarai.minitardis.util.PerhapsElementHolder;
 import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
@@ -93,7 +93,7 @@ public class InteriorDoorBlock extends HorizontalFacingBlock implements PerhapsP
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         // TODO uncomment when polymer fixes the™
 //        if (hit.getSide() == state.get(FACING)) {
             getTardis(world).ifPresent(tardis -> tardis.teleportEntityOut(player, state.get(HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos));

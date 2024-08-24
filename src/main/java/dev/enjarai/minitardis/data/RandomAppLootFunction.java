@@ -2,7 +2,7 @@ package dev.enjarai.minitardis.data;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.enjarai.minitardis.component.screen.app.*;
+import dev.enjarai.minitardis.ccacomponent.screen.app.*;
 import dev.enjarai.minitardis.item.FloppyItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
@@ -10,7 +10,6 @@ import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import java.util.List;

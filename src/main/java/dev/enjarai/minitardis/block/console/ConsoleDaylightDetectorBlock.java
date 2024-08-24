@@ -1,7 +1,7 @@
 package dev.enjarai.minitardis.block.console;
 
 import dev.enjarai.minitardis.block.TardisAware;
-import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.ccacomponent.TardisControl;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -41,7 +41,7 @@ public class ConsoleDaylightDetectorBlock extends Block implements PolymerBlock,
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!player.getAbilities().allowModifyWorld) {
             return ActionResult.PASS;
         } else {
@@ -65,12 +65,7 @@ public class ConsoleDaylightDetectorBlock extends Block implements PolymerBlock,
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.DAYLIGHT_DETECTOR;
-    }
-
-    @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).getStateWithProperties(state);
+        return Blocks.DAYLIGHT_DETECTOR.getStateWithProperties(state);
     }
 }

@@ -70,14 +70,14 @@ public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolym
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!world.isClient()
                 && hit.getSide() == state.get(FACING)
                 && world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity) {
             blockEntity.teleportEntityIn(player);
             return ActionResult.SUCCESS;
         }
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hit);
     }
 
     // Disabled because of silly transparency issues on block outlines

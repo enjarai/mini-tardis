@@ -10,6 +10,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.RedstoneLampBlock;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.BlockStateComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -30,6 +32,8 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 @SuppressWarnings("deprecation")
 public class InteriorLightBlock extends RedstoneLampBlock implements PerhapsPolymerBlock, TardisAware {
@@ -53,9 +57,7 @@ public class InteriorLightBlock extends RedstoneLampBlock implements PerhapsPoly
 
         var order = state.get(ORDER);
         if (order != 0) {
-            NbtCompound nbtCompound = new NbtCompound();
-            nbtCompound.putString(ORDER.getName(), String.valueOf(order));
-            stack.setSubNbt("BlockStateTag", nbtCompound);
+            stack.set(DataComponentTypes.BLOCK_STATE, new BlockStateComponent(Map.of(ORDER.getName(), String.valueOf(order))));
         }
 
         return stack;
@@ -66,8 +68,8 @@ public class InteriorLightBlock extends RedstoneLampBlock implements PerhapsPoly
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (!player.getAbilities().allowModifyWorld || hand == Hand.OFF_HAND) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        if (!player.getAbilities().allowModifyWorld) {
             return ActionResult.PASS;
         } else {
             var newState = state.cycle(ORDER);
@@ -122,6 +124,6 @@ public class InteriorLightBlock extends RedstoneLampBlock implements PerhapsPoly
 
     @Override
     public BlockState getPerhapsPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).getStateWithProperties(state);
+        return Blocks.REDSTONE_LAMP.getStateWithProperties(state);
     }
 }

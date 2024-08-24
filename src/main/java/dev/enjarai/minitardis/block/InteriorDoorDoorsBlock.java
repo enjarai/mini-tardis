@@ -1,7 +1,7 @@
 package dev.enjarai.minitardis.block;
 
 import com.mojang.serialization.MapCodec;
-import dev.enjarai.minitardis.component.Tardis;
+import dev.enjarai.minitardis.ccacomponent.Tardis;
 import dev.enjarai.minitardis.item.PolymerModels;
 import dev.enjarai.minitardis.util.PerhapsElementHolder;
 import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
@@ -115,7 +115,7 @@ public class InteriorDoorDoorsBlock extends HorizontalFacingBlock implements Per
 //    }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         closeTardisDoor(world, pos);
         world.removeBlock(state.get(HALF) == DoubleBlockHalf.LOWER ? pos.up() : pos.down(), false);
         world.removeBlock(pos, false);
@@ -181,7 +181,7 @@ public class InteriorDoorDoorsBlock extends HorizontalFacingBlock implements Per
 
     @Override
     public BlockState getPerhapsPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).getDefaultState().with(LightBlock.LEVEL_15, 0);
+        return Blocks.LIGHT.getDefaultState().with(LightBlock.LEVEL_15, 0);
     }
 
     protected void closeTardisDoor(World world, BlockPos pos) {

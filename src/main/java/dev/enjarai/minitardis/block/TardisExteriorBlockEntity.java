@@ -1,14 +1,13 @@
 package dev.enjarai.minitardis.block;
 
-import dev.enjarai.minitardis.component.ModComponents;
-import dev.enjarai.minitardis.component.Tardis;
-import eu.pb4.polymer.virtualentity.api.VirtualEntityUtils;
-import eu.pb4.polymer.virtualentity.api.attachment.BlockBoundAttachment;
+import dev.enjarai.minitardis.ccacomponent.ModCCAComponents;
+import dev.enjarai.minitardis.ccacomponent.Tardis;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -31,7 +30,7 @@ public class TardisExteriorBlockEntity extends BlockEntity {
         if (!world.isClient()) {
             if (tardis == null) {
                 world.getLevelProperties()
-                        .getComponent(ModComponents.TARDIS_HOLDER)
+                        .getComponent(ModCCAComponents.TARDIS_HOLDER)
                         .getTardis(tardisUuid)
                         .ifPresentOrElse(t -> tardis = t, () -> world.setBlockState(pos, Blocks.AIR.getDefaultState()));
             } else {
@@ -69,13 +68,14 @@ public class TardisExteriorBlockEntity extends BlockEntity {
         return tardis;
     }
 
+
     @Override
-    public void readNbt(NbtCompound nbt) {
+    public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         tardisUuid = nbt.getUuid("tardis");
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbt) {
+    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         nbt.putUuid("tardis", tardis == null ? tardisUuid : tardis.uuid());
     }
 }

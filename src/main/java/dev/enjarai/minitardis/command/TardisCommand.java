@@ -4,14 +4,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import dev.enjarai.minitardis.block.TardisAware;
-import dev.enjarai.minitardis.component.TardisLocation;
-import dev.enjarai.minitardis.component.ModComponents;
-import dev.enjarai.minitardis.component.Tardis;
-import dev.enjarai.minitardis.component.TardisHolder;
-import dev.enjarai.minitardis.component.flight.FlightState;
-import dev.enjarai.minitardis.component.screen.app.ScreenApp;
-import dev.enjarai.minitardis.component.screen.app.ScreenAppType;
+import dev.enjarai.minitardis.ccacomponent.ModCCAComponents;
+import dev.enjarai.minitardis.ccacomponent.TardisLocation;
+import dev.enjarai.minitardis.ccacomponent.Tardis;
+import dev.enjarai.minitardis.ccacomponent.TardisHolder;
+import dev.enjarai.minitardis.ccacomponent.flight.FlightState;
+import dev.enjarai.minitardis.ccacomponent.screen.app.ScreenApp;
+import dev.enjarai.minitardis.ccacomponent.screen.app.ScreenAppType;
 import dev.enjarai.minitardis.item.FloppyItem;
 import dev.enjarai.minitardis.item.ModItems;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -32,7 +31,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 public class TardisCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -130,7 +128,7 @@ public class TardisCommand {
 
     private static CompletableFuture<Suggestions> suggestTardii(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
         return CommandSource.suggestMatching(
-                ModComponents.TARDIS_HOLDER.get(context.getSource().getServer().getSaveProperties())
+                ModCCAComponents.TARDIS_HOLDER.get(context.getSource().getServer().getSaveProperties())
                         .getAllTardii().stream()
                         .map(Tardis::uuid)
                         .map(UUID::toString),
@@ -163,10 +161,10 @@ public class TardisCommand {
     }
 
     private static TardisHolder getHolder(CommandContext<ServerCommandSource> context) {
-        return ModComponents.TARDIS_HOLDER.get(context.getSource().getServer().getSaveProperties());
+        return ModCCAComponents.TARDIS_HOLDER.get(context.getSource().getServer().getSaveProperties());
     }
 
     private static Optional<Tardis> getTardis(World world) {
-        return world.getComponent(ModComponents.TARDIS_REFERENCE).getTardis();
+        return world.getComponent(ModCCAComponents.TARDIS_REFERENCE).getTardis();
     }
 }

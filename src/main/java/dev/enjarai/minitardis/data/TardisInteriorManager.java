@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import dev.enjarai.minitardis.MiniTardis;
-import dev.enjarai.minitardis.component.TardisInterior;
+import dev.enjarai.minitardis.ccacomponent.TardisInterior;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
@@ -35,12 +35,10 @@ public class TardisInteriorManager extends JsonDataLoader implements Identifiabl
         var builder = ImmutableMap.<Identifier, TardisInterior>builder();
 
         for (var entry : prepared.entrySet()) {
-            TardisInterior.CODEC.decode(JsonOps.INSTANCE, entry.getValue()).get().ifLeft(pair -> {
-                var interior = pair.getFirst();
-                builder.put(entry.getKey(), interior);
-            }).ifRight(partial -> {
-                MiniTardis.LOGGER.warn("Failed to load Tardis interior {}: {}", entry.getKey(), partial.message());
-            });
+            var pair = TardisInterior.CODEC.decode(JsonOps.INSTANCE, entry.getValue()).getOrThrow();
+            var interior = pair.getFirst();
+            builder.put(entry.getKey(), interior);
+
         }
 
         interiors = builder.build();

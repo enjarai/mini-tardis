@@ -52,7 +52,7 @@ public class ConsoleScreenBlock extends ScreenBlock {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         var facing = state.get(FACING);
         var hitSide = hit.getSide();
 
@@ -64,8 +64,8 @@ public class ConsoleScreenBlock extends ScreenBlock {
 
                 if (world.getBlockEntity(pos) instanceof ScreenBlockEntity oldEntity && world.getBlockEntity(newPos) instanceof ScreenBlockEntity newEntity) {
                     var tempNbt = new NbtCompound();
-                    oldEntity.writeNbt(tempNbt);
-                    newEntity.readNbt(tempNbt);
+                    oldEntity.writeNbt(tempNbt, world.getRegistryManager());
+                    newEntity.readNbt(tempNbt, world.getRegistryManager());
                     newEntity.currentView = oldEntity.currentView;
                 }
 
@@ -74,13 +74,13 @@ public class ConsoleScreenBlock extends ScreenBlock {
             }
 
             return ActionResult.SUCCESS;
-        } else if (hand == Hand.MAIN_HAND && hitSide == Direction.DOWN) {
-            if (trySwitchFloppy(state, world, pos, player, hand)) {
+        } else if (hitSide == Direction.DOWN) {
+            if (trySwitchFloppy(state, world, pos, player, Hand.MAIN_HAND)) {
                 return ActionResult.SUCCESS;
             }
         }
 
-        return super.onUse(state, world, pos, player, hand, hit);
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Nullable

@@ -3,13 +3,8 @@ package dev.enjarai.minitardis.item;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.ModBlocks;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
-import eu.pb4.polymer.core.api.item.PolymerBlockItem;
-import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
-import eu.pb4.polymer.core.api.item.SimplePolymerItem;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -28,28 +23,28 @@ public class ModItems {
     public static final RegistryKey<ItemGroup> ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, MiniTardis.id("item_group"));
 
     public static final FezItem FEZ = register("fez", new FezItem(
-            new FabricItemSettings().maxCount(1).equipmentSlot((stack) -> EquipmentSlot.HEAD)));
-    public static final FloppyItem FLOPPY = register("floppy", new FloppyItem(new FabricItemSettings().maxCount(1)));
-    public static final TardisPlatingItem TARDIS_PLATING = register("tardis_plating", new TardisPlatingItem(new FabricItemSettings()));
+            new Item.Settings().maxCount(1).equipmentSlot((entity, stack) -> EquipmentSlot.HEAD)));
+    public static final FloppyItem FLOPPY = register("floppy", new FloppyItem(new Item.Settings().maxCount(1)));
+    public static final TardisPlatingItem TARDIS_PLATING = register("tardis_plating", new TardisPlatingItem(new Item.Settings()));
     public static final InteriorLightItem INTERIOR_LIGHT = register("interior_light",
-            new InteriorLightItem(ModBlocks.INTERIOR_LIGHT, new FabricItemSettings(), Items.REDSTONE_LAMP));
+            new InteriorLightItem(ModBlocks.INTERIOR_LIGHT, new Item.Settings(), Items.REDSTONE_LAMP));
     public static final TardisLodestoneCompassItem TARDIS_LODESTONE_COMPASS = register("tardis_lodestone_compass",
-            new TardisLodestoneCompassItem(new FabricItemSettings()));
+            new TardisLodestoneCompassItem(new Item.Settings()));
 
     public static void load() {
         ModBlocks.ITEM_BLOCKS.forEach((block, modelData) -> {
             var id = Registries.BLOCK.getId(block);
             if (!Registries.ITEM.containsId(id)) {
                 if (modelData.isPresent()) {
-                    Registry.register(Registries.ITEM, id, new TooltipPolymerBlockItem(block, new FabricItemSettings(), modelData.get().item()) {
+                    Registry.register(Registries.ITEM, id, new TooltipPolymerBlockItem(block, new Item.Settings(), modelData.get().item()) {
                         @Override
                         public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
                             return modelData.get().value();
                         }
                     });
                 } else if (block instanceof PolymerBlock polymerBlock) {
-                    var polymerItem = polymerBlock.getPolymerBlock(block.getDefaultState()).asItem();
-                    Registry.register(Registries.ITEM, id, new TooltipPolymerBlockItem(block, new FabricItemSettings(), polymerItem));
+                    var polymerItem = polymerBlock.getPolymerBlockState(block.getDefaultState()).getBlock().asItem();
+                    Registry.register(Registries.ITEM, id, new TooltipPolymerBlockItem(block, new Item.Settings(), polymerItem));
                 }
             }
         });

@@ -4,10 +4,10 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
-import dev.enjarai.minitardis.component.Tardis;
-import dev.enjarai.minitardis.component.screen.TardisScreenView;
-import dev.enjarai.minitardis.component.screen.app.AppView;
-import dev.enjarai.minitardis.component.screen.app.ScreenAppType;
+import dev.enjarai.minitardis.ccacomponent.Tardis;
+import dev.enjarai.minitardis.ccacomponent.screen.TardisScreenView;
+import dev.enjarai.minitardis.ccacomponent.screen.app.AppView;
+import dev.enjarai.minitardis.ccacomponent.screen.app.ScreenAppType;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.CanvasImage;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
@@ -21,6 +21,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -81,24 +82,24 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
     protected abstract BlockRotation getRotation(BlockPos pos, BlockState state);
 
     @Override
-    protected void writeNbt(NbtCompound nbt) {
+    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         if (selectedApp != null) {
             nbt.putString("selectedApp", selectedApp.toString());
         }
 
-        nbt.put("inventory", inventory.toNbtList());
+        nbt.put("inventory", inventory.toNbtList(registryLookup));
 
         nbt.putInt("backgroundColor", backgroundColor.getRgbColor());
     }
 
     @Override
-    public void readNbt(NbtCompound nbt) {
+    public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         if (nbt.contains("selectedApp")) {
-            selectedApp = new Identifier(nbt.getString("selectedApp"));
+            selectedApp = Identifier.tryParse(nbt.getString("selectedApp"));
         }
 
         if (nbt.contains("inventory")) {
-            inventory.readNbtList(nbt.getList("inventory", NbtElement.COMPOUND_TYPE));
+            inventory.readNbtList(nbt.getList("inventory", NbtElement.COMPOUND_TYPE), registryLookup);
         }
 
         if (nbt.contains("backgroundColor")) {

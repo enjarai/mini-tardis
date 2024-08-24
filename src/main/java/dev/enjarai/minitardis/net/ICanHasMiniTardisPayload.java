@@ -1,23 +1,34 @@
 package dev.enjarai.minitardis.net;
 
 import dev.enjarai.minitardis.MiniTardis;
-import eu.pb4.polymer.networking.api.payload.VersionedPayload;
+import eu.pb4.polymer.networking.api.ContextByteBuf;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 import xyz.nucleoid.packettweaker.PacketContext;
 
-public record ICanHasMiniTardisPayload() implements VersionedPayload {
+public record ICanHasMiniTardisPayload() implements CustomPayload {
 
-    @Override
-    public void write(PacketContext context, int version, PacketByteBuf buf) {
+
+    public static final PacketCodec<ContextByteBuf, ICanHasMiniTardisPayload> PACKET_CODEC = PacketCodec.of(
+            ICanHasMiniTardisPayload::read,
+            ICanHasMiniTardisPayload::write
+    );
+
+    private void read(ByteBuf byteBuf) {
+
     }
 
-    @Override
-    public Identifier id() {
-        return MiniTardis.HANDSHAKE_CHANNEL;
-    }
-
-    public static ICanHasMiniTardisPayload read(PacketContext context, Identifier identifier, int version, PacketByteBuf buf) {
+    private static ICanHasMiniTardisPayload write(ByteBuf byteBuf) {
         return new ICanHasMiniTardisPayload();
+    }
+
+
+    @Override
+    public Id<? extends CustomPayload> getId() {
+        //DUMMY CLASS TO FOOL POLYMER HEHEHEHEHEHEHHE
+        return null;
     }
 }

@@ -1,14 +1,13 @@
 package dev.enjarai.minitardis.block.console;
 
 import dev.enjarai.minitardis.block.TardisAware;
-import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.ccacomponent.TardisControl;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
@@ -49,7 +48,7 @@ public class ConsoleRepeaterBlock extends Block implements PolymerBlock, Console
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!player.getAbilities().allowModifyWorld) {
             return ActionResult.PASS;
         } else {
@@ -65,12 +64,7 @@ public class ConsoleRepeaterBlock extends Block implements PolymerBlock, Console
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.REPEATER;
-    }
-
-    @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).getStateWithProperties(state);
+        return Blocks.REPEATER.getStateWithProperties(state);
     }
 }

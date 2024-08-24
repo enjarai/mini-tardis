@@ -12,19 +12,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 
 public interface PerhapsPolymerBlock extends PolymerBlock, PolymerClientDecoded, PolymerKeepModel {
-    @Override
-    default Block getPolymerBlock(BlockState state) {
-        return PolymerUtils.isOnClientThread() ? (Block) this : getPerhapsPolymerBlock(state);
-    }
-
-    @Override
-    default Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
-        if (MiniTardis.playerIsRealGamer(player.networkHandler)) {
-            return PolymerBlock.super.getPolymerBlock(state, player);
-        }
-
-        return getPerhapsPolymerBlock(state);
-    }
 
     @Override
     default BlockState getPolymerBlockState(BlockState state) {

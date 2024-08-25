@@ -219,7 +219,7 @@ public class Tardis {
     }
 
     private void buildInterior() {
-        getInterior().ifPresent(interior -> {
+        getInterior().ifPresentOrElse(interior -> {
             var structure = interior.getStructure(holder.getServer().getStructureTemplateManager());
             var world = getInteriorWorld();
             var size = structure.getSize();
@@ -231,6 +231,8 @@ public class Tardis {
             structure.place(world, placementPos, BlockPos.ORIGIN, new StructurePlacementData(), world.getRandom(), 2);
 
             interiorPlaced = true;
+        }, () -> {
+            MiniTardis.LOGGER.info("Couldn't build interior.");
         });
     }
 

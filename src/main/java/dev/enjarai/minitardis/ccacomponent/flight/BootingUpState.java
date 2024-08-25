@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.ccacomponent.flight;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
@@ -18,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BootingUpState extends TransitionalFlightState {
-    public static final Codec<BootingUpState> CODEC = Codec.INT
-            .xmap(BootingUpState::new, s -> s.ticksPassed).fieldOf("ticks_passed").codec();
+    public static final MapCodec<BootingUpState> CODEC = Codec.INT
+            .xmap(BootingUpState::new, s -> s.ticksPassed).fieldOf("ticks_passed");
     public static final Identifier ID = MiniTardis.id("booting_up");
 
     private final List<Line> consoleLogs = new ArrayList<>();

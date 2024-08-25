@@ -22,18 +22,18 @@ import java.util.stream.Collectors;
 
 public interface FlightState {
     Map<Identifier, MapCodec<? extends FlightState>> ALL = Map.ofEntries(
-            Map.entry(LandedState.ID, MapCodec.assumeMapUnsafe(LandedState.CODEC)),
-            Map.entry(TakingOffState.ID, MapCodec.assumeMapUnsafe(TakingOffState.CODEC)),
-            Map.entry(FlyingState.ID, MapCodec.assumeMapUnsafe(FlyingState.CODEC)),
-            Map.entry(LandingState.ID, MapCodec.assumeMapUnsafe(LandingState.CODEC)),
-            Map.entry(SearchingForLandingState.ID, MapCodec.assumeMapUnsafe(SearchingForLandingState.CODEC)),
-            Map.entry(CrashingState.ID, MapCodec.assumeMapUnsafe(CrashingState.CODEC)),
-            Map.entry(RefuelingState.ID, MapCodec.assumeMapUnsafe(RefuelingState.CODEC)),
-            Map.entry(DriftingState.ID, MapCodec.assumeMapUnsafe(DriftingState.CODEC)),
-            Map.entry(DisabledState.ID, MapCodec.assumeMapUnsafe(DisabledState.CODEC)),
-            Map.entry(BootingUpState.ID, MapCodec.assumeMapUnsafe(BootingUpState.CODEC)),
-            Map.entry(CrashedState.ID, MapCodec.assumeMapUnsafe(CrashedState.CODEC)),
-            Map.entry(SuspendedFlightState.ID, MapCodec.assumeMapUnsafe(SuspendedFlightState.CODEC))
+            Map.entry(LandedState.ID, LandedState.CODEC),
+            Map.entry(TakingOffState.ID, TakingOffState.CODEC),
+            Map.entry(FlyingState.ID, FlyingState.CODEC),
+            Map.entry(LandingState.ID, LandingState.CODEC),
+            Map.entry(SearchingForLandingState.ID, SearchingForLandingState.CODEC),
+            Map.entry(CrashingState.ID, CrashingState.CODEC),
+            Map.entry(RefuelingState.ID, RefuelingState.CODEC),
+            Map.entry(DriftingState.ID, DriftingState.CODEC),
+            Map.entry(DisabledState.ID, DisabledState.CODEC),
+            Map.entry(BootingUpState.ID, BootingUpState.CODEC),
+            Map.entry(CrashedState.ID, CrashedState.CODEC),
+            Map.entry(SuspendedFlightState.ID, SuspendedFlightState.CODEC)
     );
     Map<Identifier, Supplier<? extends FlightState>> CONSTRUCTORS = Map.of(
             LandedState.ID, LandedState::new,

@@ -11,8 +11,8 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 
 public class TakingOffState extends TransitionalFlightState {
-    public static final Codec<TakingOffState> CODEC = Codec.INT
-            .xmap(TakingOffState::new, s -> s.ticksPassed).fieldOf("ticks_passed").codec();
+    public static final MapCodec<TakingOffState> CODEC = Codec.INT
+            .xmap(TakingOffState::new, s -> s.ticksPassed).fieldOf("ticks_passed");
     public static final Identifier ID = MiniTardis.id("taking_off");
 
     private TakingOffState(int ticksPassed) {

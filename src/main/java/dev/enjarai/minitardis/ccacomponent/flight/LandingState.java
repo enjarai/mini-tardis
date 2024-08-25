@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.ccacomponent.flight;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
@@ -11,7 +12,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 
 public class LandingState extends TransitionalFlightState {
-    public static final Codec<LandingState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<LandingState> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("ticks_passed").forGetter(s -> s.ticksPassed),
             TardisLocation.CODEC.fieldOf("landing_destination").forGetter(s -> s.landingDestination),
             Codec.BOOL.optionalFieldOf("first_landing", false).forGetter(s -> s.firstLanding)

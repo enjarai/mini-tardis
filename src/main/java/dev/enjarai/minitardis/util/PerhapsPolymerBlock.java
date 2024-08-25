@@ -34,6 +34,7 @@ public interface PerhapsPolymerBlock extends PolymerBlock, PolymerClientDecoded,
 
     @Override
     default boolean canSyncRawToClient(ServerPlayerEntity player) {
+        if (player == null) return false;
         return MiniTardis.playerIsRealGamer(player.networkHandler);
     }
 

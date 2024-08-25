@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.ccacomponent.flight;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
@@ -9,7 +10,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 
 public class SuspendedFlightState implements FlightState {
-    public static final Codec<SuspendedFlightState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<SuspendedFlightState> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks),
             Codec.INT.fieldOf("errorLoops").forGetter(s -> s.errorLoops),
             Codec.INT.optionalFieldOf("distance", 0).forGetter(s -> s.distance)

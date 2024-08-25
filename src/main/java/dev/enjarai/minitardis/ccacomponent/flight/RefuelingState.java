@@ -1,13 +1,14 @@
 package dev.enjarai.minitardis.ccacomponent.flight;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ccacomponent.Tardis;
 import net.minecraft.util.Identifier;
 
 public class RefuelingState implements FlightState {
-    public static final Codec<RefuelingState> CODEC = Codec.INT
-            .xmap(RefuelingState::new, s -> s.refuelingCounter).fieldOf("refueling_counter").codec();
+    public static final MapCodec<RefuelingState> CODEC = Codec.INT
+            .xmap(RefuelingState::new, s -> s.refuelingCounter).fieldOf("refueling_counter");
     public static final Identifier ID = MiniTardis.id("refueling");
 
     private int refuelingCounter;

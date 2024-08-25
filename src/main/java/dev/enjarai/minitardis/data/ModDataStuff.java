@@ -27,7 +27,7 @@ public class ModDataStuff {
     public static final TagKey<Structure> WAYPOINT_APP_RANDOMLY_FOUND_STRUCTURES = TagKey.of(RegistryKeys.STRUCTURE, MiniTardis.id("waypoint_app_randomly_found"));
     public static final LootFunctionType RANDOM_APP_LOOT_FUNCTION_TYPE =
             Registry.register(Registries.LOOT_FUNCTION_TYPE, MiniTardis.id("random_app"),
-                    new LootFunctionType(MapCodec.assumeMapUnsafe(RandomAppLootFunction.CODEC)));
+                    new LootFunctionType(RandomAppLootFunction.CODEC));
     public static final Set<RegistryKey<LootTable>> FLOPPY_LOOT_TABLES = Set.of(
             LootTables.SIMPLE_DUNGEON_CHEST, LootTables.ABANDONED_MINESHAFT_CHEST, LootTables.ANCIENT_CITY_CHEST,
             LootTables.BASTION_TREASURE_CHEST, LootTables.DESERT_PYRAMID_CHEST, LootTables.JUNGLE_TEMPLE_CHEST,

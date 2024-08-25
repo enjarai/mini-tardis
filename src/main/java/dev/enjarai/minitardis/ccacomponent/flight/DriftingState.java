@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.ccacomponent.flight;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
@@ -13,7 +14,7 @@ import net.minecraft.util.Identifier;
 import static dev.enjarai.minitardis.ccacomponent.flight.FlyingState.SOUND_LOOP_LENGTH;
 
 public class DriftingState implements FlightState {
-    public static final Codec<DriftingState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<DriftingState> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("phase_count").forGetter(s -> s.phaseCount),
             Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks),
             Codec.INT.fieldOf("phase_length").forGetter(s -> s.phaseLength),

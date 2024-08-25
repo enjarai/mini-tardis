@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.ccacomponent.flight;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.ccacomponent.Tardis;
@@ -9,7 +10,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 
 public class DisabledState implements FlightState {
-    public static final Codec<DisabledState> CODEC = Codec.unit(DisabledState::new);
+    public static final MapCodec<DisabledState> CODEC = MapCodec.unit(DisabledState::new);
     public static final Identifier ID = MiniTardis.id("disabled");
 
     @Override

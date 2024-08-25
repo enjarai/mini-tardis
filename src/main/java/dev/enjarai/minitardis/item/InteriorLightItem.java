@@ -21,13 +21,16 @@ public class InteriorLightItem extends TooltipPolymerBlockItem {
 
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-        var map = stack.get(DataComponentTypes.BLOCK_STATE).properties();
-        if (map != null && map.containsKey(ORDER.getName())) {
-            var order = map.get(ORDER.getName());
-            tooltip.add(Text.translatable("block.mini_tardis.interior_light.tooltip.order", order).fillStyle(Style.EMPTY.withColor(Formatting.GRAY)));
-            tooltip.add(Text.empty());
-        }
+        var stateComponent = stack.get(DataComponentTypes.BLOCK_STATE);
+        if (stateComponent != null) {
+            var map = stateComponent.properties();
+            if (map.containsKey(ORDER.getName())) {
+                var order = map.get(ORDER.getName());
+                tooltip.add(Text.translatable("block.mini_tardis.interior_light.tooltip.order", order).fillStyle(Style.EMPTY.withColor(Formatting.GRAY)));
+                tooltip.add(Text.empty());
+            }
 
-        super.appendTooltip(stack, context, tooltip, type);
+            super.appendTooltip(stack, context, tooltip, type);
+        }
     }
 }

@@ -6,6 +6,7 @@ import dev.enjarai.minitardis.ccacomponent.ModCCAComponents;
 import dev.enjarai.minitardis.command.TardisCommand;
 import dev.enjarai.minitardis.ccacomponent.Tardis;
 import dev.enjarai.minitardis.ccacomponent.screen.app.ScreenAppTypes;
+import dev.enjarai.minitardis.component.ModDataComponents;
 import dev.enjarai.minitardis.data.ModDataStuff;
 import dev.enjarai.minitardis.data.TardisInteriorManager;
 import dev.enjarai.minitardis.item.ModItems;
@@ -60,6 +61,7 @@ public class MiniTardis implements ModInitializer {
 
 		ModBlocks.load();
 		ModItems.load();
+		ModDataComponents.init();
 		ModSounds.load();
 		TardisCanvasUtils.load();
 

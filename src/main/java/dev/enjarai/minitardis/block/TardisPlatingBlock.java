@@ -48,6 +48,7 @@ public class TardisPlatingBlock extends Block implements PolymerBlock, PolymerCl
 
     @Override
     public boolean canSyncRawToClient(ServerPlayerEntity player) {
+        if (player == null) return false;
         return MiniTardis.playerIsRealGamer(player.networkHandler);
     }
 }

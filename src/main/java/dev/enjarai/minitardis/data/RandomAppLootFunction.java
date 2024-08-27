@@ -1,9 +1,8 @@
 package dev.enjarai.minitardis.data;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.enjarai.minitardis.ccacomponent.screen.app.*;
+import dev.enjarai.minitardis.component.screen.app.*;
 import dev.enjarai.minitardis.item.FloppyItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;

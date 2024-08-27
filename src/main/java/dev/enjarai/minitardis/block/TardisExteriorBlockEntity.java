@@ -1,7 +1,7 @@
 package dev.enjarai.minitardis.block;
 
-import dev.enjarai.minitardis.ccacomponent.ModCCAComponents;
-import dev.enjarai.minitardis.ccacomponent.Tardis;
+import dev.enjarai.minitardis.ModCCAComponents;
+import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;

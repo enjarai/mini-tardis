@@ -2,9 +2,8 @@ package dev.enjarai.minitardis.block.console;
 
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
-import dev.enjarai.minitardis.ccacomponent.TardisControl;
+import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeverBlock;

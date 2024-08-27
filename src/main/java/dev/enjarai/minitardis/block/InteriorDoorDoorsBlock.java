@@ -1,7 +1,7 @@
 package dev.enjarai.minitardis.block;
 
 import com.mojang.serialization.MapCodec;
-import dev.enjarai.minitardis.ccacomponent.Tardis;
+import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.item.PolymerModels;
 import dev.enjarai.minitardis.util.PerhapsElementHolder;
 import dev.enjarai.minitardis.util.PerhapsPolymerBlock;

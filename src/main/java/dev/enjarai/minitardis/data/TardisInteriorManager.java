@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import dev.enjarai.minitardis.MiniTardis;
-import dev.enjarai.minitardis.ccacomponent.TardisInterior;
+import dev.enjarai.minitardis.component.TardisInterior;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;

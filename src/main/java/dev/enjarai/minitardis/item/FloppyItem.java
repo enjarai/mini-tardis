@@ -2,21 +2,16 @@ package dev.enjarai.minitardis.item;
 
 import com.google.common.collect.ImmutableList;
 import dev.enjarai.minitardis.MiniTardis;
-import dev.enjarai.minitardis.ccacomponent.screen.app.DimensionsApp;
-import dev.enjarai.minitardis.ccacomponent.screen.app.ScreenApp;
-import dev.enjarai.minitardis.component.ModDataComponents;
+import dev.enjarai.minitardis.component.screen.app.DimensionsApp;
+import dev.enjarai.minitardis.component.screen.app.ScreenApp;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -26,7 +21,6 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 

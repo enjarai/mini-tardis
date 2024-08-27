@@ -28,7 +28,7 @@
           "dev.enjarai.minitardis.datagen.MiniTardisDataGenerator"
 		],
 		"cardinal-components": [
-			"dev.enjarai.minitardis.ccacomponent.ModCCAComponents"
+			"dev.enjarai.minitardis.ModCCAComponents"
 		]
 	},
 	"mixins": [

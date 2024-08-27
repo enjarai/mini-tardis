@@ -2,22 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "I#I",
-    "ISI"
+    "#B#"
   ],
   "key": {
     "#": {
       "tag": "mini_tardis:compasses"
     },
-    "S": {
-      "item": "minecraft:black_stained_glass_pane"
-    },
-    "I": {
-      "item": "minecraft:iron_ingot"
+    "B": {
+      "tag": "minecraft:wooden_buttons"
     }
   },
   "result": {
-    "item": "mini_tardis:console_screen",
+    "id": "mini_tardis:nudge_destination_button_1",
     "count": 1
   }
 }

@@ -2,19 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "###",
-    " D "
+    "#",
+    "R"
   ],
   "key": {
     "#": {
-      "item": "minecraft:lever"
+      "tag": "mini_tardis:compasses"
     },
-    "D": {
-      "item": "minecraft:daylight_detector"
+    "R": {
+      "item": "minecraft:repeater"
     }
   },
   "result": {
-    "item": "mini_tardis:fuel_control",
+    "id": "mini_tardis:rotation_selector",
     "count": 1
   }
 }

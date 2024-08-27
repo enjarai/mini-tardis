@@ -3,19 +3,18 @@
   "category": "misc",
   "pattern": [
     "#",
-    "B",
-    "#"
+    "L"
   ],
   "key": {
     "#": {
-      "tag": "mini_tardis:compasses"
+      "item": "minecraft:clock"
     },
-    "B": {
-      "tag": "minecraft:wooden_buttons"
+    "L": {
+      "item": "minecraft:lever"
     }
   },
   "result": {
-    "item": "mini_tardis:vertical_nudge_destination_button",
+    "id": "mini_tardis:handbrake",
     "count": 1
   }
 }

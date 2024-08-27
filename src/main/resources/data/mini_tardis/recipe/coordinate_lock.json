@@ -2,19 +2,22 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "#",
-    "L"
+    "# $",
+    " B "
   ],
   "key": {
     "#": {
       "tag": "mini_tardis:compasses"
     },
-    "L": {
-      "item": "minecraft:lever"
+    "$": {
+      "item": "minecraft:clock"
+    },
+    "B": {
+      "tag": "minecraft:stone_buttons"
     }
   },
   "result": {
-    "item": "mini_tardis:refuel_toggle",
+    "id": "mini_tardis:coordinate_lock",
     "count": 1
   }
 }

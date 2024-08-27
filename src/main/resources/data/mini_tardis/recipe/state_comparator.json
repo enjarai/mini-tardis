@@ -2,22 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "# $",
-    " B "
+    "#",
+    "C"
   ],
   "key": {
     "#": {
       "tag": "mini_tardis:compasses"
     },
-    "$": {
-      "item": "minecraft:clock"
-    },
-    "B": {
-      "tag": "minecraft:stone_buttons"
+    "C": {
+      "item": "minecraft:comparator"
     }
   },
   "result": {
-    "item": "mini_tardis:coordinate_lock",
+    "id": "mini_tardis:state_comparator",
     "count": 1
   }
 }

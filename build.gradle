@@ -68,9 +68,9 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	include modApi("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}")
-	include modApi("dev.onyxstudios.cardinal-components-api:cardinal-components-level:${project.cca_version}")
-	include modApi("dev.onyxstudios.cardinal-components-api:cardinal-components-world:${project.cca_version}")
+	modApi include("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}")
+	modApi include("dev.onyxstudios.cardinal-components-api:cardinal-components-level:${project.cca_version}")
+	modApi include("dev.onyxstudios.cardinal-components-api:cardinal-components-world:${project.cca_version}")
 
 	modImplementation("nl.enjarai:cicada-lib:${project.cicada_version}") {
 		exclude group: "net.fabricmc.fabric-api"
@@ -82,7 +82,7 @@ dependencies {
 	modApi include("eu.pb4:polymer-blocks:${property('deps.polymer')}")
 	modRuntimeOnly("eu.pb4:polymer-autohost:${property('deps.polymer')}")
 	modApi include("xyz.nucleoid:server-translations-api:${property('deps.server_translations_api')}")
-	include(modApi("me.lucko:fabric-permissions-api:${property('deps.permissions_api')}"))
+	modApi include("me.lucko:fabric-permissions-api:${property('deps.permissions_api')}")
 	modApi include("xyz.nucleoid:fantasy:${property('deps.fantasy')}")
 	modApi include("eu.pb4:map-canvas-api:${property('deps.map_api')}")
 }
@@ -172,7 +172,7 @@ publishMods {
 			requires {
 				slug = "fabric-api"
 			}
-			embeds {
+			requires {
 				slug = "cardinal-components-api"
 			}
 			embeds {
@@ -198,7 +198,7 @@ publishMods {
 			requires {
 				slug = "fabric-api"
 			}
-			embeds {
+			requires {
 				slug = "cardinal-components-api"
 			}
 			embeds {

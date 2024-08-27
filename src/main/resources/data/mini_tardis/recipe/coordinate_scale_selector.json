@@ -2,8 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "#",
-    "R"
+    "#R#"
   ],
   "key": {
     "#": {
@@ -14,7 +13,7 @@
     }
   },
   "result": {
-    "item": "mini_tardis:rotation_selector",
+    "id": "mini_tardis:coordinate_scale_selector",
     "count": 1
   }
 }

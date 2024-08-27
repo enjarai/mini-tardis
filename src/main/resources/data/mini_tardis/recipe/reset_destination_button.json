@@ -13,7 +13,7 @@
     }
   ],
   "result": {
-    "item": "mini_tardis:reset_destination_button",
+    "id": "mini_tardis:reset_destination_button",
     "count": 1
   }
 }

@@ -2,20 +2,22 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "#  ",
-    " B ",
-    "  #"
+    "P#P",
+    "PDP"
   ],
   "key": {
     "#": {
       "tag": "mini_tardis:compasses"
     },
-    "B": {
-      "tag": "minecraft:wooden_buttons"
+    "D": {
+      "tag": "minecraft:wooden_doors"
+    },
+    "P": {
+      "tag": "minecraft:planks"
     }
   },
   "result": {
-    "item": "mini_tardis:nudge_destination_button_2",
+    "id": "mini_tardis:interior_door",
     "count": 1
   }
 }

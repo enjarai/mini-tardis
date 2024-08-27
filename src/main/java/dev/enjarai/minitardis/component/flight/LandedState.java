@@ -1,12 +1,12 @@
 package dev.enjarai.minitardis.component.flight;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.util.Identifier;
 
 public class LandedState implements FlightState {
-    public static final Codec<LandedState> CODEC = Codec.unit(LandedState::new);
+    public static final MapCodec<LandedState> CODEC = MapCodec.unit(LandedState::new);
     public static final Identifier ID = MiniTardis.id("landed");
 
     @Override

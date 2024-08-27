@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.component.HistoryEntry;
@@ -10,8 +11,8 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 
 public class TakingOffState extends TransitionalFlightState {
-    public static final Codec<TakingOffState> CODEC = Codec.INT
-            .xmap(TakingOffState::new, s -> s.ticksPassed).fieldOf("ticks_passed").codec();
+    public static final MapCodec<TakingOffState> CODEC = Codec.INT
+            .xmap(TakingOffState::new, s -> s.ticksPassed).fieldOf("ticks_passed");
     public static final Identifier ID = MiniTardis.id("taking_off");
 
     private TakingOffState(int ticksPassed) {

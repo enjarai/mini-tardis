@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
+import dev.enjarai.minitardis.ModCCAComponents;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.InteriorDoorBlock;
 import dev.enjarai.minitardis.block.ModBlocks;
@@ -12,7 +13,6 @@ import dev.enjarai.minitardis.block.TardisExteriorBlockEntity;
 import dev.enjarai.minitardis.component.flight.*;
 import dev.enjarai.minitardis.component.screen.app.HistoryApp;
 import dev.enjarai.minitardis.component.screen.app.ScreenAppTypes;
-import net.minecraft.block.FacingBlock;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
@@ -212,7 +212,7 @@ public class Tardis {
                 .setSeed(1234L);
         interiorWorld = holder.getFantasy().getOrOpenPersistentWorld(MiniTardis.id("tardis/" + uuid.toString()), config);
         interiorWorld.setTickWhenEmpty(false);
-        interiorWorld.asWorld().getComponent(ModComponents.TARDIS_REFERENCE).tardis = this;
+        interiorWorld.asWorld().getComponent(ModCCAComponents.TARDIS_REFERENCE).tardis = this;
 
         if (!interiorPlaced) {
             buildInterior();
@@ -220,7 +220,7 @@ public class Tardis {
     }
 
     private void buildInterior() {
-        getInterior().ifPresent(interior -> {
+        getInterior().ifPresentOrElse(interior -> {
             var structure = interior.getStructure(holder.getServer().getStructureTemplateManager());
             var world = getInteriorWorld();
             var size = structure.getSize();
@@ -232,6 +232,8 @@ public class Tardis {
             structure.place(world, placementPos, BlockPos.ORIGIN, new StructurePlacementData(), world.getRandom(), 2);
 
             interiorPlaced = true;
+        }, () -> {
+            MiniTardis.LOGGER.info("Couldn't build interior.");
         });
     }
 

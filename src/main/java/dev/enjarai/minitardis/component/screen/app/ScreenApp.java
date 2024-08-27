@@ -24,7 +24,7 @@ public interface ScreenApp {
      */
     default void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         var id = getId();
-        var sprite = TardisCanvasUtils.getSprite(new Identifier(id.getNamespace(), "app/" + id.getPath()));
+        var sprite = TardisCanvasUtils.getSprite(Identifier.of(id.getNamespace(), "app/" + id.getPath()));
         if (sprite.getWidth() == 0 && sprite.getHeight() == 0) {
             sprite = TardisCanvasUtils.getSprite("app/dummy");
         }

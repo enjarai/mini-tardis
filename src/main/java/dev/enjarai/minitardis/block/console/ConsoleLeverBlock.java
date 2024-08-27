@@ -4,10 +4,10 @@ import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeverBlock;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -32,15 +32,16 @@ public class ConsoleLeverBlock extends LeverBlock implements PolymerBlock, Tardi
         this.checkStateFunction = checkStateFunction;
     }
 
+
     @Override
-    public BlockState togglePower(BlockState state, World world, BlockPos pos) {
-        var state2 = super.togglePower(state, world, pos);
+    public void togglePower(BlockState state, World world, BlockPos pos, @Nullable PlayerEntity player) {
+        super.togglePower(state, world, pos, player);
+        var state2 = world.getBlockState(pos);
         if (!getTardis(world)
                 .map(tardis -> controlInput.apply(tardis.getControls(), state2.get(POWERED)))
                 .orElseGet(() -> tryActivateMakeshiftEngine(state, world, pos, state2.get(POWERED)))) {
             inputFailure(world, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, 0);
         }
-        return state2;
     }
 
     protected boolean tryActivateMakeshiftEngine(BlockState state, World world, BlockPos pos, boolean active) {
@@ -92,11 +93,6 @@ public class ConsoleLeverBlock extends LeverBlock implements PolymerBlock, Tardi
     @Override
     public boolean emitsRedstonePower(BlockState state) {
         return false;
-    }
-
-    @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.LEVER;
     }
 
     @Override

@@ -21,6 +21,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -81,24 +82,24 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
     protected abstract BlockRotation getRotation(BlockPos pos, BlockState state);
 
     @Override
-    protected void writeNbt(NbtCompound nbt) {
+    protected void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         if (selectedApp != null) {
             nbt.putString("selectedApp", selectedApp.toString());
         }
 
-        nbt.put("inventory", inventory.toNbtList());
+        nbt.put("inventory", inventory.toNbtList(registryLookup));
 
         nbt.putInt("backgroundColor", backgroundColor.getRgbColor());
     }
 
     @Override
-    public void readNbt(NbtCompound nbt) {
+    public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         if (nbt.contains("selectedApp")) {
-            selectedApp = new Identifier(nbt.getString("selectedApp"));
+            selectedApp = Identifier.tryParse(nbt.getString("selectedApp"));
         }
 
         if (nbt.contains("inventory")) {
-            inventory.readNbtList(nbt.getList("inventory", NbtElement.COMPOUND_TYPE));
+            inventory.readNbtList(nbt.getList("inventory", NbtElement.COMPOUND_TYPE), registryLookup);
         }
 
         if (nbt.contains("backgroundColor")) {

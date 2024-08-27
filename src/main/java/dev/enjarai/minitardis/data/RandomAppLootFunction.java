@@ -1,6 +1,6 @@
 package dev.enjarai.minitardis.data;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.component.screen.app.*;
 import dev.enjarai.minitardis.item.FloppyItem;
@@ -10,13 +10,12 @@ import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import java.util.List;
 
 public record RandomAppLootFunction(List<RegistryKey<World>> additionalDimensions) implements LootFunction {
-    public static final Codec<RandomAppLootFunction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<RandomAppLootFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryKey.createCodec(RegistryKeys.WORLD).listOf().optionalFieldOf("additional_dimensions", List.of()).forGetter(RandomAppLootFunction::additionalDimensions)
     ).apply(instance, RandomAppLootFunction::new));
     public static final List<ScreenAppType<?>> LOOT_APPS = ScreenAppType.REGISTRY.stream()

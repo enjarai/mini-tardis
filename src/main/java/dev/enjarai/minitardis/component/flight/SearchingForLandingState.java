@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
@@ -20,7 +21,7 @@ import net.minecraft.world.Heightmap;
 import java.util.Iterator;
 
 public class SearchingForLandingState implements FlightState {
-    public static final Codec<SearchingForLandingState> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<SearchingForLandingState> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks),
             Codec.INT.fieldOf("searching_ticks").forGetter(s -> s.searchingTicks),
             Codec.BOOL.fieldOf("crashing").forGetter(s -> s.crashing),

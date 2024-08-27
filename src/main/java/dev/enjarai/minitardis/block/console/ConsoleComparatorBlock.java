@@ -1,6 +1,5 @@
 package dev.enjarai.minitardis.block.console;
 
-import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.polymer.core.api.block.PolymerBlock;
@@ -18,7 +17,6 @@ import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -57,7 +55,7 @@ public class ConsoleComparatorBlock extends Block implements PolymerBlock, Conso
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!player.getAbilities().allowModifyWorld) {
             return ActionResult.PASS;
         } else {
@@ -81,12 +79,7 @@ public class ConsoleComparatorBlock extends Block implements PolymerBlock, Conso
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.COMPARATOR;
-    }
-
-    @Override
     public BlockState getPolymerBlockState(BlockState state) {
-        return getPolymerBlock(state).getStateWithProperties(state);
+        return Blocks.COMPARATOR.getStateWithProperties(state);
     }
 }

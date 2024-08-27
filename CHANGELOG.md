@@ -1,2 +1,1 @@
-- Fixed screen asset loading to be able to be modified using datapacks.
-- No more metal pipe falling on crash.
+- Updated to 1.21.

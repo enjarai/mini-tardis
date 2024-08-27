@@ -7,14 +7,11 @@ import dev.enjarai.minitardis.component.screen.app.ScreenApp;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtOps;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -24,6 +21,7 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FloppyItem extends Item implements PolymerItem {
@@ -52,7 +50,7 @@ public class FloppyItem extends Item implements PolymerItem {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         for (var app : getApps(stack)) {
             tooltip.addAll(app.getName().getWithStyle(Style.EMPTY.withColor(Formatting.GRAY)));
             app.appendTooltip(tooltip);
@@ -62,46 +60,39 @@ public class FloppyItem extends Item implements PolymerItem {
     public static List<ScreenApp> getApps(ItemStack stack) {
         if (stack.isEmpty()) return List.of();
 
-        var nbt = stack.getOrCreateNbt();
-        if (nbt.contains("apps", NbtElement.LIST_TYPE)) {
-            var list = ImmutableList.<ScreenApp>builder();
-            for (var appElement : nbt.getList("apps", NbtElement.COMPOUND_TYPE)) {
-                ScreenApp.CODEC.decode(NbtOps.INSTANCE, appElement).result().ifPresent(app -> list.add(app.getFirst()));
-            }
-            return list.build();
+        var screenApps = stack.get(ModDataComponents.APP);
+        if (screenApps != null) {
+            return ImmutableList.copyOf(screenApps);
         } else {
             return List.of();
         }
     }
 
     public static void addApp(ItemStack stack, ScreenApp app) {
-        var nbt = stack.getOrCreateNbt();
+        var screenApps = stack.get(ModDataComponents.APP);
 
-        NbtList appsList;
-        if (!nbt.contains("apps", NbtElement.COMPOUND_TYPE)) {
-            appsList = nbt.getList("apps", NbtElement.COMPOUND_TYPE);
-        } else {
-            appsList = new NbtList();
+        ImmutableList.Builder<ScreenApp> listBuilder = new ImmutableList.Builder<>();
+        if (screenApps != null) {
+            listBuilder.addAll(screenApps);
         }
 
-        ScreenApp.CODEC.encodeStart(NbtOps.INSTANCE, app).result().ifPresent(appsList::add);
+        listBuilder.add(app);
 
-        nbt.put("apps", appsList);
+        stack.set(ModDataComponents.APP, listBuilder.build());
     }
 
     public static boolean removeApp(ItemStack stack, int index) {
-        var nbt = stack.getOrCreateNbt();
+        var screenApps = stack.get(ModDataComponents.APP);
 
-        NbtList appsList;
-        if (!nbt.contains("apps", NbtElement.COMPOUND_TYPE)) {
-            appsList = nbt.getList("apps", NbtElement.COMPOUND_TYPE);
-        } else {
-            appsList = new NbtList();
+        List<ScreenApp> list = new ArrayList<>();
+        if (screenApps != null) {
+            list.addAll(screenApps);
         }
 
-        if (appsList.size() > index) {
-            appsList.remove(index);
-            nbt.put("apps", appsList);
+
+        if (list.size() > index) {
+            list.remove(index);
+            stack.set(ModDataComponents.APP, list);
             return true;
         }
 

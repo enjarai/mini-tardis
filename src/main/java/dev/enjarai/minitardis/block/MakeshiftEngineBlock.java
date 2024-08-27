@@ -25,11 +25,6 @@ public class MakeshiftEngineBlock extends BlockWithEntity implements PolymerBloc
         return CODEC;
     }
 
-    @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.BEACON;
-    }
-
     @Nullable
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
@@ -44,5 +39,10 @@ public class MakeshiftEngineBlock extends BlockWithEntity implements PolymerBloc
                 blockEntity.tick(serverWorld, pos, state1);
             }
         });
+    }
+
+    @Override
+    public BlockState getPolymerBlockState(BlockState state) {
+        return Blocks.BEACON.getDefaultState();
     }
 }

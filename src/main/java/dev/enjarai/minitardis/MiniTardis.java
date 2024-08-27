@@ -3,9 +3,9 @@ package dev.enjarai.minitardis;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.command.TardisCommand;
-import dev.enjarai.minitardis.component.ModComponents;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.screen.app.ScreenAppTypes;
+import dev.enjarai.minitardis.item.ModDataComponents;
 import dev.enjarai.minitardis.data.ModDataStuff;
 import dev.enjarai.minitardis.data.TardisInteriorManager;
 import dev.enjarai.minitardis.item.ModItems;
@@ -36,7 +36,7 @@ public class MiniTardis implements ModInitializer {
 	@SuppressWarnings("OptionalGetWithoutIsPresent")
 	public static final Version VERSION = FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata().getVersion();
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-	public static final Identifier HANDSHAKE_CHANNEL = id("handshake/2");
+	public static final Identifier HANDSHAKE_CHANNEL = id("handshake/3");
 //	public static final HandshakeServer<Unit> HANDSHAKE_SERVER = new HandshakeServer<>(
 //			Codec.unit(Unit.INSTANCE), MiniTardis.HANDSHAKE_CHANNEL, () -> Unit.INSTANCE);
 
@@ -50,7 +50,7 @@ public class MiniTardis implements ModInitializer {
 
 		ServerLifecycleEvents.SERVER_STARTING.register(server -> MiniTardis.server = server);
 		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			ModComponents.TARDIS_HOLDER.get(server.getSaveProperties()).getAllTardii().forEach(Tardis::getInteriorWorld);
+			ModCCAComponents.TARDIS_HOLDER.get(server.getSaveProperties()).getAllTardii().forEach(Tardis::getInteriorWorld);
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> MiniTardis.server = null);
 
@@ -58,6 +58,7 @@ public class MiniTardis implements ModInitializer {
 
 		ModBlocks.load();
 		ModItems.load();
+		ModDataComponents.init();
 		ModSounds.load();
 		TardisCanvasUtils.load();
 
@@ -69,7 +70,11 @@ public class MiniTardis implements ModInitializer {
 		PolymerResourcePackUtils.markAsRequired();
 		PolymerModels.load();
 
-		PolymerNetworking.registerCommonPayload(MiniTardis.HANDSHAKE_CHANNEL, 0, ICanHasMiniTardisPayload::read);
+		PolymerNetworking.registerCommonSimple(
+				MiniTardis.HANDSHAKE_CHANNEL,
+				1,
+				ICanHasMiniTardisPayload.PACKET_CODEC
+		);
 	}
 
 	@Nullable
@@ -82,10 +87,10 @@ public class MiniTardis implements ModInitializer {
 	}
 
 	public static boolean playerIsRealGamer(ServerPlayNetworkHandler player) {
-		return PolymerServerNetworking.getSupportedVersion(player, HANDSHAKE_CHANNEL) != -1;
+		return PolymerServerNetworking.getSupportedVersion(player, HANDSHAKE_CHANNEL) == 1;
 	}
 
 	public static Identifier id(String path) {
-		return new Identifier(MOD_ID, path);
+		return Identifier.of(MOD_ID, path);
 	}
 }

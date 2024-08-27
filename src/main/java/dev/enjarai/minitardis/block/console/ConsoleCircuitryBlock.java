@@ -6,15 +6,11 @@ import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.CommandBlock;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import java.util.function.Function;
@@ -29,8 +25,8 @@ public class ConsoleCircuitryBlock extends Block implements PolymerBlock, Tardis
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        if (!player.getAbilities().allowModifyWorld || hand == Hand.OFF_HAND) {
+    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        if (!player.getAbilities().allowModifyWorld) {
             return ActionResult.PASS;
         } else {
             if (!getTardis(world).map(t -> controlInput.apply(t.getControls())).orElse(false)) {
@@ -41,7 +37,7 @@ public class ConsoleCircuitryBlock extends Block implements PolymerBlock, Tardis
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.DRIPSTONE_BLOCK;
+    public BlockState getPolymerBlockState(BlockState state) {
+        return Blocks.DRIPSTONE_BLOCK.getDefaultState();
     }
 }

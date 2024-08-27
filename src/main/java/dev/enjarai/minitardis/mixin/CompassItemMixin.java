@@ -22,7 +22,8 @@ public class CompassItemMixin {
         if (Objects.equals(worldId.getNamespace(), MiniTardis.MOD_ID) && worldId.getPath().startsWith("tardis/")
                 && context.getPlayer() != null) {
             var newStack = ModItems.TARDIS_LODESTONE_COMPASS.getDefaultStack();
-            newStack.setNbt(originalStack.getNbt());
+            newStack.applyComponentsFrom(originalStack.getComponents());
+
             // Should always be one, but who knows.
             newStack.setCount(originalStack.getCount());
             return newStack;

@@ -24,17 +24,8 @@ public class TardisPlatingBlock extends Block implements PolymerBlock, PolymerCl
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return this;
-    }
-
-    @Override
-    public Block getPolymerBlock(BlockState state, ServerPlayerEntity player) {
-        if (MiniTardis.playerIsRealGamer(player.networkHandler)) {
-            return PolymerTexturedBlock.super.getPolymerBlock(state, player);
-        }
-
-        return Blocks.NETHERITE_BLOCK;
+    public BlockState getPolymerBlockState(BlockState state) {
+        return this.getDefaultState();
     }
 
     @Override
@@ -57,6 +48,7 @@ public class TardisPlatingBlock extends Block implements PolymerBlock, PolymerCl
 
     @Override
     public boolean canSyncRawToClient(ServerPlayerEntity player) {
+        if (player == null) return false;
         return MiniTardis.playerIsRealGamer(player.networkHandler);
     }
 }

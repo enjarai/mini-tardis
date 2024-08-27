@@ -46,7 +46,7 @@ public class InteriorVentBlock extends Block implements PolymerBlock {
     }
 
     @Override
-    public Block getPolymerBlock(BlockState state) {
-        return Blocks.IRON_TRAPDOOR;
+    public BlockState getPolymerBlockState(BlockState state) {
+        return Blocks.IRON_TRAPDOOR.getDefaultState();
     }
 }

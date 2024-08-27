@@ -1,6 +1,6 @@
 package dev.enjarai.minitardis.component.flight;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
@@ -11,11 +11,10 @@ import eu.pb4.mapcanvas.api.core.CanvasColor;
 import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 
 public class CrashedState implements FlightState {
-    public static final Codec<CrashedState> CODEC = Codec.unit(CrashedState::new);
+    public static final MapCodec<CrashedState> CODEC = MapCodec.unit(CrashedState::new);
     public static final Identifier ID = MiniTardis.id("crashed");
 
     private int litLamps;

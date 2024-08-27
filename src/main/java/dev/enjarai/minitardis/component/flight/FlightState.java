@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisControl;
@@ -16,7 +17,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public interface FlightState {
-    Map<Identifier, Codec<? extends FlightState>> ALL = Map.ofEntries(
+    Map<Identifier, MapCodec<? extends FlightState>> ALL = Map.ofEntries(
             Map.entry(LandedState.ID, LandedState.CODEC),
             Map.entry(TakingOffState.ID, TakingOffState.CODEC),
             Map.entry(FlyingState.ID, FlyingState.CODEC),

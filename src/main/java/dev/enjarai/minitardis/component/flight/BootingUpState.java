@@ -1,11 +1,10 @@
 package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
-import dev.enjarai.minitardis.component.HistoryEntry;
-import dev.enjarai.minitardis.component.PartialTardisLocation;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisControl;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
@@ -20,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BootingUpState extends TransitionalFlightState {
-    public static final Codec<BootingUpState> CODEC = Codec.INT
-            .xmap(BootingUpState::new, s -> s.ticksPassed).fieldOf("ticks_passed").codec();
+    public static final MapCodec<BootingUpState> CODEC = Codec.INT
+            .xmap(BootingUpState::new, s -> s.ticksPassed).fieldOf("ticks_passed");
     public static final Identifier ID = MiniTardis.id("booting_up");
 
     private final List<Line> consoleLogs = new ArrayList<>();

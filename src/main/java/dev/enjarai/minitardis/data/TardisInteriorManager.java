@@ -35,12 +35,10 @@ public class TardisInteriorManager extends JsonDataLoader implements Identifiabl
         var builder = ImmutableMap.<Identifier, TardisInterior>builder();
 
         for (var entry : prepared.entrySet()) {
-            TardisInterior.CODEC.decode(JsonOps.INSTANCE, entry.getValue()).get().ifLeft(pair -> {
-                var interior = pair.getFirst();
-                builder.put(entry.getKey(), interior);
-            }).ifRight(partial -> {
-                MiniTardis.LOGGER.warn("Failed to load Tardis interior {}: {}", entry.getKey(), partial.message());
-            });
+            var pair = TardisInterior.CODEC.decode(JsonOps.INSTANCE, entry.getValue()).getOrThrow();
+            var interior = pair.getFirst();
+            builder.put(entry.getKey(), interior);
+
         }
 
         interiors = builder.build();

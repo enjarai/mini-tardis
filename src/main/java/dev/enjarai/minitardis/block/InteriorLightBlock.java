@@ -1,11 +1,6 @@
 package dev.enjarai.minitardis.block;
 
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
-import eu.pb4.polymer.blocks.api.PolymerTexturedBlock;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
-import eu.pb4.polymer.core.api.utils.PolymerClientDecoded;
-import eu.pb4.polymer.core.api.utils.PolymerKeepModel;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -15,15 +10,12 @@ import net.minecraft.component.type.BlockStateComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -36,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 @SuppressWarnings("deprecation")
-public class InteriorLightBlock extends RedstoneLampBlock implements PerhapsPolymerBlock, TardisAware {
+public class InteriorLightBlock extends RedstoneLampBlock implements TardisAware {
     public static final IntProperty ORDER = IntProperty.of("order", 0, 12);
 
     public InteriorLightBlock(Settings settings) {
@@ -115,15 +107,5 @@ public class InteriorLightBlock extends RedstoneLampBlock implements PerhapsPoly
     @Override
     public boolean emitsRedstonePower(BlockState state) {
         return true;
-    }
-
-    @Override
-    public Block getPerhapsPolymerBlock(BlockState state) {
-        return Blocks.REDSTONE_LAMP;
-    }
-
-    @Override
-    public BlockState getPerhapsPolymerBlockState(BlockState state) {
-        return Blocks.REDSTONE_LAMP.getStateWithProperties(state);
     }
 }

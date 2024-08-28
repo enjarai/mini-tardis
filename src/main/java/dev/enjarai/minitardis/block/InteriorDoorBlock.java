@@ -34,7 +34,7 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
-public class InteriorDoorBlock extends HorizontalFacingBlock implements PerhapsPolymerBlock, TardisAware, BlockWithElementHolder {
+public class InteriorDoorBlock extends HorizontalFacingBlock implements TardisAware, BlockWithElementHolder {
     public static final MapCodec<InteriorDoorBlock> CODEC = createCodec(InteriorDoorBlock::new);
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
 
@@ -152,11 +152,6 @@ public class InteriorDoorBlock extends HorizontalFacingBlock implements PerhapsP
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING, HALF);
-    }
-
-    @Override
-    public Block getPerhapsPolymerBlock(BlockState state) {
-        return Blocks.BARRIER;
     }
 
     @Override

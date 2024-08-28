@@ -70,11 +70,6 @@ public abstract class ScreenBlock extends BlockWithEntity implements PolymerBloc
     }
 
     @Override
-    public BlockState getPolymerBlockState(BlockState state, ServerPlayerEntity player) {
-        return PolymerResourcePackUtils.hasMainPack(player) ? PolymerBlock.super.getPolymerBlockState(state, player) : Blocks.COAL_BLOCK.getDefaultState();
-    }
-
-    @Override
     public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
         return true;
     }

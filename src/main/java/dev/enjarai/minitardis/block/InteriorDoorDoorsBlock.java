@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.item.PolymerModels;
 import dev.enjarai.minitardis.util.PerhapsElementHolder;
-import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import eu.pb4.polymer.virtualentity.api.elements.InteractionElement;
@@ -37,7 +36,7 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
-public class InteriorDoorDoorsBlock extends HorizontalFacingBlock implements PerhapsPolymerBlock, TardisAware, BlockWithElementHolder {
+public class InteriorDoorDoorsBlock extends HorizontalFacingBlock implements TardisAware, BlockWithElementHolder {
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
     public static final MapCodec<InteriorDoorDoorsBlock> CODEC = createCodec(InteriorDoorDoorsBlock::new);
 
@@ -172,16 +171,6 @@ public class InteriorDoorDoorsBlock extends HorizontalFacingBlock implements Per
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING, HALF);
-    }
-
-    @Override
-    public Block getPerhapsPolymerBlock(BlockState state) {
-        return Blocks.LIGHT;
-    }
-
-    @Override
-    public BlockState getPerhapsPolymerBlockState(BlockState state) {
-        return Blocks.LIGHT.getDefaultState().with(LightBlock.LEVEL_15, 0);
     }
 
     protected void closeTardisDoor(World world, BlockPos pos) {

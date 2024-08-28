@@ -1,15 +1,7 @@
 package dev.enjarai.minitardis.block;
 
-import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
 import net.minecraft.block.*;
 import com.mojang.serialization.MapCodec;
-import dev.enjarai.minitardis.item.PolymerModels;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
-import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
-import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
-import eu.pb4.polymer.virtualentity.api.ElementHolder;
-import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
-import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -18,7 +10,6 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.*;
 import net.minecraft.util.shape.VoxelShape;
@@ -30,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import static dev.enjarai.minitardis.block.TardisExteriorExtensionBlock.VISIBLENESS;
 
 @SuppressWarnings("deprecation")
-public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolymerBlock {
+public class TardisExteriorBlock extends BlockWithEntity {
     public static final MapCodec<TardisExteriorBlock> CODEC = createCodec(TardisExteriorBlock::new);
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
 
@@ -62,11 +53,6 @@ public class TardisExteriorBlock extends BlockWithEntity implements PerhapsPolym
     @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
         return new TardisExteriorBlockEntity(pos, state);
-    }
-
-    @Override
-    public Block getPerhapsPolymerBlock(BlockState state) {
-        return Blocks.BARRIER;
     }
 
     @Override

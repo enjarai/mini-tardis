@@ -149,7 +149,7 @@ publishMods {
 	displayName = "${property('mod_version')} for ${property('minecraft_version')}"
 	version = project.version
 	changelog = getRootProject().file("CHANGELOG.md").text
-	type = STABLE
+	type = ALPHA
 	modLoaders.add("fabric")
 
 	def min = property('target_min')

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "#g#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:waxed_copper_bulb"
+    },
+    "g": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "result": {
+    "id": "mini_tardis:waxed_copper_interior_light",
+    "count": 2
+  }
+}

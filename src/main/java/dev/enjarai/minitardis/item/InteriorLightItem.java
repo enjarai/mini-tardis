@@ -14,9 +14,9 @@ import java.util.List;
 
 import static dev.enjarai.minitardis.block.InteriorLightBlock.ORDER;
 
-public class InteriorLightItem extends TooltipPolymerBlockItem {
-    public InteriorLightItem(Block block, Settings settings, Item virtualItem) {
-        super(block, settings, virtualItem);
+public class InteriorLightItem extends TooltipBlockItem {
+    public InteriorLightItem(Block block, Settings settings) {
+        super(block, settings);
     }
 
     @Override

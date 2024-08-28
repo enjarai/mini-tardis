@@ -57,10 +57,11 @@ public class TardisExteriorBlock extends BlockWithEntity {
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        if (!world.isClient()
-                && hit.getSide() == state.get(FACING)
-                && world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity) {
-            blockEntity.teleportEntityIn(player);
+        if (hit.getSide() == state.get(FACING)) {
+            if (!world.isClient()
+                    && world.getBlockEntity(pos) instanceof TardisExteriorBlockEntity blockEntity) {
+                blockEntity.teleportEntityIn(player);
+            }
             return ActionResult.SUCCESS;
         }
         return super.onUse(state, world, pos, player, hit);

@@ -9,7 +9,6 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -27,7 +26,23 @@ public class ModItems {
     public static final FloppyItem FLOPPY = register("floppy", new FloppyItem(new Item.Settings().maxCount(1)));
     public static final TardisPlatingItem TARDIS_PLATING = register("tardis_plating", new TardisPlatingItem(new Item.Settings()));
     public static final InteriorLightItem INTERIOR_LIGHT = register("interior_light",
-            new InteriorLightItem(ModBlocks.INTERIOR_LIGHT, new Item.Settings(), Items.REDSTONE_LAMP));
+            new InteriorLightItem(ModBlocks.INTERIOR_LIGHT, new Item.Settings()));
+    public static final InteriorLightItem COPPER_INTERIOR_LIGHT = register("copper_interior_light",
+            new InteriorLightItem(ModBlocks.COPPER_INTERIOR_LIGHT, new Item.Settings()));
+    public static final InteriorLightItem EXPOSED_COPPER_INTERIOR_LIGHT = register("exposed_copper_interior_light",
+            new InteriorLightItem(ModBlocks.EXPOSED_COPPER_INTERIOR_LIGHT, new Item.Settings()));
+    public static final InteriorLightItem WEATHERED_COPPER_INTERIOR_LIGHT = register("weathered_copper_interior_light",
+            new InteriorLightItem(ModBlocks.WEATHERED_COPPER_INTERIOR_LIGHT, new Item.Settings()));
+    public static final InteriorLightItem OXIDIZED_COPPER_INTERIOR_LIGHT = register("oxidized_copper_interior_light",
+            new InteriorLightItem(ModBlocks.OXIDIZED_COPPER_INTERIOR_LIGHT, new Item.Settings()));
+    public static final InteriorLightItem WAXED_COPPER_INTERIOR_LIGHT = register("waxed_copper_interior_light",
+            new InteriorLightItem(ModBlocks.WAXED_COPPER_INTERIOR_LIGHT, new Item.Settings()));
+    public static final InteriorLightItem WAXED_EXPOSED_COPPER_INTERIOR_LIGHT = register("waxed_exposed_copper_interior_light",
+            new InteriorLightItem(ModBlocks.WAXED_EXPOSED_COPPER_INTERIOR_LIGHT, new Item.Settings()));
+    public static final InteriorLightItem WAXED_WEATHERED_COPPER_INTERIOR_LIGHT = register("waxed_weathered_copper_interior_light",
+            new InteriorLightItem(ModBlocks.WAXED_WEATHERED_COPPER_INTERIOR_LIGHT, new Item.Settings()));
+    public static final InteriorLightItem WAXED_OXIDIZED_COPPER_INTERIOR_LIGHT = register("waxed_oxidized_copper_interior_light",
+            new InteriorLightItem(ModBlocks.WAXED_OXIDIZED_COPPER_INTERIOR_LIGHT, new Item.Settings()));
     public static final TardisLodestoneCompassItem TARDIS_LODESTONE_COMPASS = register("tardis_lodestone_compass",
             new TardisLodestoneCompassItem(new Item.Settings()));
 

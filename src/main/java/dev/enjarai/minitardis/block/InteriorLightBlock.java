@@ -1,10 +1,7 @@
 package dev.enjarai.minitardis.block;
 
-import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.RedstoneLampBlock;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.BlockStateComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,7 +11,9 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.IntProperty;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -27,21 +26,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-@SuppressWarnings("deprecation")
-public class InteriorLightBlock extends RedstoneLampBlock implements TardisAware {
+public class InteriorLightBlock extends Block implements TardisAware {
     public static final IntProperty ORDER = IntProperty.of("order", 0, 12);
+    public static final BooleanProperty LIT = Properties.LIT;
 
     public InteriorLightBlock(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState().with(LIT, false).with(ORDER, 0));
     }
-
-    @Nullable
-    @Override
-    public BlockState getPlacementState(ItemPlacementContext ctx) {
-        return getDefaultState();
-    }
-
 
     @Override
     public ItemStack getPickStack(WorldView worldView, BlockPos pos, BlockState state) {
@@ -53,10 +45,6 @@ public class InteriorLightBlock extends RedstoneLampBlock implements TardisAware
         }
 
         return stack;
-    }
-
-    @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
     }
 
     @Override

@@ -34,7 +34,7 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("deprecation")
-public class InteriorDoorBlock extends HorizontalFacingBlock implements TardisAware, BlockWithElementHolder {
+public class InteriorDoorBlock extends HorizontalFacingBlock implements TardisAware {
     public static final MapCodec<InteriorDoorBlock> CODEC = createCodec(InteriorDoorBlock::new);
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;
 
@@ -93,12 +93,11 @@ public class InteriorDoorBlock extends HorizontalFacingBlock implements TardisAw
 
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
-        // TODO uncomment when polymer fixes the™
-//        if (hit.getSide() == state.get(FACING)) {
+        if (hit.getSide() == state.get(FACING)) {
             getTardis(world).ifPresent(tardis -> tardis.teleportEntityOut(player, state.get(HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos));
             return ActionResult.SUCCESS;
-//        }
-//        return super.onUse(state, world, pos, player, hand, hit);
+        }
+        return super.onUse(state, world, pos, player, hit);
     }
 
     @Override
@@ -152,24 +151,5 @@ public class InteriorDoorBlock extends HorizontalFacingBlock implements TardisAw
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(FACING, HALF);
-    }
-
-    @Override
-    public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        if (initialBlockState.get(HALF) == DoubleBlockHalf.LOWER) {
-            var facing = initialBlockState.get(FACING);
-
-            var exteriorElement = new ItemDisplayElement();
-            exteriorElement.setItem(PolymerModels.getStack(PolymerModels.INTERIOR_DOOR));
-            exteriorElement.setOffset(new Vec3d(0, 1, 0));
-            exteriorElement.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
-
-            return new PerhapsElementHolder() {
-                {
-                    addElement(exteriorElement);
-                }
-            };
-        }
-        return null;
     }
 }

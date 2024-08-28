@@ -6,6 +6,14 @@
     "mini_tardis:wall_screen",
     "mini_tardis:coordinate_lock",
     "mini_tardis:interior_light",
+    "mini_tardis:copper_interior_light",
+    "mini_tardis:exposed_copper_interior_light",
+    "mini_tardis:weathered_copper_interior_light",
+    "mini_tardis:oxidized_copper_interior_light",
+    "mini_tardis:waxed_copper_interior_light",
+    "mini_tardis:waxed_exposed_copper_interior_light",
+    "mini_tardis:waxed_weathered_copper_interior_light",
+    "mini_tardis:waxed_oxidized_copper_interior_light",
     "mini_tardis:power_coupling",
     "mini_tardis:makeshift_engine"
   ]

@@ -84,8 +84,14 @@ public class BootingUpState extends TransitionalFlightState {
     @Override
     public void drawScreenImage(TardisControl controls, DrawableCanvas canvas, ScreenBlockEntity blockEntity) {
         CanvasUtils.fill(canvas, 0, 0, 128, 96, CanvasColor.BLACK_HIGH);
+
+        List<Line> logs;
+        synchronized (consoleLogs) {
+            logs = List.copyOf(consoleLogs);
+        }
+
         // Iterate only over the last 10 lines to simulate scrolling
-        var subList = consoleLogs.subList(Math.max(0, consoleLogs.size() - 10), consoleLogs.size());
+        var subList = logs.subList(Math.max(0, consoleLogs.size() - 10), consoleLogs.size());
         for (int i = 0; i < subList.size(); i++) {
             var line = subList.get(i);
             var y = 2 + i * 9;
@@ -146,7 +152,9 @@ public class BootingUpState extends TransitionalFlightState {
         };
 
         if (line != null) {
-            consoleLogs.add(line);
+            synchronized (consoleLogs) {
+                consoleLogs.add(line);
+            }
         }
     }
 

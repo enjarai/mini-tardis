@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 
-@SuppressWarnings("deprecation")
 public class ConsoleLeverBlock extends LeverBlock implements PolymerBlock, TardisAware, ConsoleInput {
     private final BiFunction<TardisControl, Boolean, Boolean> controlInput;
     @Nullable

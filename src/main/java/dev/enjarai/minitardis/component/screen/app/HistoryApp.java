@@ -7,12 +7,11 @@ import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.HistoryEntry;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.font.DefaultFonts;
 import dev.enjarai.minitardis.component.screen.element.AppElement;
 import dev.enjarai.minitardis.component.screen.element.SmallButtonElement;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -61,19 +60,19 @@ public class HistoryApp implements ScreenApp {
 
             @Override
             public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                DefaultFonts.VANILLA.drawText(canvas, this.currentPage + 1 + "/" + ((history.size() - 1) / ENTRIES_PER_PAGE + 1), 62, 7, 8, CanvasColor.WHITE_HIGH);
+                DefaultFonts.VANILLA.drawText(canvas, this.currentPage + 1 + "/" + ((history.size() - 1) / ENTRIES_PER_PAGE + 1), 62, 7, 8, CanvasColors.WHITE);
 
                 for (int i = currentPage * ENTRIES_PER_PAGE; i < Math.min((currentPage * ENTRIES_PER_PAGE) + ENTRIES_PER_PAGE, history.size()); i++) {
                     var relativeIndex = i - currentPage * ENTRIES_PER_PAGE;
                     var entry = history.get(i);
 
                     if (entry.location().equals(controls.getTardis().getDestination().orElse(null))) {
-                        CanvasUtils.draw(canvas, 2, 18 + 26 * relativeIndex, TardisCanvasUtils.getSprite("history_current_outline"));
+                        canvas.draw(2, 18 + 26 * relativeIndex, TardisCanvasUtils.getSprite("history_current_outline"));
                     }
 
                     var numText = (i + 1) + ".";
                     var numWidth = DefaultFonts.VANILLA.getTextWidth(numText, 8);
-                    DefaultFonts.VANILLA.drawText(canvas, numText, 4, 20 + 26 * relativeIndex, 8, CanvasColor.WHITE_HIGH);
+                    DefaultFonts.VANILLA.drawText(canvas, numText, 4, 20 + 26 * relativeIndex, 8, CanvasColors.WHITE);
                     GpsApp.drawLocation(Optional.of(entry.location()), canvas, 4 + numWidth + 4, 20 + 26 * relativeIndex);
                 }
 
@@ -90,7 +89,7 @@ public class HistoryApp implements ScreenApp {
 
             @Override
             public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("history_background"));
+                canvas.draw(0, 0, TardisCanvasUtils.getSprite("history_background"));
             }
         };
     }
@@ -103,7 +102,7 @@ public class HistoryApp implements ScreenApp {
 
     @Override
     public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/history"));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("app/history"));
     }
 
     @Override

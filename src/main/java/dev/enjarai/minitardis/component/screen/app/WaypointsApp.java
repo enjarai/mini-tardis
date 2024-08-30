@@ -6,14 +6,13 @@ import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.TardisLocation;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.font.DefaultFonts;
 import dev.enjarai.minitardis.component.screen.element.SmallButtonElement;
 import dev.enjarai.minitardis.component.screen.element.WaypointListElement;
 import dev.enjarai.minitardis.data.ModDataStuff;
 import dev.enjarai.minitardis.data.RandomAppLootFunction;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.server.world.ServerWorld;
@@ -75,19 +74,19 @@ public class WaypointsApp implements ScreenApp {
                 deleteLocation.visible = false;
 
                 if (waypointList.selected == null) {
-                    DefaultFonts.VANILLA.drawText(canvas, "Select Waypoint below", 6, 22 + 9, 8, CanvasColor.LIGHT_GRAY_HIGH);
+                    DefaultFonts.VANILLA.drawText(canvas, "Select Waypoint below", 6, 22 + 9, 8, CanvasColors.LIGHT_GRAY);
                 } else {
                     var location = waypointList.selected.getWaypointValue();
                     if (location == null) {
                         storeLocation.visible = true;
 
-                        DefaultFonts.VANILLA.drawText(canvas, "Empty", 6, 22 + 9, 8, CanvasColor.LIGHT_GRAY_HIGH);
+                        DefaultFonts.VANILLA.drawText(canvas, "Empty", 6, 22 + 9, 8, CanvasColors.LIGHT_GRAY);
                     } else {
                         loadLocation.visible = true;
                         deleteLocation.visible = true;
 
                         if (location.equals(controls.getTardis().getDestination().orElse(null))) {
-                            CanvasUtils.draw(canvas, 2, 18, TardisCanvasUtils.getSprite("history_current_outline"));
+                            canvas.draw(2, 18, TardisCanvasUtils.getSprite("history_current_outline"));
                         }
                         GpsApp.drawLocation(Optional.of(location), canvas, 6, 22);
                     }
@@ -97,14 +96,14 @@ public class WaypointsApp implements ScreenApp {
 
             @Override
             public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("waypoints_background"));
+                canvas.draw(0, 0, TardisCanvasUtils.getSprite("waypoints_background"));
             }
         };
     }
 
     @Override
     public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/waypoints"));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("app/waypoints"));
     }
 
     @Override

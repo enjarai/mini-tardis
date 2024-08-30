@@ -2,8 +2,8 @@ package dev.enjarai.minitardis.component.screen.element;
 
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.component.TardisControl;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.impl.view.SubView;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.SubView;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 
@@ -27,7 +27,7 @@ public abstract class PlacedElement implements AppElement {
     }
 
     @Override
-    public void draw(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
+    public void draw(TardisControl controls, ScreenBlockEntity blockEntity, dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas canvas) {
         if (visible) {
             drawElement(controls, blockEntity, new SubView(canvas, x, y, width, height));
         }

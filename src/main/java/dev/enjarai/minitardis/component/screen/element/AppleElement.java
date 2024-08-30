@@ -4,8 +4,7 @@ import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.app.SnakeApp;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 import org.joml.Vector2i;
@@ -22,7 +21,7 @@ public class AppleElement extends PlacedElement {
 
     @Override
     protected void drawElement(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("apple"));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("apple"));
     }
 
     @Override

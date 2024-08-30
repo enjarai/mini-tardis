@@ -14,12 +14,14 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ClickType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -31,7 +33,6 @@ import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-@SuppressWarnings("deprecation")
 public class ConsoleScreenBlock extends ScreenBlock {
     public static final MapCodec<ConsoleScreenBlock> CODEC = createCodec(ConsoleScreenBlock::new);
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
@@ -56,7 +57,30 @@ public class ConsoleScreenBlock extends ScreenBlock {
         var facing = state.get(FACING);
         var hitSide = hit.getSide();
 
-        if (hitSide == facing.rotateYClockwise() || hitSide == facing.rotateYCounterclockwise()) {
+        if (hitSide == facing) {
+            if (world.getBlockEntity(pos) instanceof ScreenBlockEntity blockEntity) {
+                var relative = hit.getPos().toVector3f()
+                        .sub(pos.getX(), pos.getY(), pos.getZ());
+                var y = 1 - relative.y();
+                var x = switch (facing) {
+                    case NORTH -> 1 - relative.x();
+                    case SOUTH -> relative.x();
+                    case WEST -> relative.z();
+                    case EAST -> 1 - relative.z();
+                    default -> throw new IllegalStateException("Unexpected value: " + facing);
+                };
+
+                int x2 = (int) (x * 128);
+                int y2 = (int) (y * 128);
+
+                if (x2 >= 0 && x2 < 128 && y2 >= 16 && y2 < 112) {
+                    if (player instanceof ServerPlayerEntity serverPlayer) {
+                        blockEntity.handleClick(serverPlayer, ClickType.RIGHT, x2, y2);
+                    }
+                    return ActionResult.SUCCESS;
+                }
+            }
+        } else if (hitSide == facing.rotateYClockwise() || hitSide == facing.rotateYCounterclockwise()) {
             var newPos = pos.offset(hitSide).offset(facing.getOpposite());
 
             if (world.getBlockState(newPos).isReplaceable()) {
@@ -136,27 +160,5 @@ public class ConsoleScreenBlock extends ScreenBlock {
         return state.get(FACING).getOpposite() == direction && !state.canPlaceAt(world, pos)
                 ? Blocks.AIR.getDefaultState()
                 : super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
-    }
-
-    @Override
-    public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        return new ScreenElementHolder(initialBlockState, PolymerModels.ROTATING_MONITOR) {
-            @Override
-            void applyModelTranslations(ItemDisplayElement element, BlockState state) {
-                var facing = state.get(FACING);
-
-                element.setTranslation(facing.getOpposite().getUnitVector().mul(0.5f));
-                element.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
-            }
-
-            @Override
-            void applyFloppyTranslations(ItemDisplayElement element, BlockState state) {
-                var facing = state.get(FACING);
-
-                element.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(facing.asRotation()));
-                element.setScale(new Vector3f(0.6f));
-                element.setTranslation(facing.getUnitVector().mul(0.4f).add(0, -0.3f, 0));
-            }
-        };
     }
 }

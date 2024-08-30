@@ -7,10 +7,9 @@ import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisControl;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.font.DefaultFonts;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
@@ -83,7 +82,7 @@ public class BootingUpState extends TransitionalFlightState {
 
     @Override
     public void drawScreenImage(TardisControl controls, DrawableCanvas canvas, ScreenBlockEntity blockEntity) {
-        CanvasUtils.fill(canvas, 0, 0, 128, 96, CanvasColor.BLACK_HIGH);
+        canvas.fillRaw(0, 0, 128, 96, CanvasColors.BLACK);
 
         List<Line> logs;
         synchronized (consoleLogs) {
@@ -95,16 +94,16 @@ public class BootingUpState extends TransitionalFlightState {
         for (int i = 0; i < subList.size(); i++) {
             var line = subList.get(i);
             var y = 2 + i * 9;
-            DefaultFonts.VANILLA.drawText(canvas, line.line(), 2, y, 8, CanvasColor.WHITE_HIGH);
+            DefaultFonts.VANILLA.drawText(canvas, line.line(), 2, y, 8, CanvasColors.WHITE);
 
             if (line.loads()) {
                 var width = DefaultFonts.VANILLA.getTextWidth(line.line(), 8);
 
                 if (i == subList.size() - 1) {
                     DefaultFonts.VANILLA.drawText(canvas, getSpinnyThing(controls.getTardis().getInteriorWorld().getTime()),
-                            width + 6, y, 8, CanvasColor.ORANGE_HIGH);
+                            width + 6, y, 8, CanvasColors.ORANGE);
                 } else {
-                    DefaultFonts.VANILLA.drawText(canvas, "Done", width + 6, y, 8, CanvasColor.LIME_HIGH);
+                    DefaultFonts.VANILLA.drawText(canvas, "Done", width + 6, y, 8, CanvasColors.LIME);
                 }
             }
         }

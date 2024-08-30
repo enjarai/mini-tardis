@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 
 import java.util.function.Function;
 
-@SuppressWarnings("deprecation")
 public class ConsoleCircuitryBlock extends Block implements PolymerBlock, TardisAware, ConsoleInput {
     private final Function<TardisControl, Boolean> controlInput;
 

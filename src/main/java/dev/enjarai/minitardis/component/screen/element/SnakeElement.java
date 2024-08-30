@@ -4,9 +4,8 @@ import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.app.SnakeApp;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import eu.pb4.mapcanvas.impl.view.SubView;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.SubView;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +42,7 @@ public class SnakeElement extends PlacedElement {
 
     @Override
     protected void drawElement(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("snake"));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("snake"));
     }
 
     @Override

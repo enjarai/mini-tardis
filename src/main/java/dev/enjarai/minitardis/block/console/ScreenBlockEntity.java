@@ -1,26 +1,28 @@
 package dev.enjarai.minitardis.block.console;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.Tardis;
-import dev.enjarai.minitardis.component.screen.TardisScreenView;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.CanvasImage;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.CanvasUtils;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.SubView;
+import dev.enjarai.minitardis.component.screen.canvas.TardisScreenView;
 import dev.enjarai.minitardis.component.screen.app.AppView;
 import dev.enjarai.minitardis.component.screen.app.ScreenAppType;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.CanvasImage;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import eu.pb4.mapcanvas.api.utils.VirtualDisplay;
-import eu.pb4.mapcanvas.impl.view.SubView;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.font.DefaultFonts;
+import io.netty.util.concurrent.DefaultThreadFactory;
+import io.wispforest.endec.impl.KeyedEndec;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -38,7 +40,9 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -46,14 +50,17 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class ScreenBlockEntity extends BlockEntity implements TardisAware {
     private static final int MAX_DISPLAY_DISTANCE = 30;
-    private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(4, new ThreadFactoryBuilder().setDaemon(true).build());
+    private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(4,
+            new DefaultThreadFactory(ScreenBlockEntity.class, true));
+    public static final KeyedEndec<CanvasImage> IMAGE_ENDEC = CanvasImage.ENDEC.keyed("display", () -> new CanvasImage(128, 96));
+
     public final Random drawRandom = new LocalRandom(69420); // funny numbers haha
-    protected final VirtualDisplay display;
     protected final TardisScreenView canvas;
-    protected final CanvasImage backingCanvas;
+    public CanvasImage display;
+    protected int lastDisplayHash = 0;
     private final List<ServerPlayerEntity> addedPlayers = new ArrayList<>();
     public SimpleInventory inventory = new SimpleInventory(1);
-    public CanvasColor backgroundColor = CanvasColor.TERRACOTTA_BLUE_LOWEST;
+    public short backgroundColor = CanvasColors.BACKGROUND;
     @Nullable
     AppView currentView;
     @Nullable
@@ -63,16 +70,8 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
 
     public ScreenBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        var facing = getFacing(pos, state);
-        this.display = VirtualDisplay
-                .builder(DrawableCanvas.create(), getPos(pos, state), facing)
-                .rotation(getRotation(pos, state))
-                .glowing()
-                .invisible()
-                .callback(this::handleClick)
-                .build();
-        this.backingCanvas = new CanvasImage(128, 128);
-        this.canvas = new TardisScreenView(new SubView(backingCanvas, 0, 16, 128, 96));
+        this.display = new CanvasImage(128, 96);
+        this.canvas = new TardisScreenView(display);
     }
 
     protected abstract BlockPos getPos(BlockPos pos, BlockState state);
@@ -89,11 +88,18 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
 
         nbt.put("inventory", inventory.toNbtList(registryLookup));
 
-        nbt.putInt("backgroundColor", backgroundColor.getRgbColor());
+        nbt.putShort("backgroundColor", backgroundColor);
+    }
+
+    protected void writeNetNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        nbt.put(IMAGE_ENDEC, display);
     }
 
     @Override
     public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
+        display = nbt.get(IMAGE_ENDEC);
+        canvas.setSource(display);
+
         if (nbt.contains("selectedApp")) {
             selectedApp = Identifier.tryParse(nbt.getString("selectedApp"));
         }
@@ -103,8 +109,20 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
         }
 
         if (nbt.contains("backgroundColor")) {
-            backgroundColor = CanvasUtils.findClosestColor(nbt.getInt("backgroundColor"));
+            backgroundColor = nbt.getShort("backgroundColor");
         }
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
+
+    public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup registryLookup) {
+        NbtCompound nbtCompound = new NbtCompound();
+        this.writeNetNbt(nbtCompound, registryLookup);
+        return nbtCompound;
     }
 
     public void tick(World world, BlockPos pos, BlockState state) {
@@ -120,18 +138,10 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
             var viewOverridden = getTardis(world).map(t -> t.getState().overrideScreenImage(t)).orElse(false);
             List<ServerPlayerEntity> nearbyPlayers = isDisabled && !viewOverridden ? List.of() : serverWorld.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
 
-            addedPlayers.removeIf(player -> {
-                if (!nearbyPlayers.contains(player)) {
-                    display.removePlayer(player);
-                    display.getCanvas().removePlayer(player);
-                    return true;
-                }
-                return false;
-            });
+            addedPlayers.removeIf(player -> !nearbyPlayers.contains(player));
             nearbyPlayers.forEach(player -> {
                 if (!addedPlayers.contains(player)) {
-                    display.addPlayer(player);
-                    display.getCanvas().addPlayer(player);
+                    player.networkHandler.sendPacket(toUpdatePacket());
                     addedPlayers.add(player);
                 }
             });
@@ -162,7 +172,6 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
     public void markRemoved() {
         super.markRemoved();
 
-        display.destroy();
         addedPlayers.clear();
         if (threadFuture != null) {
             threadFuture.cancel(true);
@@ -170,7 +179,6 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
     }
 
     public void cleanUpForRemoval() {
-        display.destroy();
         addedPlayers.clear();
         if (threadFuture != null) {
             threadFuture.cancel(true);
@@ -182,18 +190,28 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
         }
     }
 
+    public void pushUpdates() {
+        var hash = display.hashCode();
+
+        if (hash != lastDisplayHash) {
+            addedPlayers.forEach(player -> player.networkHandler.sendPacket(toUpdatePacket()));
+
+            lastDisplayHash = hash;
+        }
+    }
+
     private void refresh(Tardis tardis) {
-        CanvasUtils.fill(canvas, 0, 0, canvas.getWidth(), canvas.getHeight(), backgroundColor);
+        canvas.fillRaw(backgroundColor);
 
         var controls = tardis.getControls();
         if (!tardis.getState().overrideScreenImage(tardis)) {
             if (currentView != null) {
                 currentView.drawBackground(this, canvas);
                 currentView.draw(this, canvas);
-                CanvasUtils.draw(canvas, 96 + 2, 2, TardisCanvasUtils.getSprite("screen_side_button"));
-                DefaultFonts.VANILLA.drawText(canvas, "Menu", 96 + 2 + 2, 2 + 4, 8, CanvasColor.WHITE_HIGH);
+                canvas.draw(96 + 2, 2, TardisCanvasUtils.getSprite("screen_side_button"));
+                DefaultFonts.VANILLA.drawText(canvas, "Menu", 96 + 2 + 2, 2 + 4, 8, CanvasUtils.toLimitedColor(0xffffff));
             } else {
-                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("screen_background"));
+                canvas.draw(0, 0, TardisCanvasUtils.getSprite("screen_background"));
 
                 var apps = controls.getAllApps();
                 for (int i = 0; i < apps.size(); i++) {
@@ -211,8 +229,9 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
         }
 
         canvas.refresh(drawRandom);
-        CanvasUtils.draw(display.getCanvas(), 0, 0, backingCanvas);
-        display.getCanvas().sendUpdates();
+//        CanvasUtils.draw(display.getCanvas(), 0, 0, display);
+//        display.getCanvas().sendUpdates();
+        pushUpdates();
     }
 
     protected void handleClick(ServerPlayerEntity player, ClickType type, int x, int y) {

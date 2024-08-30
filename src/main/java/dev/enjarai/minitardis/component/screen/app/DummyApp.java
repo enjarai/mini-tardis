@@ -4,9 +4,8 @@ import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 
@@ -18,7 +17,7 @@ public class DummyApp implements ScreenApp {
         return new AppView() {
             @Override
             public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                TardisCanvasUtils.drawCenteredText(canvas, "This app does not exist anymore.", 64, 40, CanvasColor.WHITE_HIGH);
+                TardisCanvasUtils.drawCenteredText(canvas, "This app does not exist anymore.", 64, 40, CanvasColors.WHITE);
             }
 
             @Override
@@ -30,7 +29,7 @@ public class DummyApp implements ScreenApp {
 
     @Override
     public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/dummy"));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("app/dummy"));
     }
 
     @Override

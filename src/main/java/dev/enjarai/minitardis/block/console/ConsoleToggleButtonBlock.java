@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 
 import java.util.function.BiFunction;
 
-@SuppressWarnings("deprecation")
 public class ConsoleToggleButtonBlock extends ConsoleButtonBlock {
     private final BiFunction<TardisControl, Boolean, Boolean> controlInput;
 

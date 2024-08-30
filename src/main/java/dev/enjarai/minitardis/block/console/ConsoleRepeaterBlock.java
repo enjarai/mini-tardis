@@ -22,7 +22,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 
-@SuppressWarnings("deprecation")
 public class ConsoleRepeaterBlock extends Block implements PolymerBlock, ConsoleInput, TardisAware {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final IntProperty DELAY = Properties.DELAY;

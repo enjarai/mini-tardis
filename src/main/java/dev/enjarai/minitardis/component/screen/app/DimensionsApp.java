@@ -5,13 +5,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.font.DefaultFonts;
 import dev.enjarai.minitardis.component.screen.element.DimensionStarElement;
 import dev.enjarai.minitardis.component.screen.element.SmallButtonElement;
 import dev.enjarai.minitardis.data.RandomAppLootFunction;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
@@ -80,15 +79,15 @@ public class DimensionsApp implements ScreenApp {
 
                     if (!accessibleDimensions.contains(worldId)) {
                         saveDimButton.visible = true;
-                        DefaultFonts.VANILLA.drawText(canvas, "Unknown", 5, 6, 8, CanvasColor.LIGHT_GRAY_HIGH);
+                        DefaultFonts.VANILLA.drawText(canvas, "Unknown", 5, 6, 8, CanvasColors.LIGHT_GRAY);
                     } else {
                         DefaultFonts.VANILLA.drawText(
                                 canvas, translateWorldId(worldId).getString(),
-                                5, 6, 8, CanvasColor.LIGHT_GRAY_HIGH
+                                5, 6, 8, CanvasColors.LIGHT_GRAY
                         );
                     }
                 }, () -> {
-                    DefaultFonts.VANILLA.drawText(canvas, "None", 5, 6, 8, CanvasColor.LIGHT_GRAY_HIGH);
+                    DefaultFonts.VANILLA.drawText(canvas, "None", 5, 6, 8, CanvasColors.LIGHT_GRAY);
                 });
 
 
@@ -105,7 +104,7 @@ public class DimensionsApp implements ScreenApp {
 
             @Override
             public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("dimensions_background"));
+                canvas.draw(0, 0, TardisCanvasUtils.getSprite("dimensions_background"));
             }
         };
     }
@@ -123,7 +122,7 @@ public class DimensionsApp implements ScreenApp {
 
     @Override
     public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/dimensions"));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("app/dimensions"));
     }
 
     @Override

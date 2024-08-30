@@ -4,9 +4,8 @@ import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
 import dev.enjarai.minitardis.data.RandomAppLootFunction;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -28,7 +27,7 @@ public interface ScreenApp {
         if (sprite.getWidth() == 0 && sprite.getHeight() == 0) {
             sprite = TardisCanvasUtils.getSprite("app/dummy");
         }
-        CanvasUtils.draw(canvas, 0, 0, sprite);
+        canvas.draw(0, 0, sprite);
     }
 
     default boolean canBeUninstalled() {

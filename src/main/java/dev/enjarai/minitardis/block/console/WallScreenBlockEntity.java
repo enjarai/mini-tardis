@@ -2,6 +2,7 @@ package dev.enjarai.minitardis.block.console;
 
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.ModBlocks;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
@@ -18,7 +19,7 @@ import net.minecraft.util.math.Direction;
 public class WallScreenBlockEntity extends ScreenBlockEntity {
     public WallScreenBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.WALL_SCREEN_ENTITY, pos, state);
-        backgroundColor = CanvasColor.DARK_CRIMSON_LOWEST;
+        backgroundColor = CanvasColors.BACKGROUND_RED;
     }
 
     @Override

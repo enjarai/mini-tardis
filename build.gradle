@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.6-SNAPSHOT'
+	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
 	id "me.modmuss50.mod-publish-plugin" version "0.4.4"
 }
@@ -32,6 +32,8 @@ repositories {
 
 	// Crash pipe
 	maven { url "https://maven.kikugie.dev/releases"}
+
+	maven { url "https://maven.wispforest.io/releases" }
 }
 
 loom {
@@ -85,6 +87,9 @@ dependencies {
 	modApi include("me.lucko:fabric-permissions-api:${property('deps.permissions_api')}")
 	modApi include("xyz.nucleoid:fantasy:${property('deps.fantasy')}")
 	modApi include("eu.pb4:map-canvas-api:${property('deps.map_api')}")
+
+	annotationProcessor modApi("io.wispforest:owo-lib:${property('deps.owo-lib')}")
+	include "io.wispforest:owo-sentinel:${property('deps.owo-lib')}"
 }
 
 processResources {
@@ -101,7 +106,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 17
+	it.options.release = 21
 }
 
 java {
@@ -110,8 +115,8 @@ java {
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {

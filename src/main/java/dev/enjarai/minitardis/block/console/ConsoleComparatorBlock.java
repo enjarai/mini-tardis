@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 
-@SuppressWarnings("deprecation")
 public class ConsoleComparatorBlock extends Block implements PolymerBlock, ConsoleInput, TardisAware {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final EnumProperty<ComparatorMode> COMPARATOR_MODE = Properties.COMPARATOR_MODE;

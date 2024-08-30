@@ -251,8 +251,6 @@ public class ModBlocks {
     }
 
     private static <T extends BlockEntity> BlockEntityType<T> registerEntity(String path, BlockEntityType.BlockEntityFactory<T> factory, Block... blocks) {
-        var blockEntityType = Registry.register(Registries.BLOCK_ENTITY_TYPE, MiniTardis.id(path), BlockEntityType.Builder.create(factory, blocks).build());
-        PolymerBlockUtils.registerBlockEntity(blockEntityType);
-        return blockEntityType;
+        return Registry.register(Registries.BLOCK_ENTITY_TYPE, MiniTardis.id(path), BlockEntityType.Builder.create(factory, blocks).build());
     }
 }

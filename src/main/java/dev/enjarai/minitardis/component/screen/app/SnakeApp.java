@@ -5,12 +5,11 @@ import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.font.DefaultFonts;
 import dev.enjarai.minitardis.component.screen.element.AppleElement;
 import dev.enjarai.minitardis.component.screen.element.SnakeElement;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -29,7 +28,7 @@ public class SnakeApp implements ScreenApp {
 
     @Override
     public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/snake"));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("app/snake"));
     }
 
     @Override
@@ -58,28 +57,28 @@ public class SnakeApp implements ScreenApp {
         @Override
         public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
             //if(died)return;
-            if(pausedTicks % 16 > 7)return;
+            if (pausedTicks % 16 > 7) return;
             snake.draw(tardisControl, blockEntity, canvas);
             apple.draw(tardisControl, blockEntity, canvas);
             String string = isPaused ? "Paused" : "";
             string = died ? "You died" : string;
             string = won ? "You won!" : string;
-            DefaultFonts.VANILLA.drawText(canvas, string.isEmpty() ? "Score: " + snake.tailLength : string, 5, 6, 8, CanvasColor.LIGHT_GRAY_HIGH);
+            DefaultFonts.VANILLA.drawText(canvas, string.isEmpty() ? "Score: " + snake.tailLength : string, 5, 6, 8, CanvasColors.LIGHT_GRAY);
         }
 
         @Override
         public void screenTick(ScreenBlockEntity blockEntity) {
-            if(won) {
+            if (won) {
                 wonTicks++;
-                if(wonTicks > 10)blockEntity.closeApp();
+                if (wonTicks > 10) blockEntity.closeApp();
                 return;
             }
-            if(died) {
+            if (died) {
                 ticksDead++;
-                if(ticksDead > 10)blockEntity.closeApp();
+                if (ticksDead > 10) blockEntity.closeApp();
                 return;
             }
-            if(isPaused) {
+            if (isPaused) {
                 pausedTicks++;
                 return;
             }
@@ -89,9 +88,9 @@ public class SnakeApp implements ScreenApp {
 
         @Override
         public boolean onClick(ScreenBlockEntity blockEntity, ServerPlayerEntity player, ClickType type, int x, int y) {
-            if(this.won)return false;
-            if(this.died)return false;
-            if(type == ClickType.LEFT) {
+            if (this.won) return false;
+            if (this.died) return false;
+            if (type == ClickType.LEFT) {
                 this.isPaused = !this.isPaused;
                 this.pausedTicks = 0;
                 return false;
@@ -108,7 +107,7 @@ public class SnakeApp implements ScreenApp {
 
         @Override
         public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-            CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("dimensions_background"));
+            canvas.draw(0, 0, TardisCanvasUtils.getSprite("dimensions_background"));
         }
 
         public void snakeDied(ScreenBlockEntity blockEntity) {

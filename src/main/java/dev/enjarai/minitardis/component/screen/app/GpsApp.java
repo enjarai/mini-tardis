@@ -7,10 +7,9 @@ import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.PartialTardisLocation;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.TardisLocation;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.font.DefaultFonts;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 
@@ -26,15 +25,15 @@ public class GpsApp implements ScreenApp {
             @Override
             public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var current = controls.getTardis().getCurrentLocation();
-                DefaultFonts.VANILLA.drawText(canvas, "Current Location", 3, 4, 8, CanvasColor.WHITE_HIGH);
+                DefaultFonts.VANILLA.drawText(canvas, "Current Location", 3, 4, 8, CanvasColors.WHITE);
                 drawLocation(current, canvas, 3, 4 + 20);
 
                 var destination = controls.getTardis().getDestination();
-                DefaultFonts.VANILLA.drawText(canvas, "Destination", 3, 4 + 41, 8, CanvasColor.WHITE_HIGH);
+                DefaultFonts.VANILLA.drawText(canvas, "Destination", 3, 4 + 41, 8, CanvasColors.WHITE);
                 drawLocation(destination, canvas, 3, 4 + 61);
 
                 var isLocked = controls.isDestinationLocked();
-                var color = isLocked ? CanvasColor.LIME_HIGH : CanvasColor.RED_HIGH;
+                var color = isLocked ? CanvasColors.LIME_DULL : CanvasColors.RED_DULL;
 //        CanvasUtils.fill(canvas, 2, 84, 126, 94, color);
                 var lockedText = isLocked ? ">> Locked <<" : "|| Unlocked ||";
                 var lockedWidth = DefaultFonts.VANILLA.getTextWidth(lockedText, 8);
@@ -43,7 +42,7 @@ public class GpsApp implements ScreenApp {
 
             @Override
             public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("gps_background"));
+                canvas.draw(0, 0, TardisCanvasUtils.getSprite("gps_background"));
             }
 
             @Override
@@ -55,18 +54,18 @@ public class GpsApp implements ScreenApp {
 
     public static void drawLocation(Optional<TardisLocation> optionalLocation, DrawableCanvas canvas, int x, int y) {
         optionalLocation.ifPresentOrElse(location -> drawLocation(location, canvas, x, y), () -> {
-            DefaultFonts.VANILLA.drawText(canvas, "Unknown", x, y + 9, 8, CanvasColor.LIGHT_GRAY_HIGH);
+            DefaultFonts.VANILLA.drawText(canvas, "Unknown", x, y + 9, 8, CanvasColors.LIGHT_GRAY);
         });
     }
 
     public static void drawLocation(Either<TardisLocation, PartialTardisLocation> eitherLocation, DrawableCanvas canvas, int x, int y) {
         eitherLocation.ifLeft(location -> drawLocation(location, canvas, x, y)).ifRight(partialLocation -> {
-            DefaultFonts.VANILLA.drawText(canvas, "Unknown", x, y, 8, CanvasColor.LIGHT_GRAY_HIGH);
+            DefaultFonts.VANILLA.drawText(canvas, "Unknown", x, y, 8, CanvasColors.LIGHT_GRAY);
 
             var worldId = partialLocation.worldKey();
             DefaultFonts.VANILLA.drawText(
                     canvas, DimensionsApp.translateWorldId(worldId).getString(),
-                    x, y + 9, 8, CanvasColor.LIGHT_GRAY_HIGH
+                    x, y + 9, 8, CanvasColors.LIGHT_GRAY
             );
         });
     }
@@ -78,26 +77,26 @@ public class GpsApp implements ScreenApp {
         var facingText = String.valueOf(location.facing().getName().toUpperCase().charAt(0));
 
         var spaceWidth = DefaultFonts.VANILLA.getTextWidth(" ", 8);
-        DefaultFonts.VANILLA.drawText(canvas, xText, x, y, 8, CanvasColor.BRIGHT_RED_HIGH);
+        DefaultFonts.VANILLA.drawText(canvas, xText, x, y, 8, CanvasColors.RED);
         var xWidth = DefaultFonts.VANILLA.getTextWidth(xText, 8);
-        DefaultFonts.VANILLA.drawText(canvas, yText, x + xWidth + spaceWidth, y, 8, CanvasColor.LIGHT_BLUE_HIGH);
+        DefaultFonts.VANILLA.drawText(canvas, yText, x + xWidth + spaceWidth, y, 8, CanvasColors.LIGHT_BLUE);
         var yWidth = DefaultFonts.VANILLA.getTextWidth(yText, 8);
-        DefaultFonts.VANILLA.drawText(canvas, zText, x + xWidth + spaceWidth + yWidth + spaceWidth, y, 8, CanvasColor.LIME_HIGH);
+        DefaultFonts.VANILLA.drawText(canvas, zText, x + xWidth + spaceWidth + yWidth + spaceWidth, y, 8, CanvasColors.LIME);
         var zWidth = DefaultFonts.VANILLA.getTextWidth(zText, 8);
 
-        var facingColor = location.facing().getOffsetX() != 0 ? CanvasColor.RED_HIGH : (location.facing().getOffsetZ() != 0 ? CanvasColor.GREEN_HIGH : CanvasColor.BLUE_HIGH);
+        var facingColor = location.facing().getOffsetX() != 0 ? CanvasColors.RED_DULL : (location.facing().getOffsetZ() != 0 ? CanvasColors.LIME_DULL : CanvasColors.LIGHT_BLUE_DULL);
         DefaultFonts.VANILLA.drawText(canvas, facingText, x + xWidth + spaceWidth + yWidth + spaceWidth + zWidth + spaceWidth, y, 8, facingColor);
 
         var worldId = location.worldKey();
         DefaultFonts.VANILLA.drawText(
                 canvas, DimensionsApp.translateWorldId(worldId).getString(),
-                x, y + 9, 8, CanvasColor.LIGHT_GRAY_HIGH
+                x, y + 9, 8, CanvasColors.LIGHT_GRAY
         );
     }
 
     @Override
     public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/gps"));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("app/gps"));
     }
 
     @Override

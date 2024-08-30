@@ -7,11 +7,10 @@ import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.flight.DriftingState;
 import dev.enjarai.minitardis.component.flight.FlyingState;
 import dev.enjarai.minitardis.component.flight.RefuelingState;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.CanvasImage;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.CanvasImage;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.font.DefaultFonts;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ClickType;
@@ -35,7 +34,7 @@ public class StatusApp implements ScreenApp {
                 var tardis = controls.getTardis();
                 var time = tardis.getInteriorWorld().getTime();
 
-                DefaultFonts.VANILLA.drawText(canvas, tardis.getState().getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
+                DefaultFonts.VANILLA.drawText(canvas, tardis.getState().getName().getString(), 4, 6, 8, CanvasColors.WHITE);
 
                 tardis.getState(DriftingState.class).ifPresent(state -> {
                     for (int i = 0; i < state.phaseCount; i++) {
@@ -49,7 +48,7 @@ public class StatusApp implements ScreenApp {
                             icon = TardisCanvasUtils.getSprite("drifting_phase");
                         }
 
-                        CanvasUtils.draw(canvas, 8 + i * 8, 24, icon);
+                        canvas.draw(8 + i * 8, 24, icon);
                     }
                 });
 
@@ -66,12 +65,12 @@ public class StatusApp implements ScreenApp {
                             icon = TardisCanvasUtils.getSprite("offset_centered");
                         }
 
-                        CanvasUtils.draw(canvas, 8 + i / 2 * 10, 24 + i % 2 * 6, icon);
+                        canvas.draw(8 + i / 2 * 10, 24 + i % 2 * 6, icon);
                     }
 
-                    CanvasUtils.draw(canvas, 7 + state.scaleState * 10, 23, TardisCanvasUtils.getSprite("offset_set_selected"));
+                    canvas.draw(7 + state.scaleState * 10, 23, TardisCanvasUtils.getSprite("offset_set_selected"));
 
-                    DefaultFonts.VANILLA.drawText(canvas, "ER: " + state.getDistance(), 8, 41, 8, CanvasColor.WHITE_HIGH);
+                    DefaultFonts.VANILLA.drawText(canvas, "ER: " + state.getDistance(), 8, 41, 8, CanvasColors.WHITE);
                 });
 
                 tardis.getState(RefuelingState.class).ifPresent(state -> {
@@ -81,8 +80,8 @@ public class StatusApp implements ScreenApp {
                     var minutes = seconds / 60;
                     seconds %= 60;
 
-                    DefaultFonts.VANILLA.drawText(canvas, "Time to full:", 8, 24, 8, CanvasColor.LIGHT_GRAY_HIGH);
-                    DefaultFonts.VANILLA.drawText(canvas, "%d:%02d".formatted(minutes, seconds), 8, 35, 8, CanvasColor.WHITE_HIGH);
+                    DefaultFonts.VANILLA.drawText(canvas, "Time to full:", 8, 24, 8, CanvasColors.LIGHT_GRAY);
+                    DefaultFonts.VANILLA.drawText(canvas, "%d:%02d".formatted(minutes, seconds), 8, 35, 8, CanvasColors.WHITE);
                 });
 
                 var random = blockEntity.drawRandom;
@@ -103,12 +102,12 @@ public class StatusApp implements ScreenApp {
                 drawVerticalBar(canvas, tardis.getFuel() * 480 / 10000 + stutterOffsetFuel, 72, 16, TardisCanvasUtils.getSprite("vertical_bar_blue"), "ART");
 
                 var conduitsUnlocked = controls.areEnergyConduitsUnlocked();
-                CanvasUtils.draw(canvas, 24, 48, conduitsUnlocked ? TardisCanvasUtils.getSprite("energy_conduits_active") : TardisCanvasUtils.getSprite("energy_conduits_inactive"));
-                DefaultFonts.VANILLA.drawText(canvas, "CND", 24 + 7, 80, 8, CanvasColor.WHITE_HIGH);
+                canvas.draw(24, 48, conduitsUnlocked ? TardisCanvasUtils.getSprite("energy_conduits_active") : TardisCanvasUtils.getSprite("energy_conduits_inactive"));
+                DefaultFonts.VANILLA.drawText(canvas, "CND", 24 + 7, 80, 8, CanvasColors.WHITE);
 
                 var destinationLocked = controls.isDestinationLocked();
-                CanvasUtils.draw(canvas, 0, 48, destinationLocked ? TardisCanvasUtils.getSprite("lock_icon_locked") : TardisCanvasUtils.getSprite("lock_icon_unlocked"));
-                DefaultFonts.VANILLA.drawText(canvas, "LCK", 7, 80, 8, CanvasColor.WHITE_HIGH);
+                canvas.draw(0, 48, destinationLocked ? TardisCanvasUtils.getSprite("lock_icon_locked") : TardisCanvasUtils.getSprite("lock_icon_unlocked"));
+                DefaultFonts.VANILLA.drawText(canvas, "LCK", 7, 80, 8, CanvasColors.WHITE);
             }
 
             @Override
@@ -131,7 +130,7 @@ public class StatusApp implements ScreenApp {
 
             @Override
             public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("status_background"));
+                canvas.draw(0, 0, TardisCanvasUtils.getSprite("status_background"));
             }
 
             @Override
@@ -142,10 +141,10 @@ public class StatusApp implements ScreenApp {
     }
 
     private void drawVerticalBar(DrawableCanvas canvas, int value, int x, int y, CanvasImage barType, String label) {
-        CanvasUtils.draw(canvas, x, y, TardisCanvasUtils.getSprite("vertical_bar_empty"));
+        canvas.draw(x, y, TardisCanvasUtils.getSprite("vertical_bar_empty"));
         for (int ly = 48 - value; ly < 48; ly++) {
             for (int lx = 0; lx < 16; lx++) {
-                byte color = barType.getRaw(8 + lx, 8 + ly);
+                short color = barType.getRaw(8 + lx, 8 + ly);
 
                 if (color != 0) {
                     canvas.setRaw(8 + lx + x, 8 + ly + y, color);
@@ -154,12 +153,12 @@ public class StatusApp implements ScreenApp {
         }
 
         var labelWidth = DefaultFonts.VANILLA.getTextWidth(label, 8);
-        DefaultFonts.VANILLA.drawText(canvas, label, x + 15 - labelWidth / 2, y + 64, 8, CanvasColor.WHITE_HIGH);
+        DefaultFonts.VANILLA.drawText(canvas, label, x + 15 - labelWidth / 2, y + 64, 8, CanvasColors.WHITE);
     }
 
     @Override
     public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/status"));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("app/status"));
     }
 
     @Override

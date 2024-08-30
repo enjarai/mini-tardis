@@ -39,7 +39,8 @@
 		"minecraft": "~1.21",
 		"java": ">=21",
 		"fabric-api": "*",
-		"cicada": ">=0.6.0 <1.0.0"
+		"cicada": ">=0.6.0 <1.0.0",
+		"owo": "*"
 	},
 
 	"custom": {

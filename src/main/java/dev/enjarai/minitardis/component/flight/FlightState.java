@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisControl;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
 import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.sound.SoundCategory;

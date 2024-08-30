@@ -5,11 +5,11 @@ import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.DestinationScanner;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.CanvasUtils;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.Rotate90ClockwiseView;
 import dev.enjarai.minitardis.component.screen.element.SmallButtonElement;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import eu.pb4.mapcanvas.impl.view.Rotate90ClockwiseView;
 import net.minecraft.block.MapColor;
 
 public class ScannerApp implements ScreenApp {
@@ -28,15 +28,15 @@ public class ScannerApp implements ScreenApp {
                 for (int x = 0; x < DestinationScanner.RANGE; x++) {
                     for (int y = 0; y < DestinationScanner.RANGE; y++) {
                         byte value = controls.getTardis().getDestinationScanner().getFor(x, y);
-                        var color = CanvasColor.from(MapColor.get(value), MapColor.Brightness.NORMAL);
-                        canvas.set(x, -y - 1 + DestinationScanner.RANGE, color);
+                        var color = MapColor.get(value).getRenderColor(MapColor.Brightness.NORMAL);
+                        canvas.setRaw(x, -y - 1 + DestinationScanner.RANGE, CanvasUtils.toLimitedColor(color));
                     }
                 }
-                canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2, CanvasColor.ORANGE_NORMAL);
-                canvas.set(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2 - 1, CanvasColor.ORANGE_NORMAL);
+                canvas.setRaw(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2, CanvasColors.ORANGE);
+                canvas.setRaw(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2 - 1, CanvasColors.ORANGE);
 
                 var isZ = controls.getTardis().getDestinationScanner().isZAxis();
-                CanvasUtils.draw(canvas, 96, 64, isZ ? TardisCanvasUtils.getSprite("coord_widget_z") : TardisCanvasUtils.getSprite("coord_widget_x"));
+                canvas.draw(96, 64, isZ ? TardisCanvasUtils.getSprite("coord_widget_z") : TardisCanvasUtils.getSprite("coord_widget_x"));
                 controls.getTardis().getDestination().ifPresent(destination -> {
                     var rotation = destination.facing().getHorizontal();
                     if (isZ) {
@@ -47,7 +47,7 @@ public class ScannerApp implements ScreenApp {
                     for (int i = 0; i < rotation; i++) {
                         view = new Rotate90ClockwiseView(view);
                     }
-                    CanvasUtils.draw(canvas, 96, 64, view);
+                    canvas.draw(96, 64, view);
                 });
 
                 super.draw(blockEntity, canvas);
@@ -63,7 +63,7 @@ public class ScannerApp implements ScreenApp {
 
     @Override
     public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/scanner"));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("app/scanner"));
     }
 
     @Override

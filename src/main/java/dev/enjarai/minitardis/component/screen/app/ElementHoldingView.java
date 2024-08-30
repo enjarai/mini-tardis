@@ -2,8 +2,8 @@ package dev.enjarai.minitardis.component.screen.app;
 
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
 import dev.enjarai.minitardis.component.screen.element.AppElement;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 

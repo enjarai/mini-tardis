@@ -1,11 +1,9 @@
 package dev.enjarai.minitardis.canvas;
 
-import com.google.common.collect.ImmutableMap;
 import dev.enjarai.minitardis.MiniTardis;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.CanvasImage;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.CanvasImage;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.font.DefaultFonts;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resource.ResourceManager;
@@ -31,7 +29,7 @@ public class TardisCanvasUtils {
         return getSprite(MiniTardis.id(path));
     }
 
-    public static void drawCenteredText(DrawableCanvas canvas, String text, int x, int y, CanvasColor color) {
+    public static void drawCenteredText(DrawableCanvas canvas, String text, int x, int y, short color) {
         var width = DefaultFonts.VANILLA.getTextWidth(text, 8);
         DefaultFonts.VANILLA.drawText(canvas, text, x - width / 2, y, 8, color);
     }

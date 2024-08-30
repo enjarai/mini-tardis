@@ -7,9 +7,8 @@ import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisControl;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 
@@ -67,11 +66,11 @@ public class CrashedState implements FlightState {
     @Override
     public void drawScreenImage(TardisControl controls, DrawableCanvas canvas, ScreenBlockEntity blockEntity) {
         var cycle = controls.getTardis().getInteriorWorld().getTime() / 20 % 2;
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("critical_failure_" + cycle));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("critical_failure_" + cycle));
 
-        TardisCanvasUtils.drawCenteredText(canvas, "CRITICAL FAILURE", 64, 36, CanvasColor.BRIGHT_RED_HIGH);
-        TardisCanvasUtils.drawCenteredText(canvas, "Reset power coupling", 64, 46, CanvasColor.RED_HIGH);
-        TardisCanvasUtils.drawCenteredText(canvas, "for system reboot", 64, 54, CanvasColor.RED_HIGH);
+        TardisCanvasUtils.drawCenteredText(canvas, "CRITICAL FAILURE", 64, 36, CanvasColors.RED);
+        TardisCanvasUtils.drawCenteredText(canvas, "Reset power coupling", 64, 46, CanvasColors.RED_DULL);
+        TardisCanvasUtils.drawCenteredText(canvas, "for system reboot", 64, 54, CanvasColors.RED_DULL);
     }
 
     @Override

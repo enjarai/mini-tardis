@@ -3,8 +3,7 @@ package dev.enjarai.minitardis.component.screen.element;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 
@@ -21,8 +20,8 @@ public class ScrollableContainerElement<T extends PlacedElement> extends Abstrac
         for (var element : elements) {
             element.draw(controls, blockEntity, scrolledCanvas);
         }
-        CanvasUtils.draw(canvas, width - 8, 0, TardisCanvasUtils.getSprite("scroll_button_up"));
-        CanvasUtils.draw(canvas, width - 8, height - 38, TardisCanvasUtils.getSprite("scroll_button_down"));
+        canvas.draw(width - 8, 0, TardisCanvasUtils.getSprite("scroll_button_up"));
+        canvas.draw(width - 8, height - 38, TardisCanvasUtils.getSprite("scroll_button_down"));
     }
 
     @Override
@@ -52,7 +51,6 @@ public class ScrollableContainerElement<T extends PlacedElement> extends Abstrac
                 .orElse(0);
     }
 
-    @SuppressWarnings("NonExtendableApiUsage")
     private class ScrolledView implements DrawableCanvas {
         private final DrawableCanvas source;
         private final int scrollableHeight;
@@ -63,12 +61,12 @@ public class ScrollableContainerElement<T extends PlacedElement> extends Abstrac
         }
 
         @Override
-        public byte getRaw(int x, int y) {
+        public short getRaw(int x, int y) {
             return source.getRaw(x, y);
         }
 
         @Override
-        public void setRaw(int x, int y, byte color) {
+        public void setRaw(int x, int y, short color) {
             y -= scrolledness;
             if (y >= 0 && y < height) {
                 source.setRaw(x, y, color);

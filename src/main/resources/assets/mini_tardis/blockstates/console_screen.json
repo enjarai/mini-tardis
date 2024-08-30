@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mini_tardis:block/rotating_monitor"
+    },
+    "facing=east": {
+      "model": "mini_tardis:block/rotating_monitor",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "mini_tardis:block/rotating_monitor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mini_tardis:block/rotating_monitor",
+      "y": 270
+    }
+  }
+}

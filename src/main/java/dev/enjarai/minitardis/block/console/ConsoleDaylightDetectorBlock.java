@@ -21,7 +21,6 @@ import net.minecraft.world.World;
 
 import java.util.function.BiFunction;
 
-@SuppressWarnings("deprecation")
 public class ConsoleDaylightDetectorBlock extends Block implements PolymerBlock, ConsoleInput, TardisAware {
     public static final BooleanProperty INVERTED = Properties.INVERTED;
     protected static final VoxelShape SHAPE = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 6.0, 16.0);

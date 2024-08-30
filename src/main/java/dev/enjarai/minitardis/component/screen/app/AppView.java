@@ -2,8 +2,7 @@ package dev.enjarai.minitardis.component.screen.app;
 
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 
@@ -18,7 +17,7 @@ public interface AppView {
     void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas);
 
     default void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app_background"));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("app_background"));
     }
 
     /**

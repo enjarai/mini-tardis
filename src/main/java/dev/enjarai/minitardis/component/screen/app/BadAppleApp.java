@@ -6,9 +6,9 @@ import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.BadApple;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.CanvasUtils;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
 import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -17,29 +17,30 @@ import net.minecraft.util.math.MathHelper;
 
 public class BadAppleApp implements ScreenApp {
     public static final Codec<BadAppleApp> CODEC = Codec.unit(BadAppleApp::new);
+    public static final short[] COLORS = new short[] {
+            CanvasUtils.toLimitedColor(0x111111),
+            CanvasUtils.toLimitedColor(0x333333),
+            CanvasUtils.toLimitedColor(0x555555),
+            CanvasUtils.toLimitedColor(0x777777),
+            CanvasUtils.toLimitedColor(0x999999),
+            CanvasUtils.toLimitedColor(0xbbbbbb),
+            CanvasUtils.toLimitedColor(0xdddddd),
+            CanvasUtils.toLimitedColor(0xffffff)
+    };
 
     @Override
     public AppView getView(TardisControl controls) {
         return new BadAppleView();
     }
 
-    public static CanvasColor getCanvasColor(int frame, int x, int y) {
+    public static short getCanvasColor(int frame, int x, int y) {
         var pixel = BadApple.getPixel(frame, x, y);
-        return switch (pixel) {
-            case 0 -> CanvasColor.BLACK_LOWEST;
-            case 1 -> CanvasColor.BLACK_LOW;
-            case 2 -> CanvasColor.BLACK_NORMAL;
-            case 3 -> CanvasColor.BLACK_HIGH;
-            case 4 -> CanvasColor.WHITE_LOWEST;
-            case 5 -> CanvasColor.WHITE_LOW;
-            case 6 -> CanvasColor.WHITE_NORMAL;
-            default -> CanvasColor.WHITE_HIGH;
-        };
+        return COLORS[pixel];
     }
 
     @Override
     public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/bad_apple"));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("app/bad_apple"));
     }
 
     @Override
@@ -57,7 +58,7 @@ public class BadAppleApp implements ScreenApp {
             for (int x = 0; x < BadApple.width; x++) {
                 for (int y = 0; y < BadApple.height; y++) {
                     var color = getCanvasColor(frame, x, y);
-                    canvas.set((int) (x * BadApple.width / 128.0f), (int) (y * BadApple.height / 96.0f), color);
+                    canvas.setRaw((int) (x * BadApple.width / 128.0f), (int) (y * BadApple.height / 96.0f), color);
                 }
             }
 

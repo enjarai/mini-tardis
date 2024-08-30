@@ -4,13 +4,12 @@ import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.font.DefaultFonts;
 import dev.enjarai.minitardis.component.screen.element.AppSelectorElement;
 import dev.enjarai.minitardis.component.screen.element.InstallableAppElement;
 import dev.enjarai.minitardis.item.FloppyItem;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
 import net.minecraft.item.ItemStack;
 
 public class PackageManagerApp implements ScreenApp {
@@ -34,14 +33,14 @@ public class PackageManagerApp implements ScreenApp {
             public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 var selected = leftElement.selected == null ? rightElement.selected : leftElement.selected;
                 if (selected != null) {
-                    DefaultFonts.VANILLA.drawText(canvas, selected.app.getName().getString(), 4, 6, 8, CanvasColor.WHITE_HIGH);
+                    DefaultFonts.VANILLA.drawText(canvas, selected.app.getName().getString(), 4, 6, 8, CanvasColors.WHITE);
                 }
 
                 if (!floppyInserted) {
-                    TardisCanvasUtils.drawCenteredText(canvas, "Insert", 2 + 26, 30, CanvasColor.WHITE_HIGH);
-                    TardisCanvasUtils.drawCenteredText(canvas, "Floppy", 2 + 26, 40, CanvasColor.WHITE_HIGH);
+                    TardisCanvasUtils.drawCenteredText(canvas, "Insert", 2 + 26, 30, CanvasColors.WHITE);
+                    TardisCanvasUtils.drawCenteredText(canvas, "Floppy", 2 + 26, 40, CanvasColors.WHITE);
                 } else if (leftElement.getElements().isEmpty()) {
-                    TardisCanvasUtils.drawCenteredText(canvas, "Empty", 2 + 26, 30, CanvasColor.LIGHT_GRAY_HIGH);
+                    TardisCanvasUtils.drawCenteredText(canvas, "Empty", 2 + 26, 30, CanvasColors.LIGHT_GRAY);
                 }
 
                 super.draw(blockEntity, canvas);
@@ -125,14 +124,14 @@ public class PackageManagerApp implements ScreenApp {
 
             @Override
             public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("package_manager_background"));
+                canvas.draw(0, 0, TardisCanvasUtils.getSprite("package_manager_background"));
             }
         };
     }
 
     @Override
     public void drawIcon(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-        CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app/package_manager"));
+        canvas.draw(0, 0, TardisCanvasUtils.getSprite("app/package_manager"));
     }
 
     @Override

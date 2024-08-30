@@ -4,8 +4,7 @@ import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.TardisLocation;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 
@@ -22,9 +21,9 @@ public class WaypointElement extends PlacedElement {
     @Override
     protected void drawElement(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         if (parent.backingMap.get(index) == null) {
-            CanvasUtils.draw(canvas, 0, 0, isSelected() ? TardisCanvasUtils.getSprite("waypoint_empty_selected") : TardisCanvasUtils.getSprite("waypoint_empty"));
+            canvas.draw(0, 0, isSelected() ? TardisCanvasUtils.getSprite("waypoint_empty_selected") : TardisCanvasUtils.getSprite("waypoint_empty"));
         } else {
-            CanvasUtils.draw(canvas, 0, 0, isSelected() ? TardisCanvasUtils.getSprite("waypoint_filled_selected") : TardisCanvasUtils.getSprite("waypoint_filled"));
+            canvas.draw(0, 0, isSelected() ? TardisCanvasUtils.getSprite("waypoint_filled_selected") : TardisCanvasUtils.getSprite("waypoint_filled"));
         }
     }
 

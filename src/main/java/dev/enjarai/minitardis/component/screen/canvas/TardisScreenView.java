@@ -1,17 +1,20 @@
-package dev.enjarai.minitardis.component.screen;
+package dev.enjarai.minitardis.component.screen.canvas;
 
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.LocalRandom;
 import net.minecraft.util.math.random.Random;
 
-@SuppressWarnings("NonExtendableApiUsage")
 public final class TardisScreenView implements DrawableCanvas {
-    private final DrawableCanvas source;
+    private DrawableCanvas source;
     private final Random localRandom = new LocalRandom(0);
     private int glitchFrames;
 
     public TardisScreenView(DrawableCanvas source) {
+        this.source = source;
+    }
+
+    public void setSource(DrawableCanvas source) {
         this.source = source;
     }
 
@@ -26,12 +29,12 @@ public final class TardisScreenView implements DrawableCanvas {
     }
 
     @Override
-    public byte getRaw(int x, int y) {
+    public short getRaw(int x, int y) {
         return source.getRaw(x, y);
     }
 
     @Override
-    public void setRaw(int x, int y, byte color) {
+    public void setRaw(int x, int y, short color) {
         if (glitchFrames > 0) {
             localRandom.setSeed((y + glitchFrames * 999L) / 30);
             var offset1 = localRandom.nextBetween(-10, 10);

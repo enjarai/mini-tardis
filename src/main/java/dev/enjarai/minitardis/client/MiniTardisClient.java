@@ -2,10 +2,13 @@ package dev.enjarai.minitardis.client;
 
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.ModBlocks;
+import dev.enjarai.minitardis.client.render.ConsoleScreenBlockRenderer;
 import eu.pb4.polymer.networking.api.client.PolymerClientNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtInt;
 
@@ -18,5 +21,8 @@ public class MiniTardisClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.TARDIS_EXTERIOR_EXTENSION, RenderLayer.getTranslucent());
 
         PolymerClientNetworking.setClientMetadata(MiniTardis.HANDSHAKE_CHANNEL, NbtInt.of(0));
+
+        ClientTickEvents.START_CLIENT_TICK.register(c -> ConsoleScreenBlockRenderer.tick());
+        BlockEntityRendererFactories.register(ModBlocks.CONSOLE_SCREEN_ENTITY, ConsoleScreenBlockRenderer::new);
     }
 }

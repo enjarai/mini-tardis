@@ -4,9 +4,8 @@ import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.app.ScreenApp;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import eu.pb4.mapcanvas.impl.view.SubView;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.SubView;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 
@@ -33,7 +32,7 @@ public class InstallableAppElement extends PlacedElement {
     protected void drawElement(TardisControl controls, ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
         app.drawIcon(controls, blockEntity, new SubView(canvas, 1, 1, 24, 24));
         if (isSelected()) {
-            CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("app_selected"));
+            canvas.draw(0, 0, TardisCanvasUtils.getSprite("app_selected"));
         }
     }
 

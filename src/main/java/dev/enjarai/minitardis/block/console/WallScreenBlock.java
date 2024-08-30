@@ -1,33 +1,21 @@
 package dev.enjarai.minitardis.block.console;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.block.ModBlocks;
-import dev.enjarai.minitardis.item.ModItems;
 import dev.enjarai.minitardis.item.PolymerModels;
-import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
 import eu.pb4.polymer.virtualentity.api.ElementHolder;
-import eu.pb4.polymer.virtualentity.api.attachment.BlockBoundAttachment;
 import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.enums.BlockFace;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
@@ -42,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
-public class WallScreenBlock extends ScreenBlock implements PerhapsPolymerBlock {
+public class WallScreenBlock extends ScreenBlock {
     public static final MapCodec<WallScreenBlock> CODEC = createCodec(WallScreenBlock::new);
     public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;
     public static final EnumProperty<BlockFace> FACE = WallMountedBlock.FACE;
@@ -227,30 +215,6 @@ public class WallScreenBlock extends ScreenBlock implements PerhapsPolymerBlock 
             case CEILING -> Direction.DOWN;
             case FLOOR -> Direction.UP;
             default -> state.get(FACING);
-        };
-    }
-
-    @Override
-    public Block getPerhapsPolymerBlock(BlockState state) {
-        return Blocks.AIR;
-    }
-
-    @Override
-    public @Nullable ElementHolder createElementHolder(ServerWorld world, BlockPos pos, BlockState initialBlockState) {
-        return new ScreenElementHolder(initialBlockState, PolymerModels.WALL_MONITOR) {
-            @Override
-            void applyModelTranslations(ItemDisplayElement element, BlockState state) {
-                var face = state.get(FACE);
-                var facing = state.get(FACING);
-
-                element.setRightRotation(RotationAxis.NEGATIVE_Y.rotationDegrees(face == BlockFace.WALL ? facing.asRotation() : facing.getOpposite().asRotation())
-                        .mul(RotationAxis.POSITIVE_X.rotationDegrees((face.ordinal() - 1) * 90)));
-            }
-
-            @Override
-            void applyFloppyTranslations(ItemDisplayElement element, BlockState state) {
-
-            }
         };
     }
 }

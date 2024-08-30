@@ -7,14 +7,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
+import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.SubView;
+import dev.enjarai.minitardis.component.screen.canvas.patbox.font.DefaultFonts;
 import dev.enjarai.minitardis.component.screen.element.FloppyBirdElement;
 import dev.enjarai.minitardis.component.screen.element.FloppyPipeElement;
 import dev.enjarai.minitardis.component.screen.element.ResizableButtonElement;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
-import eu.pb4.mapcanvas.api.core.DrawableCanvas;
-import eu.pb4.mapcanvas.api.font.DefaultFonts;
-import eu.pb4.mapcanvas.api.utils.CanvasUtils;
-import eu.pb4.mapcanvas.impl.view.SubView;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -186,22 +185,22 @@ public class FloppyBirdApp implements ScreenApp {
 
                 super.draw(blockEntity, new SubView(canvas, 2, 18, 124, 76));
 
-                DefaultFonts.VANILLA.drawText(canvas, "Pts: " + points, 5, 5, 8, CanvasColor.WHITE_HIGH);
-                DefaultFonts.VANILLA.drawText(canvas, "Lv: " + currentLevel, 64, 5, 8, CanvasColor.WHITE_HIGH);
+                DefaultFonts.VANILLA.drawText(canvas, "Pts: " + points, 5, 5, 8, CanvasColors.WHITE);
+                DefaultFonts.VANILLA.drawText(canvas, "Lv: " + currentLevel, 64, 5, 8, CanvasColors.WHITE);
 
                 if (deadFrames >= 12) {
                     if (showHighScores == null) {
-                        TardisCanvasUtils.drawCenteredText(canvas, "Game Over", 64, 32, CanvasColor.GRAY_HIGH);
+                        TardisCanvasUtils.drawCenteredText(canvas, "Game Over", 64, 32, CanvasColors.GRAY);
                         if (lastInteractor != null) {
                             TardisCanvasUtils.drawCenteredText(canvas, beatHighScore ? "New High Score!" :
-                                    ("High Score: " + highScores.getOrDefault(lastInteractor.getUuid(), 0)), 64, 44, CanvasColor.GRAY_HIGH);
+                                    ("High Score: " + highScores.getOrDefault(lastInteractor.getUuid(), 0)), 64, 44, CanvasColors.GRAY);
                         }
                     } else {
                         var world = blockEntity.getWorld();
                         if (world != null) {
                             for (int i = 0; i < Math.min(showHighScores.size(), 5); i++) {
                                 var entry = showHighScores.get(i);
-                                TardisCanvasUtils.drawCenteredText(canvas, entry.getFirst() + ": " + entry.getSecond(), 64, 40 + i * 12, CanvasColor.GRAY_HIGH);
+                                TardisCanvasUtils.drawCenteredText(canvas, entry.getFirst() + ": " + entry.getSecond(), 64, 40 + i * 12, CanvasColors.GRAY);
                             }
                         }
                     }
@@ -231,8 +230,8 @@ public class FloppyBirdApp implements ScreenApp {
 
             @Override
             public void drawBackground(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
-                CanvasUtils.draw(canvas, 2, 18, TardisCanvasUtils.getSprite("floppy_bird_background"));
-                CanvasUtils.draw(canvas, 0, 0, TardisCanvasUtils.getSprite("status_background"));
+                canvas.draw(2, 18, TardisCanvasUtils.getSprite("floppy_bird_background"));
+                canvas.draw(0, 0, TardisCanvasUtils.getSprite("status_background"));
             }
 
             @Override

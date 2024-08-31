@@ -113,22 +113,24 @@ public class ConsoleScreenBlockRenderer implements BlockEntityRenderer<ConsoleSc
             matrices.pop();
         }
 
-        matrices.translate(0, 0, -0.015625f);
+        if (!entity.getInactive()) {
+            matrices.translate(0, 0, -0.015625f);
 
-        var texture = getTexture(entity);
-        RenderSystem.setShaderTexture(0, texture.getGlId());
-        RenderSystem.enableDepthTest();
-        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            var texture = getTexture(entity);
+            RenderSystem.setShaderTexture(0, texture.getGlId());
+            RenderSystem.enableDepthTest();
+            RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        var position = matrices.peek().getPositionMatrix();
-        var tessellator = Tessellator.getInstance();
-        var bufferBuilder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-        bufferBuilder.vertex(position, 0, 0.125f, 0).texture(1, 1).color(0xffffffff);
-        bufferBuilder.vertex(position, 0, 0.875f, 0).texture(1, 0).color(0xffffffff);
-        bufferBuilder.vertex(position, 1, 0.875f, 0).texture(0, 0).color(0xffffffff);
-        bufferBuilder.vertex(position, 1, 0.125f, 0).texture(0, 1).color(0xffffffff);
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+            var position = matrices.peek().getPositionMatrix();
+            var tessellator = Tessellator.getInstance();
+            var bufferBuilder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+            bufferBuilder.vertex(position, 0, 0.125f, 0).texture(1, 1).color(0xffffffff);
+            bufferBuilder.vertex(position, 0, 0.875f, 0).texture(1, 0).color(0xffffffff);
+            bufferBuilder.vertex(position, 1, 0.875f, 0).texture(0, 0).color(0xffffffff);
+            bufferBuilder.vertex(position, 1, 0.125f, 0).texture(0, 1).color(0xffffffff);
+            BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+        }
 
         matrices.pop();
     }

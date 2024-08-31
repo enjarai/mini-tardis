@@ -5,12 +5,14 @@ import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.*;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.flight.RefuelingState;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKeys;
@@ -240,6 +242,8 @@ public class ModBlocks {
         OxidizableBlocksRegistry.registerWaxableBlockPair(EXPOSED_COPPER_INTERIOR_LIGHT, WAXED_EXPOSED_COPPER_INTERIOR_LIGHT);
         OxidizableBlocksRegistry.registerWaxableBlockPair(WEATHERED_COPPER_INTERIOR_LIGHT, WAXED_WEATHERED_COPPER_INTERIOR_LIGHT);
         OxidizableBlocksRegistry.registerWaxableBlockPair(OXIDIZED_COPPER_INTERIOR_LIGHT, WAXED_OXIDIZED_COPPER_INTERIOR_LIGHT);
+
+        BlockRenderLayerMap.INSTANCE.putBlock(STATE_COMPARATOR, RenderLayer.getCutout());
     }
 
 

@@ -65,6 +65,7 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
     Identifier selectedApp;
     @Nullable
     private ScheduledFuture<?> threadFuture;
+    private boolean inactive;
 
     public ScreenBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -90,8 +91,11 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
     }
 
     protected void writeNetNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
-        nbt.put(IMAGE_ENDEC, display);
+        if (!inactive) {
+            nbt.put(IMAGE_ENDEC, display);
+        }
         nbt.put("inventory", inventory.toNbtList(registryLookup));
+        nbt.putBoolean("inactive", inactive);
     }
 
     @Override
@@ -109,6 +113,10 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
 
         if (nbt.contains("backgroundColor")) {
             backgroundColor = nbt.getShort("backgroundColor");
+        }
+
+        if (nbt.contains("inactive")) {
+            inactive = nbt.getBoolean("inactive");
         }
     }
 
@@ -135,22 +143,32 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
 
             var isDisabled = getTardis(world).map(t -> !t.getState().isPowered(t)).orElse(true);
             var viewOverridden = getTardis(world).map(t -> t.getState().overrideScreenImage(t)).orElse(false);
-            List<ServerPlayerEntity> nearbyPlayers = isDisabled && !viewOverridden ? List.of() : serverWorld.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
+            setInactive(isDisabled && !viewOverridden);
+            var nearby = serverWorld.getPlayers(player -> player.getBlockPos().getManhattanDistance(pos) <= MAX_DISPLAY_DISTANCE);
+            List<ServerPlayerEntity> shouldSyncWith = getInactive() ? List.of() : nearby;
 
-            addedPlayers.removeIf(player -> !nearbyPlayers.contains(player));
-            nearbyPlayers.forEach(player -> {
+            addedPlayers.removeIf(player -> {
+                if (!shouldSyncWith.contains(player)) {
+                    if (player.getWorld() == getWorld()) {
+                        player.networkHandler.sendPacket(toUpdatePacket());
+                    }
+                    return true;
+                }
+                return false;
+            });
+            shouldSyncWith.forEach(player -> {
                 if (!addedPlayers.contains(player)) {
                     player.networkHandler.sendPacket(toUpdatePacket());
                     addedPlayers.add(player);
                 }
             });
 
-            if (addedPlayers.isEmpty() && nearbyPlayers.isEmpty() && threadFuture != null) {
+            if (addedPlayers.isEmpty() && shouldSyncWith.isEmpty() && threadFuture != null) {
                 threadFuture.cancel(true);
                 threadFuture = null;
             }
 
-            if (!nearbyPlayers.isEmpty() && threadFuture == null) {
+            if (!shouldSyncWith.isEmpty() && threadFuture == null) {
                 getTardis(world).ifPresent(tardis -> threadFuture = executor.scheduleAtFixedRate(() -> {
                     try {
                         refresh(tardis);
@@ -161,7 +179,7 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
                 }, 0, 1000 / 30, TimeUnit.MILLISECONDS));
             }
 
-            if (!nearbyPlayers.isEmpty() && currentView != null && !viewOverridden) {
+            if (!shouldSyncWith.isEmpty() && currentView != null && !viewOverridden) {
                 currentView.screenTick(this);
             }
         }
@@ -286,6 +304,18 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
         selectedApp = null;
         currentView = null;
         markDirty();
+    }
+
+    public boolean getInactive() {
+        return inactive;
+    }
+
+    public void setInactive(boolean inactive) {
+        var old = this.inactive;
+        this.inactive = inactive;
+        if (old != inactive) {
+            markDirty();
+        }
     }
 
     public void playClickSound(float pitch) {

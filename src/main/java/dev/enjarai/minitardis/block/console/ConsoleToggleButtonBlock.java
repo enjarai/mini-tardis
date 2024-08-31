@@ -27,9 +27,7 @@ public class ConsoleToggleButtonBlock extends ConsoleButtonBlock {
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         var isPowered = !state.get(POWERED);
 
-        if (!isPowered) {
-            playClickSound(player, world, pos, false);
-        }
+        playClickSound(player, world, pos, isPowered);
 
         if (!getTardis(world).map(tardis -> controlInput.apply(tardis.getControls(), isPowered)).orElse(false)) {
             inputFailure(world, pos, SoundEvents.BLOCK_IRON_TRAPDOOR_OPEN, 0);

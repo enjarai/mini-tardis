@@ -8,6 +8,7 @@ import net.minecraft.block.ButtonBlock;
 import net.minecraft.block.enums.ComparatorMode;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
@@ -58,9 +59,9 @@ public class ConsoleComparatorBlock extends AbstractGateConsoleBlock implements 
         } else {
             world.setBlockState(pos, state.cycle(COMPARATOR_MODE), Block.NOTIFY_ALL);
             var newMode = world.getBlockState(pos).get(COMPARATOR_MODE);
-            if (getTardis(world).map(tardis -> controlInput.apply(tardis.getControls(), newMode == ComparatorMode.SUBTRACT)).orElse(false)) {
-//                inputSuccess(world, pos, SoundEvents.BLOCK_NOTE_BLOCK_HAT.value(), newMode.ordinal() + 1);
-            } else {
+            float f = newMode == ComparatorMode.SUBTRACT ? 0.55F : 0.5F;
+            world.playSound(player, pos, SoundEvents.BLOCK_COMPARATOR_CLICK, SoundCategory.BLOCKS, 0.3F, f);
+            if (!getTardis(world).map(tardis -> controlInput.apply(tardis.getControls(), newMode == ComparatorMode.SUBTRACT)).orElse(false)) {
                 inputFailure(world, pos, SoundEvents.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 3);
             }
             return ActionResult.SUCCESS;

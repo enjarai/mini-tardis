@@ -5,8 +5,10 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
+import dev.enjarai.minitardis.component.PartialTardisLocation;
 import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 
 import java.util.Arrays;
@@ -25,6 +27,7 @@ public class FlyingState implements FlightState {
 
     int flyingTicks;
     int aftershakeTicks;
+    int completedTicks;
     public int errorLoops;
     public int[] offsets;
     public int scaleState;
@@ -67,6 +70,18 @@ public class FlyingState implements FlightState {
         var shakeIntensity = (AFTERSHAKE_LENGTH - aftershakeTicks) / (float) AFTERSHAKE_LENGTH;
         if (shakeIntensity > 0) {
             tickScreenShake(tardis, shakeIntensity);
+        }
+
+        if (getDistance() == 0) {
+            completedTicks++;
+
+            if (completedTicks == 11) {
+                playForInterior(tardis, SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), SoundCategory.BLOCKS, 1, 0.9f);
+            } else if (completedTicks == 16) {
+                playForInterior(tardis, SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), SoundCategory.BLOCKS, 1, 1.1f);
+            }
+        } else {
+            completedTicks = 0;
         }
 
         if (tardis.getStability() <= 0) {

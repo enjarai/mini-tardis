@@ -2,7 +2,6 @@ package dev.enjarai.minitardis.block.console;
 
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.component.TardisControl;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSetType;
 import net.minecraft.block.BlockState;
@@ -17,13 +16,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 
-public class ConsoleButtonBlock extends ButtonBlock implements PolymerBlock, TardisAware, ConsoleInput {
-    private final Block polymerBlock;
+public class ConsoleButtonBlock extends ButtonBlock implements TardisAware, ConsoleInput {
     private final BiFunction<TardisControl, Direction, Boolean> controlInput;
 
-    public ConsoleButtonBlock(Settings settings, BlockSetType buttonType, Block polymerBlock, BiFunction<TardisControl, Direction, Boolean> controlInput) {
+    public ConsoleButtonBlock(Settings settings, BlockSetType buttonType, BiFunction<TardisControl, Direction, Boolean> controlInput) {
         super(buttonType, 2, settings);
-        this.polymerBlock = polymerBlock;
         this.controlInput = controlInput;
     }
 
@@ -49,11 +46,5 @@ public class ConsoleButtonBlock extends ButtonBlock implements PolymerBlock, Tar
     @Override
     public boolean emitsRedstonePower(BlockState state) {
         return false;
-    }
-
-
-    @Override
-    public BlockState getPolymerBlockState(BlockState state) {
-        return polymerBlock.getStateWithProperties(state);
     }
 }

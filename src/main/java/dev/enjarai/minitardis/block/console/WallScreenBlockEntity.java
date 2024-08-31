@@ -3,14 +3,9 @@ package dev.enjarai.minitardis.block.console;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.block.WallMountedBlock;
 import net.minecraft.block.enums.BlockFace;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.EnumProperty;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.ClickType;
 import net.minecraft.util.math.BlockPos;
@@ -47,15 +42,5 @@ public class WallScreenBlockEntity extends ScreenBlockEntity {
         } else {
             return BlockRotation.values()[(6 - facing.getHorizontal()) % 4];
         }
-    }
-
-    @Override
-    protected void handleClick(ServerPlayerEntity player, ClickType type, int x, int y) {
-        if (!MiniTardis.playerIsRealGamer(player.networkHandler) && type == ClickType.LEFT && getWorld() != null) {
-            getWorld().breakBlock(getPos(), true, player);
-            return;
-        }
-
-        super.handleClick(player, type, x, y);
     }
 }

@@ -68,5 +68,38 @@
   "item.mini_tardis.fez": "Fez",
   "item.mini_tardis.floppy": "Floppy Disk",
 
-  "mini_tardis.item_group": "Mini Tardis"
+  "mini_tardis.item_group": "Mini Tardis",
+
+  "mini_tardis.state.mini_tardis.landed": "Landed",
+  "mini_tardis.state.mini_tardis.refueling": "Refueling",
+  "mini_tardis.state.mini_tardis.taking_off": "Taking Off...",
+  "mini_tardis.state.mini_tardis.flying": "In Flight",
+  "mini_tardis.state.mini_tardis.landing": "Landing...",
+  "mini_tardis.state.mini_tardis.searching_for_landing": "Searching...",
+  "mini_tardis.state.mini_tardis.searching_for_landing.crashing": "WARNING: UNSTABLE TIME CONDUIT",
+  "mini_tardis.state.mini_tardis.crashing": "ERROR ERROR WARNING ERROR ERROR ERROR ERROR",
+  "mini_tardis.state.mini_tardis.drifting": "CAUTION: Drifting",
+  "mini_tardis.state.mini_tardis.disabled": "Powered Off",
+  "mini_tardis.state.mini_tardis.suspended_flight": "Suspended Flight",
+
+  "mini_tardis.app.mini_tardis.dummy": "Deleted App",
+  "mini_tardis.app.mini_tardis.bad_apple": "Bad Apple",
+  "mini_tardis.app.mini_tardis.dimensions": "Dimensions",
+  "mini_tardis.app.mini_tardis.gps": "GPS",
+  "mini_tardis.app.mini_tardis.history": "Past Locations",
+  "mini_tardis.app.mini_tardis.history.tooltip": "%d locations stored",
+  "mini_tardis.app.mini_tardis.package_manager": "Packages",
+  "mini_tardis.app.mini_tardis.scanner": "Terrain Scanner",
+  "mini_tardis.app.mini_tardis.status": "Status",
+  "mini_tardis.app.mini_tardis.snake": "Snake",
+  "mini_tardis.app.mini_tardis.bad_snake": "Bad Snake",
+  "mini_tardis.app.mini_tardis.look_and_feel": "Look and Feel",
+  "mini_tardis.app.mini_tardis.waypoints": "Waypoints",
+  "mini_tardis.app.mini_tardis.waypoints.tooltip": "%d locations stored",
+  "mini_tardis.app.mini_tardis.floppy_bird": "Floppy Bird",
+  "mini_tardis.app.mini_tardis.floppy_bird.tooltip": "%d high scores stored",
+
+  "dimension.minecraft.overworld": "Overworld",
+  "dimension.minecraft.the_nether": "The Nether",
+  "dimension.minecraft.the_end": "The End"
 }

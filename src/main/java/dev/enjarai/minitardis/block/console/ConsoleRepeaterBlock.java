@@ -2,7 +2,6 @@ package dev.enjarai.minitardis.block.console;
 
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.component.TardisControl;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -22,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 
-public class ConsoleRepeaterBlock extends Block implements PolymerBlock, ConsoleInput, TardisAware {
+public class ConsoleRepeaterBlock extends AbstractGateConsoleBlock implements ConsoleInput, TardisAware {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final IntProperty DELAY = Properties.DELAY;
 
@@ -59,10 +58,5 @@ public class ConsoleRepeaterBlock extends Block implements PolymerBlock, Console
             }
             return ActionResult.SUCCESS;
         }
-    }
-
-    @Override
-    public BlockState getPolymerBlockState(BlockState state) {
-        return Blocks.REPEATER.getStateWithProperties(state);
     }
 }

@@ -1,27 +1,27 @@
 {
   "variants": {
     "facing=north,half=upper": {
-      "model": "mini_tardis:item/interior_door"
+      "model": "mini_tardis:block/interior_door"
     },
     "facing=north,half=lower": {
       "model": "mini_tardis:block/lower_interior_door"
     },
     "facing=east,half=upper": {
-      "model": "mini_tardis:item/interior_door",
+      "model": "mini_tardis:block/interior_door",
       "y": 90
     },
     "facing=east,half=lower": {
       "model": "mini_tardis:block/lower_interior_door"
     },
     "facing=south,half=upper": {
-      "model": "mini_tardis:item/interior_door",
+      "model": "mini_tardis:block/interior_door",
       "y": 180
     },
     "facing=south,half=lower": {
       "model": "mini_tardis:block/lower_interior_door"
     },
     "facing=west,half=upper": {
-      "model": "mini_tardis:item/interior_door",
+      "model": "mini_tardis:block/interior_door",
       "y": 270
     },
     "facing=west,half=lower": {

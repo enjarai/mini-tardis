@@ -2,12 +2,6 @@ package dev.enjarai.minitardis.block;
 
 import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.component.Tardis;
-import dev.enjarai.minitardis.item.PolymerModels;
-import dev.enjarai.minitardis.util.PerhapsElementHolder;
-import dev.enjarai.minitardis.util.PerhapsPolymerBlock;
-import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
-import eu.pb4.polymer.virtualentity.api.ElementHolder;
-import eu.pb4.polymer.virtualentity.api.elements.ItemDisplayElement;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.LivingEntity;
@@ -22,8 +16,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -33,7 +25,6 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("deprecation")
 public class InteriorDoorBlock extends HorizontalFacingBlock implements TardisAware {
     public static final MapCodec<InteriorDoorBlock> CODEC = createCodec(InteriorDoorBlock::new);
     public static final EnumProperty<DoubleBlockHalf> HALF = Properties.DOUBLE_BLOCK_HALF;

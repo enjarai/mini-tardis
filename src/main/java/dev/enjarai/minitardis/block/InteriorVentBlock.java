@@ -1,6 +1,5 @@
 package dev.enjarai.minitardis.block;
 
-import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -16,7 +15,7 @@ import net.minecraft.world.World;
 
 // ඞ
 @SuppressWarnings("deprecation")
-public class InteriorVentBlock extends Block implements PolymerBlock {
+public class InteriorVentBlock extends Block {
     protected static final VoxelShape SHAPE = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 3.0, 16.0);
 
     public InteriorVentBlock(Settings settings) {
@@ -43,10 +42,5 @@ public class InteriorVentBlock extends Block implements PolymerBlock {
     @Override
     public boolean isTransparent(BlockState state, BlockView world, BlockPos pos) {
         return true;
-    }
-
-    @Override
-    public BlockState getPolymerBlockState(BlockState state) {
-        return Blocks.IRON_TRAPDOOR.getDefaultState();
     }
 }

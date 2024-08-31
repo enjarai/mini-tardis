@@ -40,9 +40,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -93,6 +91,7 @@ public abstract class ScreenBlockEntity extends BlockEntity implements TardisAwa
 
     protected void writeNetNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         nbt.put(IMAGE_ENDEC, display);
+        nbt.put("inventory", inventory.toNbtList(registryLookup));
     }
 
     @Override

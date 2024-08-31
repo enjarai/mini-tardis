@@ -78,15 +78,8 @@ dependencies {
 		exclude group: "net.fabricmc.fabric-api"
 	}
 
-	modApi include("eu.pb4:polymer-core:${property('deps.polymer')}")
-	modApi include("eu.pb4:polymer-virtual-entity:${property('deps.polymer')}")
-	modApi include("eu.pb4:polymer-resource-pack:${property('deps.polymer')}")
-	modApi include("eu.pb4:polymer-blocks:${property('deps.polymer')}")
-	modRuntimeOnly("eu.pb4:polymer-autohost:${property('deps.polymer')}")
-	modApi include("xyz.nucleoid:server-translations-api:${property('deps.server_translations_api')}")
 	modApi include("me.lucko:fabric-permissions-api:${property('deps.permissions_api')}")
 	modApi include("xyz.nucleoid:fantasy:${property('deps.fantasy')}")
-	modApi include("eu.pb4:map-canvas-api:${property('deps.map_api')}")
 
 	annotationProcessor modApi("io.wispforest:owo-lib:${property('deps.owo-lib')}")
 	include "io.wispforest:owo-sentinel:${property('deps.owo-lib')}"

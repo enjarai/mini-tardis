@@ -8,7 +8,6 @@ import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.canvas.patbox.CanvasUtils;
 import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
-import eu.pb4.mapcanvas.api.core.CanvasColor;
 import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;

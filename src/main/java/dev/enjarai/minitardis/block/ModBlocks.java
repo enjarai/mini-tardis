@@ -5,9 +5,6 @@ import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.*;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.flight.RefuelingState;
-import dev.enjarai.minitardis.item.PolymerModels;
-import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
-import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import net.fabricmc.fabric.api.object.builder.v1.world.poi.PointOfInterestHelper;
 import net.fabricmc.fabric.api.registry.OxidizableBlocksRegistry;
 import net.minecraft.block.*;
@@ -79,21 +76,21 @@ public class ModBlocks {
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.DARK_OAK, Blocks.DARK_OAK_BUTTON,
+                    BlockSetType.DARK_OAK,
                     (controls, facing) -> controls.resetDestination()));
     public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_1 =
             register("nudge_destination_button_1", new ConsoleButtonBlock(AbstractBlock.Settings.create()
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.OAK, Blocks.OAK_BUTTON,
+                    BlockSetType.OAK,
                     TardisControl::nudgeDestination));
     public static final ConsoleButtonBlock NUDGE_DESTINATION_BUTTON_2 =
             register("nudge_destination_button_2", new ConsoleButtonBlock(AbstractBlock.Settings.create()
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.SPRUCE, Blocks.SPRUCE_BUTTON,
+                    BlockSetType.SPRUCE,
                     TardisControl::nudgeDestination));
     public static final ConsoleRepeaterBlock COORDINATE_SCALE_SELECTOR =
             register("coordinate_scale_selector", new ConsoleRepeaterBlock(AbstractBlock.Settings.create()
@@ -125,7 +122,7 @@ public class ModBlocks {
                     .noCollision()
                     .strength(0.5F)
                     .pistonBehavior(PistonBehavior.DESTROY),
-                    BlockSetType.STONE, Blocks.STONE_BUTTON,
+                    BlockSetType.STONE,
                     (controls, value) -> controls.setDestinationLocked(value, false)));
     public static final ConsoleLeverBlock REFUEL_TOGGLE =
             register("refuel_toggle", new ConsoleLeverBlock(AbstractBlock.Settings.create()
@@ -199,13 +196,13 @@ public class ModBlocks {
                             .filter(d -> d.getHorizontal() != -1)
                             .map(d -> INTERIOR_DOOR.getDefaultState().with(InteriorDoorBlock.FACING, d)).toList());
 
-    public static final Map<? extends Block, Optional<PolymerModelData>> ITEM_BLOCKS;
+    public static final Map<? extends Block, Optional<Void>> ITEM_BLOCKS;
     static {
-        var builder = ImmutableMap.<Block, Optional<PolymerModelData>>builder();
-        builder.put(INTERIOR_DOOR, Optional.of(PolymerModels.INTERIOR_DOOR_ITEM));
+        var builder = ImmutableMap.<Block, Optional<Void>>builder();
+        builder.put(INTERIOR_DOOR, Optional.empty());
         builder.put(HANDBRAKE, Optional.empty());
-        builder.put(CONSOLE_SCREEN, Optional.of(PolymerModels.ROTATING_MONITOR_PACKED));
-        builder.put(WALL_SCREEN, Optional.of(PolymerModels.WALL_MONITOR));
+        builder.put(CONSOLE_SCREEN, Optional.empty());
+        builder.put(WALL_SCREEN, Optional.empty());
         builder.put(RESET_DESTINATION_BUTTON, Optional.empty());
         builder.put(NUDGE_DESTINATION_BUTTON_1, Optional.empty());
         builder.put(NUDGE_DESTINATION_BUTTON_2, Optional.empty());

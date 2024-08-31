@@ -8,9 +8,12 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.random.Random;
 
@@ -23,9 +26,11 @@ public class ConsoleScreenBlockRenderer implements BlockEntityRenderer<ConsoleSc
     private static final int DURATION = 100;
 
     private final BlockRenderManager blockRenderManager;
+    private final ItemRenderer itemRenderer;
 
     public ConsoleScreenBlockRenderer(BlockEntityRendererFactory.Context ctx) {
         blockRenderManager = ctx.getRenderManager();
+        itemRenderer = ctx.getItemRenderer();
     }
 
     public static void tick() {
@@ -90,7 +95,25 @@ public class ConsoleScreenBlockRenderer implements BlockEntityRenderer<ConsoleSc
 
         matrices.translate(0.5f, 0, 0.5f);
         matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(180 + facing.asRotation()));
-        matrices.translate(-0.5f, 0, -0.5f - 0.03125f);
+        matrices.translate(-0.5f, 0, -0.5f);
+
+        var stack = entity.inventory.getStack(0);
+        if (!stack.isEmpty()) {
+            matrices.push();
+
+            matrices.translate(0.5f, 0.2f, 0.08f);
+            matrices.scale(0.6f, 0.6f, 0.6f);
+
+            itemRenderer.renderItem(
+                    stack, ModelTransformationMode.FIXED,
+                    light, overlay, matrices, vertexConsumers, entity.getWorld(),
+                    42
+            );
+
+            matrices.pop();
+        }
+
+        matrices.translate(0, 0, -0.015625f);
 
         var texture = getTexture(entity);
         RenderSystem.setShaderTexture(0, texture.getGlId());

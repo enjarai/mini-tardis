@@ -1,16 +1,11 @@
 package dev.enjarai.minitardis.item;
 
 import com.google.common.collect.ImmutableList;
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.component.screen.app.DimensionsApp;
 import dev.enjarai.minitardis.component.screen.app.ScreenApp;
-import eu.pb4.polymer.core.api.item.PolymerItem;
-import eu.pb4.polymer.resourcepack.api.PolymerModelData;
-import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
@@ -24,9 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FloppyItem extends Item implements PolymerItem {
-    public static final PolymerModelData MODEL = PolymerResourcePackUtils.requestModel(Items.IRON_INGOT, MiniTardis.id("item/floppy"));
-
+public class FloppyItem extends Item {
     public FloppyItem(Settings settings) {
         super(settings);
     }
@@ -97,15 +90,5 @@ public class FloppyItem extends Item implements PolymerItem {
         }
 
         return false;
-    }
-
-    @Override
-    public Item getPolymerItem(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-        return MODEL.item();
-    }
-
-    @Override
-    public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-        return MODEL.value();
     }
 }

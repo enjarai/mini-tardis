@@ -3,9 +3,7 @@ package dev.enjarai.minitardis.block.console;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.component.TardisControl;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.LeverBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -20,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 
-public class ConsoleLeverBlock extends LeverBlock implements PolymerBlock, TardisAware, ConsoleInput {
+public class ConsoleLeverBlock extends LeverBlock implements TardisAware, ConsoleInput {
     private final BiFunction<TardisControl, Boolean, Boolean> controlInput;
     @Nullable
     private final BiFunction<TardisControl, Boolean, Boolean> checkStateFunction;
@@ -92,10 +90,5 @@ public class ConsoleLeverBlock extends LeverBlock implements PolymerBlock, Tardi
     @Override
     public boolean emitsRedstonePower(BlockState state) {
         return false;
-    }
-
-    @Override
-    public BlockState getPolymerBlockState(BlockState state) {
-        return Blocks.LEVER.getStateWithProperties(state);
     }
 }

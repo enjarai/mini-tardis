@@ -1,9 +1,7 @@
 package dev.enjarai.minitardis.datagen;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import dev.enjarai.minitardis.block.ModBlocks;
-import eu.pb4.polymer.resourcepack.api.PolymerModelData;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import net.minecraft.block.Block;
@@ -16,9 +14,7 @@ import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.predicate.StatePredicate;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.Identifier;
 
-import java.util.Optional;
 import java.util.function.BiConsumer;
 
 public class ModLootGeneration extends SimpleFabricLootTableProvider {

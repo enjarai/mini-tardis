@@ -2,10 +2,8 @@ package dev.enjarai.minitardis.block.console;
 
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.component.TardisControl;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvents;
@@ -21,7 +19,7 @@ import net.minecraft.world.World;
 
 import java.util.function.BiFunction;
 
-public class ConsoleDaylightDetectorBlock extends Block implements PolymerBlock, ConsoleInput, TardisAware {
+public class ConsoleDaylightDetectorBlock extends Block implements ConsoleInput, TardisAware {
     public static final BooleanProperty INVERTED = Properties.INVERTED;
     protected static final VoxelShape SHAPE = Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 6.0, 16.0);
 
@@ -60,10 +58,5 @@ public class ConsoleDaylightDetectorBlock extends Block implements PolymerBlock,
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
         return SHAPE;
-    }
-
-    @Override
-    public BlockState getPolymerBlockState(BlockState state) {
-        return Blocks.DAYLIGHT_DETECTOR.getStateWithProperties(state);
     }
 }

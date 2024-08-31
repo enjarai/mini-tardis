@@ -19,7 +19,6 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
-@SuppressWarnings("deprecation")
 public class TardisExteriorExtensionBlock extends Block {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final IntProperty VISIBLENESS = IntProperty.of("visibleness", 0, 16);

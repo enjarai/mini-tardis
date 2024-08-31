@@ -2,20 +2,16 @@ package dev.enjarai.minitardis.item;
 
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.ModBlocks;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
-import eu.pb4.polymer.core.api.item.PolymerItemGroupUtils;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
 
 public class ModItems {
 
@@ -50,31 +46,20 @@ public class ModItems {
         ModBlocks.ITEM_BLOCKS.forEach((block, modelData) -> {
             var id = Registries.BLOCK.getId(block);
             if (!Registries.ITEM.containsId(id)) {
-                if (modelData.isPresent()) {
-                    Registry.register(Registries.ITEM, id, new TooltipPolymerBlockItem(block, new Item.Settings(), modelData.get().item()) {
-                        @Override
-                        public int getPolymerCustomModelData(ItemStack itemStack, @Nullable ServerPlayerEntity player) {
-                            return modelData.get().value();
-                        }
-                    });
-                } else if (block instanceof PolymerBlock polymerBlock) {
-                    var polymerItem = polymerBlock.getPolymerBlockState(block.getDefaultState()).getBlock().asItem();
-                    Registry.register(Registries.ITEM, id, new TooltipPolymerBlockItem(block, new Item.Settings(), polymerItem));
-                }
+                Registry.register(Registries.ITEM, id, new TooltipBlockItem(block, new Item.Settings()));
             }
         });
 
-        PolymerItemGroupUtils.registerPolymerItemGroup(MiniTardis.id("item_group"),
-                Registry.register(Registries.ITEM_GROUP, ITEM_GROUP, FabricItemGroup.builder()
-                    .icon(() -> ModBlocks.CONSOLE_SCREEN.asItem().getDefaultStack())
-                    .displayName(Text.translatable("mini_tardis.item_group"))
-                    .entries((context, entries) -> {
-                        ModBlocks.ITEM_BLOCKS.keySet().forEach(entries::add);
-                        entries.add(TARDIS_PLATING);
-                        entries.add(FLOPPY);
-                        entries.add(FEZ);
-                    })
-                    .build()));
+        Registry.register(Registries.ITEM_GROUP, ITEM_GROUP, FabricItemGroup.builder()
+                .icon(() -> ModBlocks.CONSOLE_SCREEN.asItem().getDefaultStack())
+                .displayName(Text.translatable("mini_tardis.item_group"))
+                .entries((context, entries) -> {
+                    ModBlocks.ITEM_BLOCKS.keySet().forEach(entries::add);
+                    entries.add(TARDIS_PLATING);
+                    entries.add(FLOPPY);
+                    entries.add(FEZ);
+                })
+                .build());
     }
 
     public static <T extends Item> T register(String path, T item) {

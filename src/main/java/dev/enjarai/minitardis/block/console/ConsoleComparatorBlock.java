@@ -2,10 +2,8 @@ package dev.enjarai.minitardis.block.console;
 
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.component.TardisControl;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.ButtonBlock;
 import net.minecraft.block.enums.ComparatorMode;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 
-public class ConsoleComparatorBlock extends Block implements PolymerBlock, ConsoleInput, TardisAware {
+public class ConsoleComparatorBlock extends AbstractGateConsoleBlock implements ConsoleInput, TardisAware {
     public static final DirectionProperty FACING = Properties.HORIZONTAL_FACING;
     public static final EnumProperty<ComparatorMode> COMPARATOR_MODE = Properties.COMPARATOR_MODE;
     public static final BooleanProperty POWERED = Properties.POWERED;
@@ -75,10 +73,5 @@ public class ConsoleComparatorBlock extends Block implements PolymerBlock, Conso
             return state.with(POWERED, neighborState.get(ButtonBlock.POWERED));
         }
         return state.with(POWERED, false);
-    }
-
-    @Override
-    public BlockState getPolymerBlockState(BlockState state) {
-        return Blocks.COMPARATOR.getStateWithProperties(state);
     }
 }

@@ -3,7 +3,6 @@ package dev.enjarai.minitardis.block.console;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.block.TardisAware;
 import dev.enjarai.minitardis.component.TardisControl;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.ComparatorMode;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 
-public class ConsoleComparatorDependentBlock extends ButtonBlock implements PolymerBlock, ConsoleInput, TardisAware {
+public class ConsoleComparatorDependentBlock extends ButtonBlock implements ConsoleInput, TardisAware {
     private BiFunction<TardisControl, Boolean, Boolean> controlInput;
 
     public ConsoleComparatorDependentBlock(Settings settings, BiFunction<TardisControl, Boolean, Boolean> controlInput) {
@@ -53,10 +52,5 @@ public class ConsoleComparatorDependentBlock extends ButtonBlock implements Poly
     @Override
     public boolean emitsRedstonePower(BlockState state) {
         return false;
-    }
-
-    @Override
-    public BlockState getPolymerBlockState(BlockState state) {
-        return Blocks.JUNGLE_BUTTON.getStateWithProperties(state);
     }
 }

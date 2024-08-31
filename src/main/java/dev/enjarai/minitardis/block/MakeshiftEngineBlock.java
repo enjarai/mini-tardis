@@ -1,8 +1,6 @@
 package dev.enjarai.minitardis.block;
 
 import com.mojang.serialization.MapCodec;
-import eu.pb4.polymer.core.api.block.PolymerBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.Blocks;
@@ -14,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class MakeshiftEngineBlock extends BlockWithEntity implements PolymerBlock {
+public class MakeshiftEngineBlock extends BlockWithEntity {
     MapCodec<MakeshiftEngineBlock> CODEC = createCodec(MakeshiftEngineBlock::new);
     public MakeshiftEngineBlock(Settings settings) {
         super(settings);
@@ -39,10 +37,5 @@ public class MakeshiftEngineBlock extends BlockWithEntity implements PolymerBloc
                 blockEntity.tick(serverWorld, pos, state1);
             }
         });
-    }
-
-    @Override
-    public BlockState getPolymerBlockState(BlockState state) {
-        return Blocks.BEACON.getDefaultState();
     }
 }

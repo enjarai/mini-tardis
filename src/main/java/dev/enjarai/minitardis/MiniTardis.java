@@ -9,11 +9,6 @@ import dev.enjarai.minitardis.item.ModDataComponents;
 import dev.enjarai.minitardis.data.ModDataStuff;
 import dev.enjarai.minitardis.data.TardisInteriorManager;
 import dev.enjarai.minitardis.item.ModItems;
-import dev.enjarai.minitardis.item.PolymerModels;
-import dev.enjarai.minitardis.net.ICanHasMiniTardisPayload;
-import eu.pb4.polymer.networking.api.PolymerNetworking;
-import eu.pb4.polymer.networking.api.server.PolymerServerNetworking;
-import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -65,16 +60,6 @@ public class MiniTardis implements ModInitializer {
 		// Load screenapps and their loot tables in order
 		ScreenAppTypes.load();
 		ModDataStuff.load();
-
-		PolymerResourcePackUtils.addModAssets(MOD_ID);
-		PolymerResourcePackUtils.markAsRequired();
-		PolymerModels.load();
-
-		PolymerNetworking.registerCommonSimple(
-				MiniTardis.HANDSHAKE_CHANNEL,
-				1,
-				ICanHasMiniTardisPayload.PACKET_CODEC
-		);
 	}
 
 	@Nullable
@@ -84,10 +69,6 @@ public class MiniTardis implements ModInitializer {
 
 	public static TardisInteriorManager getInteriorManager() {
 		return interiorManager;
-	}
-
-	public static boolean playerIsRealGamer(ServerPlayNetworkHandler player) {
-		return PolymerServerNetworking.getSupportedVersion(player, HANDSHAKE_CHANNEL) == 1;
 	}
 
 	public static Identifier id(String path) {

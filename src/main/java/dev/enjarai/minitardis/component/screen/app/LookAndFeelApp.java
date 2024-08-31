@@ -40,7 +40,7 @@ public class LookAndFeelApp implements ScreenApp {
     }
 
     public LookAndFeelApp() {
-        this(new int[] {CanvasUtils.fromLimitedColor(CanvasColors.BACKGROUND), 0, 0, 0, 0, 0});
+        this(new int[] {CanvasUtils.ARGBFromLimitedColor(CanvasColors.BACKGROUND), 0, 0, 0, 0, 0});
     }
 
     @Override
@@ -56,7 +56,7 @@ public class LookAndFeelApp implements ScreenApp {
             @Override
             public void draw(ScreenBlockEntity blockEntity, DrawableCanvas canvas) {
                 if (!initialized) {
-                    var hsv = rgbToHsv(CanvasUtils.fromLimitedColor(blockEntity.backgroundColor));
+                    var hsv = rgbToHsv(CanvasUtils.ARGBFromLimitedColor(blockEntity.backgroundColor));
                     this.h = hsv[0];
                     this.s = hsv[1];
                     this.v = hsv[2];
@@ -155,7 +155,7 @@ public class LookAndFeelApp implements ScreenApp {
 
             @Override
             public void screenClose(ScreenBlockEntity blockEntity) {
-                var newColor = CanvasUtils.fromLimitedColor(CanvasUtils.toLimitedColor(MathHelper.hsvToArgb(this.h, this.s, this.v, 255)));
+                var newColor = CanvasUtils.ARGBFromLimitedColor(CanvasUtils.toLimitedColor(MathHelper.hsvToArgb(this.h, this.s, this.v, 255)));
                 if (newColor != history[0]) {
                     // Shift the history over
                     for (int i = history.length - 1; i > 0; i--) {
@@ -172,7 +172,7 @@ public class LookAndFeelApp implements ScreenApp {
     // https://github.com/Patbox/Image2Map/blob/1.20.2/src/main/java/space/essem/image2map/renderer/MapRenderer.java
     private static short floydDither(int[][] pixels, int x, int y, int imageColor) {
         var closestColor = CanvasUtils.toLimitedColor(imageColor);
-        var palletedColor = CanvasUtils.fromLimitedColor(closestColor);
+        var palletedColor = CanvasUtils.ARGBFromLimitedColor(closestColor);
 
         var errorR = ColorHelper.Argb.getRed(imageColor) - ColorHelper.Argb.getRed(palletedColor);
         var errorG = ColorHelper.Argb.getGreen(imageColor) - ColorHelper.Argb.getGreen(palletedColor);

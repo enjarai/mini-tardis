@@ -16,7 +16,19 @@ public class CanvasUtils {
         return (short) (a | r | g | b);
     }
 
-    public static int fromLimitedColor(short color) {
+    public static int ARGBFromLimitedColor(short color) {
+        var r = (color >> 8) & 0xf;
+        var g = (color >> 4) & 0xf;
+        var b = color & 0xf;
+
+        var r2 = r << 20;
+        var g2 = g << 12;
+        var b2 = b << 4;
+
+        return r2 | g2 | b2 | 0xff000000;
+    }
+
+    public static int ABGRfromLimitedColor(short color) {
         var r = (color >> 8) & 0xf;
         var g = (color >> 4) & 0xf;
         var b = color & 0xf;

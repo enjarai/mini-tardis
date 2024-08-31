@@ -1,7 +1,6 @@
 package dev.enjarai.minitardis.client.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlock;
 import dev.enjarai.minitardis.block.console.ConsoleScreenBlockEntity;
 import dev.enjarai.minitardis.component.screen.canvas.patbox.CanvasUtils;
@@ -57,8 +56,8 @@ public class ConsoleScreenBlockRenderer implements BlockEntityRenderer<ConsoleSc
         var nativeImage = newEntry.texture.getImage();
         for (int x = 0; x < entity.display.getWidth(); x++) {
             for (int y = 0; y < entity.display.getHeight(); y++) {
-                nativeImage.setColor(x, y,
-                        CanvasUtils.fromLimitedColor(entity.display.getRaw(x, y)) | 0xff000000);
+                var color = CanvasUtils.ABGRfromLimitedColor(entity.display.getRaw(x, y)) | 0xff000000;
+                nativeImage.setColor(x, y, color);
             }
         }
 

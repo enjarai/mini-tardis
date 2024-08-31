@@ -62,7 +62,7 @@ public interface DrawableCanvas {
             for (var y = 0; y < height; y++) {
                 var color = getRaw(x, y);
 
-                image.setRGB(x, y, CanvasUtils.fromLimitedColor(color) | 0xFF000000);
+                image.setRGB(x, y, CanvasUtils.ARGBFromLimitedColor(color) | 0xFF000000);
             }
         }
         return image;

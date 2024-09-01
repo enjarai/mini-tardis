@@ -242,8 +242,6 @@ public class ModBlocks {
         OxidizableBlocksRegistry.registerWaxableBlockPair(EXPOSED_COPPER_INTERIOR_LIGHT, WAXED_EXPOSED_COPPER_INTERIOR_LIGHT);
         OxidizableBlocksRegistry.registerWaxableBlockPair(WEATHERED_COPPER_INTERIOR_LIGHT, WAXED_WEATHERED_COPPER_INTERIOR_LIGHT);
         OxidizableBlocksRegistry.registerWaxableBlockPair(OXIDIZED_COPPER_INTERIOR_LIGHT, WAXED_OXIDIZED_COPPER_INTERIOR_LIGHT);
-
-        BlockRenderLayerMap.INSTANCE.putBlock(STATE_COMPARATOR, RenderLayer.getCutout());
     }
 
 

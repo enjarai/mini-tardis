@@ -18,5 +18,7 @@ public class MiniTardisClient implements ClientModInitializer {
 
         ClientTickEvents.START_CLIENT_TICK.register(c -> ConsoleScreenBlockRenderer.tick());
         BlockEntityRendererFactories.register(ModBlocks.CONSOLE_SCREEN_ENTITY, ConsoleScreenBlockRenderer::new);
+
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.STATE_COMPARATOR, RenderLayer.getCutout());
     }
 }

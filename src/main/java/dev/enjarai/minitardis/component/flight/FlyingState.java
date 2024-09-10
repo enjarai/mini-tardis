@@ -67,11 +67,6 @@ public class FlyingState implements FlightState {
                     SoundCategory.BLOCKS, 0.6f, 1);
         }
 
-        var shakeIntensity = (AFTERSHAKE_LENGTH - aftershakeTicks) / (float) AFTERSHAKE_LENGTH;
-        if (shakeIntensity > 0) {
-            tickScreenShake(tardis, shakeIntensity);
-        }
-
         if (getDistance() == 0) {
             completedTicks++;
 
@@ -98,6 +93,11 @@ public class FlyingState implements FlightState {
         }
 
         return this;
+    }
+
+    @Override
+    public float getScreenShakeIntensity(Tardis tardis) {
+        return (AFTERSHAKE_LENGTH - aftershakeTicks) / (float) AFTERSHAKE_LENGTH;
     }
 
     @Override

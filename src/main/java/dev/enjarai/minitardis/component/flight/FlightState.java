@@ -2,6 +2,7 @@ package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import dev.enjarai.minitardis.ModCCAComponents;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisControl;
@@ -104,6 +105,13 @@ public interface FlightState {
     }
 
     /**
+     * Returns the current screen shake intensity inside the Tardis every tick.
+     */
+    default float getScreenShakeIntensity(Tardis tardis) {
+        return 0;
+    }
+
+    /**
      * A unique id for serialization
      */
     Identifier id();
@@ -144,21 +152,6 @@ public interface FlightState {
 
         for (var player : tardis.getInteriorWorld().getPlayers()) {
             player.networkHandler.sendPacket(stopSoundS2CPacket);
-        }
-    }
-
-    default void tickScreenShake(Tardis tardis, float intensity) {
-        var world = tardis.getInteriorWorld();
-        var random = world.getRandom();
-        for (var player : world.getPlayers()) {
-            var amountX = random.nextFloat() * intensity - intensity / 2;
-            var amountY = random.nextFloat() * intensity - intensity / 2;
-
-            player.teleport(
-                    world, player.getX(), player.getY(), player.getZ(),
-                    PositionFlag.VALUES,
-                    player.getYaw() + amountX, player.getPitch() + amountY
-            );
         }
     }
 }

@@ -54,11 +54,6 @@ public class SuspendedFlightState implements FlightState {
                     SoundCategory.BLOCKS, 0.05f, 1);
         }
 
-        var shakeIntensity = (AFTERSHAKE_LENGTH - aftershakeTicks) / (float) AFTERSHAKE_LENGTH;
-        if (shakeIntensity > 0) {
-            tickScreenShake(tardis, shakeIntensity);
-        }
-
         var stability = tardis.getStability();
         if (stability <= 0) {
             return new SearchingForLandingState(true, tardis.getRandom().nextInt());
@@ -74,6 +69,11 @@ public class SuspendedFlightState implements FlightState {
         }
 
         return this;
+    }
+
+    @Override
+    public float getScreenShakeIntensity(Tardis tardis) {
+        return (AFTERSHAKE_LENGTH - aftershakeTicks) / (float) AFTERSHAKE_LENGTH;
     }
 
     @Override

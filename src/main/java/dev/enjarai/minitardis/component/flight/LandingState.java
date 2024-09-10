@@ -55,8 +55,12 @@ public class LandingState extends TransitionalFlightState {
             tardis.addOrDrainFuel(-1);
         }
 
-        tickScreenShake(tardis, 1);
         return super.tick(tardis);
+    }
+
+    @Override
+    public float getScreenShakeIntensity(Tardis tardis) {
+        return 1;
     }
 
     @Override

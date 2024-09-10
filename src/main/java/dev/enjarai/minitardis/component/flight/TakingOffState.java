@@ -36,8 +36,6 @@ public class TakingOffState extends TransitionalFlightState {
 
     @Override
     public FlightState tick(Tardis tardis) {
-        tickScreenShake(tardis, 1);
-
         if (tardis.getStability() <= 0 && tardis.getCurrentLandedLocation().isPresent()) {
             return new CrashingState(tardis.getCurrentLandedLocation().get());
         }
@@ -48,6 +46,11 @@ public class TakingOffState extends TransitionalFlightState {
         }
 
         return super.tick(tardis);
+    }
+
+    @Override
+    public float getScreenShakeIntensity(Tardis tardis) {
+        return 1;
     }
 
     @Override

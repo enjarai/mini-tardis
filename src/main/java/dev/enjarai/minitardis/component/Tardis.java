@@ -144,6 +144,8 @@ public class Tardis {
         }
 
         var newState = state.tick(this);
+        var shake = state.getScreenShakeIntensity(this);
+        applyScreenShake(shake, shake > 0 ? 1 : 0);
         if (newState != state) {
             state.complete(this);
             state = newState;
@@ -170,6 +172,13 @@ public class Tardis {
         }
 
         destinationScanner.tick();
+    }
+
+    private void applyScreenShake(float intensity, float speed) {
+        var world = getInteriorWorld();
+        for (var player : world.getPlayers()) {
+            ModCCAComponents.SCREEN_SHAKE.get(player).setShake(intensity, speed);
+        }
     }
 
     public ServerWorld getInteriorWorld() {
@@ -306,6 +315,10 @@ public class Tardis {
 
                     var entityPos = Vec3d.ofBottomCenter(exitPos);
                     entity.teleport(world, entityPos.getX(), entityPos.getY(), entityPos.getZ(), Set.of(), facing.asRotation(), 0);
+
+                    if (entity instanceof PlayerEntity player) {
+                        ModCCAComponents.SCREEN_SHAKE.get(player).setShake(0, 0);
+                    }
                 }
             });
         }

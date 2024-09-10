@@ -56,8 +56,12 @@ public class CrashingState extends TransitionalFlightState {
             playForInteriorAndExterior(tardis, ModSounds.CLOISTER_BELL, SoundCategory.BLOCKS, 1, 1);
         }
 
-        tickScreenShake(tardis, 2);
         return super.tick(tardis);
+    }
+
+    @Override
+    public float getScreenShakeIntensity(Tardis tardis) {
+        return 3;
     }
 
     @Override

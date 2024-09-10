@@ -63,8 +63,6 @@ public class SearchingForLandingState implements FlightState {
                     SoundCategory.BLOCKS, crashing ? 1 : 0.6f, pitch);
         }
 
-        tickScreenShake(tardis, crashing ? 2 : 0.5f);
-
         var maybeDestination = tardis.getDestination();
         if (maybeDestination.isPresent() && (maybeDestination.get().worldKey().equals(tardis.getExteriorWorldKey()) || crashing)) {
             var destination = crashing ? maybeDestination.get().with(tardis.getExteriorWorldKey()) : maybeDestination.get();
@@ -136,6 +134,11 @@ public class SearchingForLandingState implements FlightState {
         }
 
         return this;
+    }
+
+    @Override
+    public float getScreenShakeIntensity(Tardis tardis) {
+        return crashing ? 3 : 0.5f;
     }
 
     protected void spawnSafetyStructure(ServerWorld world, BlockPos pos) {

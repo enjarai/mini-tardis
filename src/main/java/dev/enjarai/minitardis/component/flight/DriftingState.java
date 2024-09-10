@@ -61,8 +61,6 @@ public class DriftingState implements FlightState {
                     SoundCategory.BLOCKS, 0.6f, 1);
         }
 
-//        tickScreenShake(tardis, 2);
-
         if (phasesComplete >= phaseCount) {
             if (phaseTicks == 11) {
                 playForInterior(tardis, SoundEvents.BLOCK_NOTE_BLOCK_CHIME.value(), SoundCategory.BLOCKS, 1, 0.9f);
@@ -97,6 +95,11 @@ public class DriftingState implements FlightState {
         }
 
         return this;
+    }
+
+    @Override
+    public float getScreenShakeIntensity(Tardis tardis) {
+        return 2;
     }
 
     public boolean toggleFlyLever(Tardis tardis, boolean active) {

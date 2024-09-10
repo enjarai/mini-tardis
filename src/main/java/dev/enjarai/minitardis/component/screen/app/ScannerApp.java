@@ -11,6 +11,7 @@ import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
 import dev.enjarai.minitardis.component.screen.canvas.patbox.Rotate90ClockwiseView;
 import dev.enjarai.minitardis.component.screen.element.SmallButtonElement;
 import net.minecraft.block.MapColor;
+import net.minecraft.util.math.ColorHelper;
 
 public class ScannerApp implements ScreenApp {
     public static final Codec<ScannerApp> CODEC = Codec.unit(ScannerApp::new);
@@ -29,7 +30,7 @@ public class ScannerApp implements ScreenApp {
                     for (int y = 0; y < DestinationScanner.RANGE; y++) {
                         byte value = controls.getTardis().getDestinationScanner().getFor(x, y);
                         var color = MapColor.get(value).getRenderColor(MapColor.Brightness.NORMAL);
-                        canvas.setRaw(x, -y - 1 + DestinationScanner.RANGE, CanvasUtils.toLimitedColor(color));
+                        canvas.setRaw(x, -y - 1 + DestinationScanner.RANGE, CanvasUtils.toLimitedColor(ColorHelper.Abgr.toAbgr(color)));
                     }
                 }
                 canvas.setRaw(DestinationScanner.RANGE / 2 - 1, DestinationScanner.RANGE / 2, CanvasColors.ORANGE);

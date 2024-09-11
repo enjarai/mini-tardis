@@ -84,6 +84,9 @@ dependencies {
 
 	annotationProcessor modApi("io.wispforest:owo-lib:${property('deps.owo-lib')}")
 	include "io.wispforest:owo-sentinel:${property('deps.owo-lib')}"
+
+	//TODO: make this modCompileOnly
+	modImplementation "dev.enjarai:trickster:${property('deps.trickster')}"
 }
 
 processResources {

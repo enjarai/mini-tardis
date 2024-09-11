@@ -153,12 +153,17 @@ public class Tardis {
         }
 
         // Interior hum
-        if (state.isPowered(this) && world.getTime() % (20 * 12) == 0) {
+        var powered = state.isPowered(this);
+        if (powered && world.getTime() % (20 * 12) == 0) {
             state.playForInterior(this, ModSounds.CORAL_HUM, SoundCategory.AMBIENT, 0.3f, 1);
         }
 
+        if (powered) {
+            getControls().getAllApps().forEach(app -> app.tardisTick(this));
+        }
+
         // Sparks
-        if (sparksQueued > 0 && state.isPowered(this) && world.getRandom().nextBetween(0, 20) == 0) {
+        if (sparksQueued > 0 && powered && world.getRandom().nextBetween(0, 20) == 0) {
             createInteriorSparks(false); // todo when exploding sparks?
             sparksQueued--;
         }

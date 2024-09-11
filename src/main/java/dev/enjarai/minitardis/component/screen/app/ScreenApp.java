@@ -3,6 +3,7 @@ package dev.enjarai.minitardis.component.screen.app;
 import com.mojang.serialization.Codec;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
+import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
 import dev.enjarai.minitardis.data.RandomAppLootFunction;
@@ -28,6 +29,12 @@ public interface ScreenApp {
             sprite = TardisCanvasUtils.getSprite("app/dummy");
         }
         canvas.draw(0, 0, sprite);
+    }
+
+    /**
+     * Called every tick while this app is installed in a Tardis, regardless of if it's open.
+     */
+    default void tardisTick(Tardis tardis) {
     }
 
     default boolean canBeUninstalled() {

@@ -355,6 +355,10 @@ public class Tardis {
         return holder.getServer();
     }
 
+    public TardisHolder getHolder() {
+        return holder;
+    }
+
     public Random getRandom() {
         return getInteriorWorld().getRandom();
     }
@@ -505,6 +509,14 @@ public class Tardis {
             }
         }
         return Optional.empty();
+    }
+
+    public void setSparksQueued(int sparks) {
+        sparksQueued = sparks;
+    }
+
+    public static boolean isTardis(RegistryKey<World> worldKey) {
+        return worldKey.getValue().getNamespace().equals(MiniTardis.MOD_ID) && worldKey.getValue().getPath().startsWith("tardis/");
     }
 
     @Override

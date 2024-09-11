@@ -73,7 +73,7 @@ public class SuspendedFlightState implements FlightState {
 
     @Override
     public float getScreenShakeIntensity(Tardis tardis) {
-        return (AFTERSHAKE_LENGTH - aftershakeTicks) / (float) AFTERSHAKE_LENGTH;
+        return Math.max((AFTERSHAKE_LENGTH - aftershakeTicks) / (float) AFTERSHAKE_LENGTH, 0);
     }
 
     @Override
@@ -84,6 +84,9 @@ public class SuspendedFlightState implements FlightState {
             return true;
         } else if (newState instanceof DriftingState driftingState) {
             driftingState.flyingTicks = flyingTicks;
+            return true;
+        } else if (newState instanceof BeingInterceptedState interceptedState) {
+            interceptedState.flyingTicks = flyingTicks;
             return true;
         } else if (newState instanceof TakingOffState) {
             return false;

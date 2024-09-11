@@ -81,6 +81,8 @@
   "mini_tardis.state.mini_tardis.drifting": "CAUTION: Drifting",
   "mini_tardis.state.mini_tardis.disabled": "Powered Off",
   "mini_tardis.state.mini_tardis.suspended_flight": "Suspended Flight",
+  "mini_tardis.state.mini_tardis.intercepting": "Intercepting",
+  "mini_tardis.state.mini_tardis.being_intercepted": "Being Intercepted!",
 
   "mini_tardis.app.mini_tardis.dummy": "Deleted App",
   "mini_tardis.app.mini_tardis.bad_apple": "Bad Apple",
@@ -101,5 +103,6 @@
 
   "dimension.minecraft.overworld": "Overworld",
   "dimension.minecraft.the_nether": "The Nether",
-  "dimension.minecraft.the_end": "The End"
+  "dimension.minecraft.the_end": "The End",
+  "dimension.mini_tardis.tardis_generic": "Model 82-4 TARDIS"
 }

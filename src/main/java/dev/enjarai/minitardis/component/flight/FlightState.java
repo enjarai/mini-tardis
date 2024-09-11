@@ -30,7 +30,9 @@ public interface FlightState {
             Map.entry(DisabledState.ID, DisabledState.CODEC),
             Map.entry(BootingUpState.ID, BootingUpState.CODEC),
             Map.entry(CrashedState.ID, CrashedState.CODEC),
-            Map.entry(SuspendedFlightState.ID, SuspendedFlightState.CODEC)
+            Map.entry(SuspendedFlightState.ID, SuspendedFlightState.CODEC),
+            Map.entry(InterceptingState.ID, InterceptingState.CODEC),
+            Map.entry(BeingInterceptedState.ID, BeingInterceptedState.CODEC)
     );
     Map<Identifier, Supplier<? extends FlightState>> CONSTRUCTORS = Map.of(
             LandedState.ID, LandedState::new,

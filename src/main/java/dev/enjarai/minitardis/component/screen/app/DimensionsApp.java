@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
+import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
 import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
@@ -60,10 +61,12 @@ public class DimensionsApp implements ScreenApp {
                         .sorted(Comparator.comparing(RegistryKey::getValue))
                         .forEachOrdered(world -> {
                             var star = new DimensionStarElement(0, 0, world);
+                            var timeout = 0;
                             do {
+                                timeout++;
                                 star.x = deterministicRandom.nextBetween(2, 128 - 2 - 11);
                                 star.y = deterministicRandom.nextBetween(18, 96 - 2 - 11);
-                            } while (children.stream().anyMatch(el -> el instanceof DimensionStarElement pel && star.overlapsWith(pel)));
+                            } while (children.stream().anyMatch(el -> el instanceof DimensionStarElement pel && star.overlapsWith(pel)) && timeout <= 10);
 
                             star.visible = accessibleDimensions.contains(world);
                             addElement(star);
@@ -116,6 +119,9 @@ public class DimensionsApp implements ScreenApp {
     @SuppressWarnings("deprecation")
     public static Text translateWorldId(RegistryKey<World> key) {
         var id = key.getValue();
+        if (Tardis.isTardis(key)) {
+            return Text.translatable("dimension.mini_tardis.tardis_generic");
+        }
         return Text.translatableWithFallback("dimension." + id.getNamespace() + "." + id.getPath(),
                 WordUtils.capitalize(id.getPath().replace('_', ' ')));
     }

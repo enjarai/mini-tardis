@@ -1,8 +1,6 @@
 package dev.enjarai.minitardis.compat.trickster;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.Tardis;
@@ -15,6 +13,8 @@ import dev.enjarai.trickster.spell.SpellPart;
 import dev.enjarai.trickster.spell.execution.executor.DefaultSpellExecutor;
 import dev.enjarai.trickster.spell.fragment.VoidFragment;
 import io.wispforest.accessories.endec.CodecUtils;
+import io.wispforest.endec.Endec;
+import io.wispforest.endec.impl.StructEndecBuilder;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ClickType;
 
@@ -22,12 +22,13 @@ import java.util.List;
 import java.util.Optional;
 
 public class GuardingSpellApp implements ScreenApp {
-    public static final Codec<GuardingSpellApp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            CodecUtils.ofEndec(DefaultSpellExecutor.ENDEC).optionalFieldOf("spell").forGetter(app -> Optional.of(app.spell)),
-            CodecUtils.ofEndec(Fragment.ENDEC).optionalFieldOf("crow_mind").forGetter(app -> Optional.of(app.crowMind))
-    ).apply(instance, GuardingSpellApp::new));
+    public static final Endec<GuardingSpellApp> ENDEC = StructEndecBuilder.of(
+            DefaultSpellExecutor.ENDEC.optionalOf().fieldOf("spell", app -> Optional.of(app.spell)),
+            Fragment.ENDEC.optionalOf().fieldOf("crow_mind", app -> Optional.of(app.crowMind)),
+            GuardingSpellApp::new
+    );
     public static final ScreenAppType<GuardingSpellApp> TYPE =
-            new ScreenAppType<>(MapCodec.assumeMapUnsafe(GuardingSpellApp.CODEC), GuardingSpellApp::new, false);
+            new ScreenAppType<>(MapCodec.assumeMapUnsafe(CodecUtils.ofEndec(GuardingSpellApp.ENDEC)), GuardingSpellApp::new, false);
 
     public final DefaultSpellExecutor spell;
     public Fragment crowMind;

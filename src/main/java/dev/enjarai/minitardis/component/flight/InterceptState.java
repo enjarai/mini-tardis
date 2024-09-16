@@ -13,7 +13,7 @@ import static dev.enjarai.minitardis.component.flight.FlyingState.SOUND_LOOP_LEN
 
 public abstract class InterceptState implements FlightState, RespondsToFlyLever, RespondsToNudging {
     public static final int PHASES = 6;
-    public static final int MAX_X_OFFSET = 3;
+    public static final int MAX_X_OFFSET = 4;
     public static final int MAX_Y_OFFSET = 2;
 
     protected final UUID otherTardis;
@@ -134,8 +134,8 @@ public abstract class InterceptState implements FlightState, RespondsToFlyLever,
         return phasesComplete;
     }
 
-    public Optional<BeingInterceptedState> getLinkedState(Tardis tardis) {
-        return tardis.getHolder().getTardis(otherTardis).flatMap(t -> t.getState(BeingInterceptedState.class));
+    public Optional<InterceptState> getLinkedState(Tardis tardis) {
+        return tardis.getHolder().getTardis(otherTardis).flatMap(t -> t.getState(InterceptState.class));
     }
 
     @Override

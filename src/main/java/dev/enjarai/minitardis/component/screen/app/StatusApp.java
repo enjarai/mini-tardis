@@ -6,6 +6,7 @@ import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.flight.DriftingState;
 import dev.enjarai.minitardis.component.flight.FlyingState;
+import dev.enjarai.minitardis.component.flight.InterceptState;
 import dev.enjarai.minitardis.component.flight.RefuelingState;
 import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
 import dev.enjarai.minitardis.component.screen.canvas.patbox.CanvasImage;
@@ -22,7 +23,7 @@ import java.util.Arrays;
 public class StatusApp implements ScreenApp {
     public static final Codec<StatusApp> CODEC = Codec.unit(StatusApp::new);
 
-    private Random etaRandom = new LocalRandom(0);
+    private final Random etaRandom = new LocalRandom(0);
 
     @Override
     public AppView getView(TardisControl controls) {
@@ -101,13 +102,31 @@ public class StatusApp implements ScreenApp {
                 var stutterOffsetFuel = isSolid || (state instanceof RefuelingState && tardis.getFuel() < 1000) ? 0 : random.nextBetween(-1, 1);
                 drawVerticalBar(canvas, tardis.getFuel() * 480 / 10000 + stutterOffsetFuel, 72, 16, TardisCanvasUtils.getSprite("vertical_bar_blue"), "ART");
 
-                var conduitsUnlocked = controls.areEnergyConduitsUnlocked();
-                canvas.draw(24, 48, conduitsUnlocked ? TardisCanvasUtils.getSprite("energy_conduits_active") : TardisCanvasUtils.getSprite("energy_conduits_inactive"));
-                DefaultFonts.VANILLA.drawText(canvas, "CND", 24 + 7, 80, 8, CanvasColors.WHITE);
+                tardis.getState(InterceptState.class).ifPresentOrElse(interceptState -> {
+                    canvas.draw(0, 16, TardisCanvasUtils.getSprite("intercept_radar"));
 
-                var destinationLocked = controls.isDestinationLocked();
-                canvas.draw(0, 48, destinationLocked ? TardisCanvasUtils.getSprite("lock_icon_locked") : TardisCanvasUtils.getSprite("lock_icon_unlocked"));
-                DefaultFonts.VANILLA.drawText(canvas, "LCK", 7, 80, 8, CanvasColors.WHITE);
+                    var targetX = interceptState.getTargetX();
+                    var targetY = interceptState.getTargetY();
+                    var currentX = interceptState.getOffsetX();
+                    var currentY = interceptState.getOffsetY();
+                    canvas.draw(35 + targetX * 6, 16 + 23 + targetY * 6, TardisCanvasUtils.getSprite("intercept_target"));
+                    canvas.draw(35 + currentX * 6, 16 + 23 + currentY * 6, TardisCanvasUtils.getSprite("intercept_current"));
+
+                    int phase = interceptState.getPhasesComplete();
+                    int otherPhase = interceptState.getLinkedState(tardis).map(InterceptState::getPhasesComplete).orElse(0);
+                    for (int i = 0; i < InterceptState.PHASES; i++) {
+                        canvas.draw(8 + i * 8, 68, TardisCanvasUtils.getSprite(i < phase ? "intercept_phase_complete" : "intercept_phase"));
+                        canvas.draw(8 + i * 8, 76, TardisCanvasUtils.getSprite(i < otherPhase ? "intercept_phase_other_complete" : "intercept_phase_other"));
+                    }
+                }, () -> {
+                    var conduitsUnlocked = controls.areEnergyConduitsUnlocked();
+                    canvas.draw(24, 48, conduitsUnlocked ? TardisCanvasUtils.getSprite("energy_conduits_active") : TardisCanvasUtils.getSprite("energy_conduits_inactive"));
+                    DefaultFonts.VANILLA.drawText(canvas, "CND", 24 + 7, 80, 8, CanvasColors.WHITE);
+
+                    var destinationLocked = controls.isDestinationLocked();
+                    canvas.draw(0, 48, destinationLocked ? TardisCanvasUtils.getSprite("lock_icon_locked") : TardisCanvasUtils.getSprite("lock_icon_unlocked"));
+                    DefaultFonts.VANILLA.drawText(canvas, "LCK", 7, 80, 8, CanvasColors.WHITE);
+                });
             }
 
             @Override

@@ -46,7 +46,9 @@ public class BeingInterceptedState extends InterceptState {
 
     @Override
     public void init(Tardis tardis) {
+        shuffleTarget(tardis);
         tardis.setSparksQueued(5);
+        super.init(tardis);
     }
 
     @Override

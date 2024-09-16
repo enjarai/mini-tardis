@@ -205,6 +205,10 @@ public class Tardis {
         return destination.map(l -> l.getWorld(holder.getServer()));
     }
 
+    public Optional<Tardis> getDestinationTardis() {
+        return getDestinationWorld().flatMap(w -> w.getComponent(ModCCAComponents.TARDIS_REFERENCE).getTardis());
+    }
+
     public DestinationScanner getDestinationScanner() {
         return destinationScanner;
     }

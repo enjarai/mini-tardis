@@ -67,9 +67,7 @@ public interface FlightState {
      * External factors may use this method to suggest a state transition,
      * the implementor can return a boolean to accept or reject this.
      */
-    default boolean suggestTransition(Tardis tardis, FlightState newState) {
-        return true;
-    }
+    boolean suggestTransition(Tardis tardis, FlightState newState);
 
     /**
      * Whether entities should be able to enter and exit the Tardis.

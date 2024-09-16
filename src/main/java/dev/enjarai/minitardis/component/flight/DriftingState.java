@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 
 import static dev.enjarai.minitardis.component.flight.FlyingState.SOUND_LOOP_LENGTH;
 
-public class DriftingState implements FlightState {
+public class DriftingState implements FlightState, RespondsToFlyLever {
     public static final MapCodec<DriftingState> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("phase_count").forGetter(s -> s.phaseCount),
             Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks),
@@ -102,6 +102,7 @@ public class DriftingState implements FlightState {
         return 2;
     }
 
+    @Override
     public boolean toggleFlyLever(Tardis tardis, boolean active) {
         if (phaseTicks >= phaseLength) {
             if (phasesComplete < phaseCount) {

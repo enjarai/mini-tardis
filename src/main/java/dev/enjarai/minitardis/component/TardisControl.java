@@ -75,13 +75,17 @@ public class TardisControl {
 
     public boolean nudgeDestination(Direction direction) {
         if (isDestinationLocked() && !direction.getAxis().isVertical()) {
-            return tardis.getState(FlyingState.class).map(state -> {
-                var axis = direction.getAxis().ordinal() == 0 ? 1 : 0;
-                var i = state.scaleState * 2 + axis;
-                var original = state.offsets[i];
-                state.offsets[i] = MathHelper.clamp(original - direction.getDirection().offset(), -1, 1);
-                return true;
-            }).orElse(false);
+            return switch (tardis.getState()) {
+                case FlyingState state -> {
+                    var axis = direction.getAxis().ordinal() == 0 ? 1 : 0;
+                    var i = state.scaleState * 2 + axis;
+                    var original = state.offsets[i];
+                    state.offsets[i] = MathHelper.clamp(original - direction.getDirection().offset(), -1, 1);
+                    yield true;
+                }
+                case RespondsToNudging state -> state.nudgeDestination(getTardis(), direction);
+                default -> false;
+            };
         }
 
         var success = tardis.setDestination(tardis.getDestination()
@@ -131,9 +135,11 @@ public class TardisControl {
 
     public boolean handbrake(boolean state) {
         if (!state && tardis.getState() instanceof FlyingState && !isDestinationLocked()) {
-            return tardis.suggestStateTransition(new DriftingState());
-        } else if (tardis.getState() instanceof DriftingState driftingState) {
-            return driftingState.toggleFlyLever(tardis, state) || tardis.suggestStateTransition(new FlyingState(tardis.getRandom().nextInt()));
+            return tardis.getDestinationTardis()
+                    .map(otherTardis -> tardis.suggestStateTransition(new InterceptingState(otherTardis.uuid())))
+                    .orElseGet(() -> tardis.suggestStateTransition(new DriftingState()));
+        } else if (tardis.getState() instanceof RespondsToFlyLever respondingState) {
+            return respondingState.toggleFlyLever(tardis, state) || tardis.suggestStateTransition(new FlyingState(tardis.getRandom().nextInt()));
         }
 
         if (tardis.isDoorOpen()) return false;

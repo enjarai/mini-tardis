@@ -4,103 +4,71 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
-import dev.enjarai.minitardis.ModSounds;
 import dev.enjarai.minitardis.component.PartialTardisLocation;
 import dev.enjarai.minitardis.component.Tardis;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
 
 import java.util.UUID;
 
-import static dev.enjarai.minitardis.component.flight.FlyingState.SOUND_LOOP_LENGTH;
-
-public class InterceptingState implements FlightState {
+public class InterceptingState extends InterceptState {
     public static final MapCodec<InterceptingState> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Uuids.CODEC.fieldOf("target").forGetter(s -> s.target),
-            Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks)
+            Uuids.CODEC.fieldOf("other_tardis").forGetter(s -> s.otherTardis),
+            Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks),
+            Codec.INT.fieldOf("phases_complete").forGetter(s -> s.phasesComplete),
+            Codec.INT.fieldOf("phase_ticks").forGetter(s -> s.phaseTicks),
+            Codec.INT.fieldOf("offset_x").forGetter(s -> s.offsetX),
+            Codec.INT.fieldOf("offset_y").forGetter(s -> s.offsetY)
     ).apply(instance, InterceptingState::new));
     public static final Identifier ID = MiniTardis.id("intercepting");
 
-    private final UUID target;
-    int flyingTicks;
-
-    private InterceptingState(UUID target, int flyingTicks) {
-        this.target = target;
-        this.flyingTicks = flyingTicks;
+    protected InterceptingState(UUID otherTardis, int flyingTicks, int phasesComplete, int phaseTicks, int offsetX, int offsetY) {
+        super(otherTardis, flyingTicks, phasesComplete, phaseTicks, offsetX, offsetY);
     }
 
-    public InterceptingState(UUID target) {
-        this(target, 0);
+    public InterceptingState(UUID otherTardis) {
+        super(otherTardis);
     }
 
     @Override
     public FlightState tick(Tardis tardis) {
-        flyingTicks++;
-
-        if (flyingTicks % SOUND_LOOP_LENGTH == 0) {
-            float errorPitch = tardis.getInteriorWorld().getRandom().nextFloat() - 0.5f;
-
-            playForInterior(tardis, ModSounds.TARDIS_FLY_LOOP_ERROR,
-                    SoundCategory.BLOCKS, 0.6f, errorPitch);
-            playForInterior(tardis, ModSounds.TARDIS_FLY_LOOP,
-                    SoundCategory.BLOCKS, 0.6f, 1);
-        }
-
-        var targetTardis = tardis.getHolder().getTardis(target);
-        if (targetTardis.isEmpty()) {
+        var other = tardis.getHolder().getTardis(otherTardis);
+        if (other.isEmpty()) {
             tardis.getControls().majorMalfunction();
             return new SearchingForLandingState(true, tardis.getRandom().nextInt());
         }
 
-        if (targetTardis.get().getState(BeingInterceptedState.class).isEmpty()) {
-            if (!targetTardis.get().suggestStateTransition(new BeingInterceptedState(tardis.uuid()))) {
+        if (other.get().getState(BeingInterceptedState.class).isEmpty()) {
+            if (!other.get().suggestStateTransition(new BeingInterceptedState(tardis.uuid()))) {
                 tardis.getControls().moderateMalfunction();
                 return new FlyingState(tardis.getRandom().nextInt());
             }
         }
 
-//        // If the target somehow changes state, we succeed the intercept.
-//        tardis.setCurrentLocation(new PartialTardisLocation(targetTardis.get().getInteriorWorld().getRegistryKey()));
-//        return new SearchingForLandingState(false, 0);
+        tardis.destabilize(1);
 
-        if (tardis.getStability() <= 0) {
-            return new SearchingForLandingState(true, tardis.getRandom().nextInt());
-        }
-
-        tardis.destabilize(2);
-
-        if (flyingTicks % 2 == 0 && !tardis.addOrDrainFuel(-1)) {
-            tardis.getControls().moderateMalfunction();
-        }
-
-        return this;
+        return super.tick(tardis);
     }
 
     @Override
-    public boolean suggestTransition(Tardis tardis, FlightState newState) {
-        return false;
+    protected FlightState completeMinigame(Tardis tardis) {
+        tardis.getControls().setDestinationLocked(true, true);
+        tardis.getDestination().ifPresent(destination -> {
+            tardis.setCurrentLocation(new PartialTardisLocation(destination.worldKey()));
+        });
+        var newState = new SearchingForLandingState(false, 0);
+        newState.flyingTicks = flyingTicks;
+        return newState;
     }
 
     @Override
-    public float getScreenShakeIntensity(Tardis tardis) {
-        return 2;
+    public int getTargetX() {
+        return 0;
     }
 
     @Override
-    public boolean tryChangeCourse(Tardis tardis) {
-        return false;
-    }
-
-    @Override
-    public boolean isSolid(Tardis tardis) {
-        return false;
-    }
-
-    @Override
-    public boolean isInteriorLightEnabled(int order) {
-        order--;
-        return flyingTicks / 5 % 2 == order / 6;
+    public int getTargetY() {
+        return 0;
     }
 
     @Override

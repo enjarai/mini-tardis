@@ -13,6 +13,7 @@ import org.ladysnake.cca.api.v3.component.tick.ServerTickingComponent;
 import xyz.nucleoid.fantasy.Fantasy;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TardisHolder implements ServerTickingComponent {
     private MinecraftServer server;
@@ -52,6 +53,10 @@ public class TardisHolder implements ServerTickingComponent {
 
     public Set<Tardis> getAllTardii() {
         return ImmutableSet.copyOf(tardii.values());
+    }
+
+    public Set<Tardis> getInterdictableTardii() {
+        return tardii.values().stream().filter(t -> t.getState().canBeInterdicted(t)).collect(Collectors.toSet());
     }
 
     @Override

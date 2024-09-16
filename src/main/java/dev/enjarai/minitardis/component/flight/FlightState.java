@@ -2,12 +2,10 @@ package dev.enjarai.minitardis.component.flight;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import dev.enjarai.minitardis.ModCCAComponents;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.screen.canvas.patbox.DrawableCanvas;
-import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.network.packet.s2c.play.StopSoundS2CPacket;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -31,8 +29,8 @@ public interface FlightState {
             Map.entry(BootingUpState.ID, BootingUpState.CODEC),
             Map.entry(CrashedState.ID, CrashedState.CODEC),
             Map.entry(SuspendedFlightState.ID, SuspendedFlightState.CODEC),
-            Map.entry(InterceptingState.ID, InterceptingState.CODEC),
-            Map.entry(BeingInterceptedState.ID, BeingInterceptedState.CODEC)
+            Map.entry(InterdictingState.ID, InterdictingState.CODEC),
+            Map.entry(BeingInterdictedState.ID, BeingInterdictedState.CODEC)
     );
     Map<Identifier, Supplier<? extends FlightState>> CONSTRUCTORS = Map.of(
             LandedState.ID, LandedState::new,
@@ -95,6 +93,10 @@ public interface FlightState {
      * This lets us do things like show an error in the crashed state, or a loading screen during boot.
      */
     default boolean overrideScreenImage(Tardis tardis) {
+        return false;
+    }
+
+    default boolean canBeInterdicted(Tardis tardis) {
         return false;
     }
 

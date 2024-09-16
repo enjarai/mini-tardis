@@ -6,7 +6,7 @@ import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
 import dev.enjarai.minitardis.component.flight.DriftingState;
 import dev.enjarai.minitardis.component.flight.FlyingState;
-import dev.enjarai.minitardis.component.flight.InterceptState;
+import dev.enjarai.minitardis.component.flight.InterdictState;
 import dev.enjarai.minitardis.component.flight.RefuelingState;
 import dev.enjarai.minitardis.component.screen.canvas.CanvasColors;
 import dev.enjarai.minitardis.component.screen.canvas.patbox.CanvasImage;
@@ -102,19 +102,19 @@ public class StatusApp implements ScreenApp {
                 var stutterOffsetFuel = isSolid || (state instanceof RefuelingState && tardis.getFuel() < 1000) ? 0 : random.nextBetween(-1, 1);
                 drawVerticalBar(canvas, tardis.getFuel() * 480 / 10000 + stutterOffsetFuel, 72, 16, TardisCanvasUtils.getSprite("vertical_bar_blue"), "ART");
 
-                tardis.getState(InterceptState.class).ifPresentOrElse(interceptState -> {
+                tardis.getState(InterdictState.class).ifPresentOrElse(interdictState -> {
                     canvas.draw(0, 16, TardisCanvasUtils.getSprite("intercept_radar"));
 
-                    var targetX = interceptState.getTargetX();
-                    var targetY = interceptState.getTargetY();
-                    var currentX = interceptState.getOffsetX();
-                    var currentY = interceptState.getOffsetY();
+                    var targetX = interdictState.getTargetX();
+                    var targetY = interdictState.getTargetY();
+                    var currentX = interdictState.getOffsetX();
+                    var currentY = interdictState.getOffsetY();
                     canvas.draw(35 + targetX * 6, 16 + 23 + targetY * 6, TardisCanvasUtils.getSprite("intercept_target"));
                     canvas.draw(35 + currentX * 6, 16 + 23 + currentY * 6, TardisCanvasUtils.getSprite("intercept_current"));
 
-                    int phase = interceptState.getPhasesComplete();
-                    int otherPhase = interceptState.getLinkedState(tardis).map(InterceptState::getPhasesComplete).orElse(0);
-                    for (int i = 0; i < InterceptState.PHASES; i++) {
+                    int phase = interdictState.getPhasesComplete();
+                    int otherPhase = interdictState.getLinkedState(tardis).map(InterdictState::getPhasesComplete).orElse(0);
+                    for (int i = 0; i < InterdictState.PHASES; i++) {
                         canvas.draw(8 + i * 8, 68, TardisCanvasUtils.getSprite(i < phase ? "intercept_phase_complete" : "intercept_phase"));
                         canvas.draw(8 + i * 8, 76, TardisCanvasUtils.getSprite(i < otherPhase ? "intercept_phase_other_complete" : "intercept_phase_other"));
                     }

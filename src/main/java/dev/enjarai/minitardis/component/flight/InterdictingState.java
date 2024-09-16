@@ -11,22 +11,22 @@ import net.minecraft.util.Uuids;
 
 import java.util.UUID;
 
-public class InterceptingState extends InterceptState {
-    public static final MapCodec<InterceptingState> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+public class InterdictingState extends InterdictState {
+    public static final MapCodec<InterdictingState> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Uuids.CODEC.fieldOf("other_tardis").forGetter(s -> s.otherTardis),
             Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks),
             Codec.INT.fieldOf("phases_complete").forGetter(s -> s.phasesComplete),
             Codec.INT.fieldOf("phase_ticks").forGetter(s -> s.phaseTicks),
             Codec.INT.fieldOf("offset_x").forGetter(s -> s.offsetX),
             Codec.INT.fieldOf("offset_y").forGetter(s -> s.offsetY)
-    ).apply(instance, InterceptingState::new));
-    public static final Identifier ID = MiniTardis.id("intercepting");
+    ).apply(instance, InterdictingState::new));
+    public static final Identifier ID = MiniTardis.id("interdicting");
 
-    protected InterceptingState(UUID otherTardis, int flyingTicks, int phasesComplete, int phaseTicks, int offsetX, int offsetY) {
+    protected InterdictingState(UUID otherTardis, int flyingTicks, int phasesComplete, int phaseTicks, int offsetX, int offsetY) {
         super(otherTardis, flyingTicks, phasesComplete, phaseTicks, offsetX, offsetY);
     }
 
-    public InterceptingState(UUID otherTardis) {
+    public InterdictingState(UUID otherTardis) {
         super(otherTardis);
     }
 
@@ -38,8 +38,8 @@ public class InterceptingState extends InterceptState {
             return new SearchingForLandingState(true, tardis.getRandom().nextInt());
         }
 
-        if (other.get().getState(BeingInterceptedState.class).isEmpty()) {
-            if (!other.get().suggestStateTransition(new BeingInterceptedState(tardis.uuid()))) {
+        if (other.get().getState(BeingInterdictedState.class).isEmpty()) {
+            if (!other.get().suggestStateTransition(new BeingInterdictedState(tardis.uuid()))) {
                 tardis.getControls().moderateMalfunction();
                 return new FlyingState(tardis.getRandom().nextInt());
             }

@@ -20,6 +20,7 @@ public class ScreenAppTypes {
     public static final ScreenAppType<WaypointsApp> WAYPOINTS = register("waypoints", WaypointsApp.CODEC, WaypointsApp::new, true);
     public static final ScreenAppType<LookAndFeelApp> LOOK_AND_FEEL = register("look_and_feel", LookAndFeelApp.CODEC, LookAndFeelApp::new, true);
     public static final ScreenAppType<FloppyBirdApp> FLOPPY_BIRD = register("floppy_bird", FloppyBirdApp.CODEC, FloppyBirdApp::new, true);
+    public static final ScreenAppType<InterdictorApp> INTERDICTOR = register("interdictor", InterdictorApp.CODEC, InterdictorApp::new, true);
 
     private static <T extends ScreenApp> ScreenAppType<T> register(String name, Codec<T> codec, Supplier<T> constructor, boolean spawnsAsDungeonLoot) {
         return Registry.register(ScreenAppType.REGISTRY, MiniTardis.id(name), new ScreenAppType<>(MapCodec.assumeMapUnsafe(codec), constructor, spawnsAsDungeonLoot));

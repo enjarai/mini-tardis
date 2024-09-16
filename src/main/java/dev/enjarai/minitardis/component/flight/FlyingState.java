@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
-import dev.enjarai.minitardis.component.PartialTardisLocation;
 import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -119,10 +118,10 @@ public class FlyingState implements FlightState {
         } else if (newState instanceof DriftingState driftingState) {
             driftingState.flyingTicks = flyingTicks;
             return true;
-        } else if (newState instanceof InterceptingState interceptingState) {
-            interceptingState.flyingTicks = flyingTicks;
+        } else if (newState instanceof InterdictingState interdictingState) {
+            interdictingState.flyingTicks = flyingTicks;
             return true;
-        } else if (newState instanceof BeingInterceptedState interceptedState) {
+        } else if (newState instanceof BeingInterdictedState interceptedState) {
             interceptedState.flyingTicks = flyingTicks;
             return true;
         } else if (newState instanceof SuspendedFlightState suspendedFlightState) {
@@ -173,6 +172,11 @@ public class FlyingState implements FlightState {
     @Override
     public boolean isSolid(Tardis tardis) {
         return false;
+    }
+
+    @Override
+    public boolean canBeInterdicted(Tardis tardis) {
+        return true;
     }
 
     @Override

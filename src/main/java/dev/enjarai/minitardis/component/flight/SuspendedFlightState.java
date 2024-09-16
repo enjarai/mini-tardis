@@ -85,7 +85,7 @@ public class SuspendedFlightState implements FlightState {
         } else if (newState instanceof DriftingState driftingState) {
             driftingState.flyingTicks = flyingTicks;
             return true;
-        } else if (newState instanceof BeingInterceptedState interceptedState) {
+        } else if (newState instanceof BeingInterdictedState interceptedState) {
             interceptedState.flyingTicks = flyingTicks;
             return true;
         } else if (newState instanceof TakingOffState) {
@@ -98,6 +98,11 @@ public class SuspendedFlightState implements FlightState {
     @Override
     public boolean isSolid(Tardis tardis) {
         return false;
+    }
+
+    @Override
+    public boolean canBeInterdicted(Tardis tardis) {
+        return true;
     }
 
     @Override

@@ -136,7 +136,7 @@ public class TardisControl {
     public boolean handbrake(boolean state) {
         if (!state && tardis.getState() instanceof FlyingState && !isDestinationLocked()) {
             return tardis.getDestinationTardis()
-                    .map(otherTardis -> tardis.suggestStateTransition(new InterceptingState(otherTardis.uuid())))
+                    .map(otherTardis -> tardis.suggestStateTransition(new InterdictingState(otherTardis.uuid())))
                     .orElseGet(() -> tardis.suggestStateTransition(new DriftingState()));
         } else if (tardis.getState() instanceof RespondsToFlyLever respondingState) {
             return respondingState.toggleFlyLever(tardis, state) || tardis.suggestStateTransition(new FlyingState(tardis.getRandom().nextInt()));

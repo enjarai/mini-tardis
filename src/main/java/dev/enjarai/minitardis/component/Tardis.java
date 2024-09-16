@@ -82,6 +82,7 @@ public class Tardis {
     private int stability;
     private int fuel;
     private boolean doorOpen;
+    private FlightWave flightWave;
 
     private Tardis(UUID uuid, boolean interiorPlaced, Identifier interior, Either<TardisLocation, PartialTardisLocation> currentLocation, Optional<TardisLocation> destination, BlockPos interiorDoorPosition, TardisControl controls, FlightState state, int stability, int fuel, boolean doorOpen) {
         this.uuid = uuid;
@@ -141,6 +142,10 @@ public class Tardis {
         var world = getInteriorWorld();
         if (world.getTime() % 20 == 0) {
             world.getChunkManager().addTicket(INTERIOR_TICKET_TYPE, new ChunkPos(interiorDoorPosition), 1, interiorDoorPosition);
+        }
+
+        if (flightWave == null) {
+            flightWave = new FlightWave(getRandom());
         }
 
         var newState = state.tick(this);
@@ -494,6 +499,13 @@ public class Tardis {
 
         this.doorOpen = open;
         return true;
+    }
+
+    public FlightWave getFlightWave() {
+        if (flightWave == null) {
+            return new FlightWave(0, 0, 0);
+        }
+        return flightWave;
     }
 
     public void createInteriorSparks(boolean damage) {

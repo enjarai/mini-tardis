@@ -81,8 +81,8 @@
   "mini_tardis.state.mini_tardis.drifting": "CAUTION: Drifting",
   "mini_tardis.state.mini_tardis.disabled": "Powered Off",
   "mini_tardis.state.mini_tardis.suspended_flight": "Suspended Flight",
-  "mini_tardis.state.mini_tardis.intercepting": "Intercepting",
-  "mini_tardis.state.mini_tardis.being_intercepted": "Being Intercepted!",
+  "mini_tardis.state.mini_tardis.interdicting": "Interdicting",
+  "mini_tardis.state.mini_tardis.being_interdicted": "Being Interdicted!",
 
   "mini_tardis.app.mini_tardis.dummy": "Deleted App",
   "mini_tardis.app.mini_tardis.bad_apple": "Bad Apple",
@@ -100,6 +100,7 @@
   "mini_tardis.app.mini_tardis.waypoints.tooltip": "%d locations stored",
   "mini_tardis.app.mini_tardis.floppy_bird": "Floppy Bird",
   "mini_tardis.app.mini_tardis.floppy_bird.tooltip": "%d high scores stored",
+  "mini_tardis.app.mini_tardis.interdictor": "Interdictor",
 
   "dimension.minecraft.overworld": "Overworld",
   "dimension.minecraft.the_nether": "The Nether",

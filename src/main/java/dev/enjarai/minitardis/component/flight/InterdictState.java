@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import static dev.enjarai.minitardis.component.flight.FlyingState.SOUND_LOOP_LENGTH;
 
-public abstract class InterceptState implements FlightState, RespondsToFlyLever, RespondsToNudging {
+public abstract class InterdictState implements FlightState, RespondsToFlyLever, RespondsToNudging {
     public static final int PHASES = 6;
     public static final int MAX_X_OFFSET = 4;
     public static final int MAX_Y_OFFSET = 2;
@@ -23,7 +23,7 @@ public abstract class InterceptState implements FlightState, RespondsToFlyLever,
     protected int offsetX;
     protected int offsetY;
 
-    protected InterceptState(UUID otherTardis, int flyingTicks, int phasesComplete, int phaseTicks, int offsetX, int offsetY) {
+    protected InterdictState(UUID otherTardis, int flyingTicks, int phasesComplete, int phaseTicks, int offsetX, int offsetY) {
         this.otherTardis = otherTardis;
         this.flyingTicks = flyingTicks;
         this.phasesComplete = phasesComplete;
@@ -32,7 +32,7 @@ public abstract class InterceptState implements FlightState, RespondsToFlyLever,
         this.offsetY = offsetY;
     }
 
-    public InterceptState(UUID otherTardis) {
+    public InterdictState(UUID otherTardis) {
         this(otherTardis, 0, 0, 0, 0, 0);
     }
 
@@ -134,8 +134,8 @@ public abstract class InterceptState implements FlightState, RespondsToFlyLever,
         return phasesComplete;
     }
 
-    public Optional<InterceptState> getLinkedState(Tardis tardis) {
-        return tardis.getHolder().getTardis(otherTardis).flatMap(t -> t.getState(InterceptState.class));
+    public Optional<InterdictState> getLinkedState(Tardis tardis) {
+        return tardis.getHolder().getTardis(otherTardis).flatMap(t -> t.getState(InterdictState.class));
     }
 
     @Override

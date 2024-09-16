@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.MiniTardis;
 import dev.enjarai.minitardis.ModSounds;
-import dev.enjarai.minitardis.component.PartialTardisLocation;
 import dev.enjarai.minitardis.component.Tardis;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
@@ -13,8 +12,8 @@ import net.minecraft.util.Uuids;
 
 import java.util.UUID;
 
-public class BeingInterceptedState extends InterceptState {
-    public static final MapCodec<BeingInterceptedState> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+public class BeingInterdictedState extends InterdictState {
+    public static final MapCodec<BeingInterdictedState> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Uuids.CODEC.fieldOf("other_tardis").forGetter(s -> s.otherTardis),
             Codec.INT.fieldOf("flying_ticks").forGetter(s -> s.flyingTicks),
             Codec.INT.fieldOf("phases_complete").forGetter(s -> s.phasesComplete),
@@ -23,19 +22,19 @@ public class BeingInterceptedState extends InterceptState {
             Codec.INT.fieldOf("offset_y").forGetter(s -> s.offsetY),
             Codec.INT.fieldOf("target_x").forGetter(s -> s.targetX),
             Codec.INT.fieldOf("target_y").forGetter(s -> s.targetY)
-    ).apply(instance, BeingInterceptedState::new));
-    public static final Identifier ID = MiniTardis.id("being_intercepted");
+    ).apply(instance, BeingInterdictedState::new));
+    public static final Identifier ID = MiniTardis.id("being_interdicted");
 
     private int targetX;
     private int targetY;
 
-    protected BeingInterceptedState(UUID otherTardis, int flyingTicks, int phasesComplete, int phaseTicks, int offsetX, int offsetY, int targetX, int targetY) {
+    protected BeingInterdictedState(UUID otherTardis, int flyingTicks, int phasesComplete, int phaseTicks, int offsetX, int offsetY, int targetX, int targetY) {
         super(otherTardis, flyingTicks, phasesComplete, phaseTicks, offsetX, offsetY);
         this.targetX = targetX;
         this.targetY = targetY;
     }
 
-    public BeingInterceptedState(UUID otherTardis) {
+    public BeingInterdictedState(UUID otherTardis) {
         super(otherTardis);
     }
 
@@ -58,7 +57,7 @@ public class BeingInterceptedState extends InterceptState {
         }
 
         var other = tardis.getHolder().getTardis(otherTardis);
-        if (other.flatMap(t -> t.getState(InterceptState.class)).isEmpty()) {
+        if (other.flatMap(t -> t.getState(InterdictState.class)).isEmpty()) {
             tardis.getControls().moderateMalfunction();
             return new FlyingState(tardis.getRandom().nextInt());
         }

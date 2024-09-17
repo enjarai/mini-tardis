@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 public abstract class ClickableElement extends PlacedElement {
     protected Consumer<TardisControl> clickCallback;
-    protected int pressedFrames;
+    public int pressedFrames;
 
     public ClickableElement(int x, int y, int width, int height, Consumer<TardisControl> clickCallback) {
         super(x, y, width, height);

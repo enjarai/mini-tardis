@@ -501,11 +501,19 @@ public class Tardis {
         return true;
     }
 
+    public BlockPos getInteriorDoorPosition() {
+        return interiorDoorPosition;
+    }
+
     public FlightWave getFlightWave() {
         if (flightWave == null) {
             return new FlightWave(0, 0, 0);
         }
         return flightWave;
+    }
+
+    public void shuffleFlightWave() {
+        getFlightWave().shuffle(getRandom());
     }
 
     public void createInteriorSparks(boolean damage) {

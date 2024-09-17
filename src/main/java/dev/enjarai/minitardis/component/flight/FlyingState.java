@@ -23,6 +23,7 @@ public class FlyingState implements FlightState {
     public static final Identifier ID = MiniTardis.id("flying");
     static final int SOUND_LOOP_LENGTH = 32;
     private static final int AFTERSHAKE_LENGTH = 80;
+    private static final int WAVE_REFRESH_INTERVAL = 300;
 
     int flyingTicks;
     int aftershakeTicks;
@@ -47,6 +48,11 @@ public class FlyingState implements FlightState {
     }
 
     @Override
+    public void init(Tardis tardis) {
+        tardis.shuffleFlightWave();
+    }
+
+    @Override
     public FlightState tick(Tardis tardis) {
         flyingTicks++;
         aftershakeTicks++;
@@ -65,6 +71,11 @@ public class FlyingState implements FlightState {
             playForInterior(tardis, ModSounds.TARDIS_FLY_LOOP,
                     SoundCategory.BLOCKS, 0.6f, 1);
         }
+
+        // TODO do we want this?
+//        if (flyingTicks % WAVE_REFRESH_INTERVAL == 0) {
+//            tardis.shuffleFlightWave();
+//        }
 
         if (getDistance() == 0) {
             completedTicks++;

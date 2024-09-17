@@ -52,7 +52,7 @@ public class TardisControl {
 
     public boolean resetDestination() {
         if (tardis.getCurrentLandedLocation().isEmpty()) {
-            minorMalfunction();
+            tardis.shuffleFlightWave();
             return false;
         }
 

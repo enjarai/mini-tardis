@@ -130,8 +130,12 @@ public class FlyingState implements FlightState {
             driftingState.flyingTicks = flyingTicks;
             return true;
         } else if (newState instanceof InterdictingState interdictingState) {
-            interdictingState.flyingTicks = flyingTicks;
-            return true;
+            var other = tardis.getHolder().getTardis(interdictingState.otherTardis);
+            if (other.map(o -> o.getState().canBeInterdicted(o)).orElse(false)) {
+                interdictingState.flyingTicks = flyingTicks;
+                return true;
+            }
+            return false;
         } else if (newState instanceof BeingInterdictedState interceptedState) {
             interceptedState.flyingTicks = flyingTicks;
             return true;

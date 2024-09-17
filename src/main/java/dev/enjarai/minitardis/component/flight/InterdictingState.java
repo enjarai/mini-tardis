@@ -41,11 +41,11 @@ public class InterdictingState extends InterdictState {
         if (other.get().getState(BeingInterdictedState.class).isEmpty()) {
             if (!other.get().suggestStateTransition(new BeingInterdictedState(tardis.uuid()))) {
                 tardis.getControls().moderateMalfunction();
-                return new FlyingState(tardis.getRandom().nextInt());
+                return completeMinigame(tardis);
             }
         }
 
-        tardis.destabilize(1);
+//        tardis.destabilize(1); TODO
 
         return super.tick(tardis);
     }
@@ -59,6 +59,15 @@ public class InterdictingState extends InterdictState {
         var newState = new SearchingForLandingState(false, 0);
         newState.flyingTicks = flyingTicks;
         return newState;
+    }
+
+    @Override
+    public boolean suggestTransition(Tardis tardis, FlightState newState) {
+        if (newState instanceof SearchingForLandingState landingState && landingState.crashing) {
+            landingState.flyingTicks = flyingTicks;
+            return true;
+        }
+        return false;
     }
 
     @Override

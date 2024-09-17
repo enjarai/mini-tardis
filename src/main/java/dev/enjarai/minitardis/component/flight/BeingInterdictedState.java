@@ -53,7 +53,7 @@ public class BeingInterdictedState extends InterdictState {
     @Override
     public FlightState tick(Tardis tardis) {
         if (flyingTicks % 100 == 0) {
-            playForInteriorAndExterior(tardis, ModSounds.CLOISTER_BELL, SoundCategory.BLOCKS, 1, 1);
+            playForInterior(tardis, ModSounds.CLOISTER_BELL, SoundCategory.BLOCKS, 1, 1);
         }
 
         var other = tardis.getHolder().getTardis(otherTardis);
@@ -67,6 +67,9 @@ public class BeingInterdictedState extends InterdictState {
 
     @Override
     protected FlightState completeMinigame(Tardis tardis) {
+        var other = tardis.getHolder().getTardis(otherTardis);
+        other.ifPresent(t -> t.suggestStateTransition(new SearchingForLandingState(true, t.getRandom().nextInt())));
+
         var newState = new FlyingState(tardis.getRandom().nextInt());
         newState.flyingTicks = flyingTicks;
         return newState;

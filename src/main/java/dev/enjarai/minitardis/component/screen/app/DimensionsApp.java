@@ -80,7 +80,7 @@ public class DimensionsApp implements ScreenApp {
                 controls.getTardis().getDestination().ifPresentOrElse(destination -> {
                     var worldId = destination.worldKey();
 
-                    if (!accessibleDimensions.contains(worldId)) {
+                    if (!accessibleDimensions.contains(worldId) && !Tardis.isTardis(worldId)) {
                         saveDimButton.visible = true;
                         DefaultFonts.VANILLA.drawText(canvas, "Unknown", 5, 6, 8, CanvasColors.LIGHT_GRAY);
                     } else {

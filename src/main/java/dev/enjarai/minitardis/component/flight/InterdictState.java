@@ -109,8 +109,8 @@ public abstract class InterdictState implements FlightState, RespondsToFlyLever,
     @Override
     public boolean nudgeDestination(Tardis tardis, Direction direction) {
         var vec = direction.getVector();
-        var shiftX = vec.getX();
-        var shiftY = vec.getZ();
+        var shiftX = -vec.getX();
+        var shiftY = -vec.getZ();
 
         offsetX = Math.clamp(offsetX + shiftX, -MAX_X_OFFSET, MAX_X_OFFSET);
         offsetY = Math.clamp(offsetY + shiftY, -MAX_Y_OFFSET, MAX_Y_OFFSET);

@@ -74,18 +74,22 @@ public class TardisControl {
     }
 
     public boolean nudgeDestination(Direction direction) {
-        if (isDestinationLocked() && !direction.getAxis().isVertical()) {
-            return switch (tardis.getState()) {
+        if (!direction.getAxis().isVertical()) {
+            switch (tardis.getState()) {
                 case FlyingState state -> {
-                    var axis = direction.getAxis().ordinal() == 0 ? 1 : 0;
-                    var i = state.scaleState * 2 + axis;
-                    var original = state.offsets[i];
-                    state.offsets[i] = MathHelper.clamp(original - direction.getDirection().offset(), -1, 1);
-                    yield true;
+                    if (isDestinationLocked()) {
+                        var axis = direction.getAxis().ordinal() == 0 ? 1 : 0;
+                        var i = state.scaleState * 2 + axis;
+                        var original = state.offsets[i];
+                        state.offsets[i] = MathHelper.clamp(original - direction.getDirection().offset(), -1, 1);
+                        return true;
+                    }
                 }
-                case RespondsToNudging state -> state.nudgeDestination(getTardis(), direction);
-                default -> false;
-            };
+                case RespondsToNudging state -> {
+                    return state.nudgeDestination(getTardis(), direction);
+                }
+                default -> {}
+            }
         }
 
         var success = tardis.setDestination(tardis.getDestination()

@@ -65,7 +65,7 @@ public class InterdictorApp implements ScreenApp {
                                             ),
                                             controls.getTardis().getDestination().map(TardisLocation::facing).orElse(Direction.NORTH)
                                     ),
-                                    false
+                                    true
                             );
                         }
                     }
@@ -84,9 +84,11 @@ public class InterdictorApp implements ScreenApp {
 
                 var lockable = false;
                 for (Tardis otherTardis : tardis.getHolder().getInterdictableTardii()) {
-                    drawWave(canvas, otherTardis.getFlightWave(), timeyTimey, (short) 0xf383);
-                    if (selectedWave.equals(otherTardis.getFlightWave())) {
-                        lockable = true;
+                    if (tardis != otherTardis) {
+                        drawWave(canvas, otherTardis.getFlightWave(), timeyTimey, (short) 0xf383);
+                        if (selectedWave.equals(otherTardis.getFlightWave())) {
+                            lockable = true;
+                        }
                     }
                 }
                 restartButton.visible = lockable;

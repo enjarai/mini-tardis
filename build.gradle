@@ -148,7 +148,7 @@ publishMods {
 	displayName = "${property('mod_version')} for ${property('minecraft_version')}"
 	version = project.version
 	changelog = getRootProject().file("CHANGELOG.md").text
-	type = ALPHA
+	type = BETA
 	modLoaders.add("fabric")
 
 	def min = property('target_min')
@@ -174,8 +174,11 @@ publishMods {
 			requires {
 				slug = "cardinal-components-api"
 			}
-			embeds {
-				slug = "polymer"
+			requires {
+				slug = "owo-lib"
+			}
+			requires {
+				slug = "cicada"
 			}
 		}
 	}
@@ -200,8 +203,11 @@ publishMods {
 			requires {
 				slug = "cardinal-components-api"
 			}
-			embeds {
-				slug = "polymer"
+			requires {
+				slug = "owo-lib"
+			}
+			requires {
+				slug = "cicada"
 			}
 		}
 	}

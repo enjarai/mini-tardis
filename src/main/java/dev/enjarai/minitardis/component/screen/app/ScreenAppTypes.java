@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 public class ScreenAppTypes {
     public static final ScreenAppType<DummyApp> DUMMY = register("dummy", DummyApp.CODEC, DummyApp::new);
     public static final ScreenAppType<ScannerApp> SCANNER = register("scanner", ScannerApp.CODEC, ScannerApp::new, true);
+    public static final ScreenAppType<BiomeScannerApp> BIOME_SCANNER = register("biome_scanner", BiomeScannerApp.CODEC, BiomeScannerApp::new, true);
     public static final ScreenAppType<GpsApp> GPS = register("gps", GpsApp.CODEC, GpsApp::new);
     public static final ScreenAppType<BadAppleApp> BAD_APPLE = register("bad_apple", BadAppleApp.CODEC, BadAppleApp::new, true);
     public static final ScreenAppType<StatusApp> STATUS = register("status", StatusApp.CODEC, StatusApp::new);

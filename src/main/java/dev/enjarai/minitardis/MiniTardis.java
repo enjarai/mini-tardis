@@ -3,6 +3,7 @@ package dev.enjarai.minitardis;
 import dev.enjarai.minitardis.block.ModBlocks;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.command.TardisCommand;
+import dev.enjarai.minitardis.compat.trickster.TricksterCompatModule;
 import dev.enjarai.minitardis.component.Tardis;
 import dev.enjarai.minitardis.component.screen.app.ScreenAppTypes;
 import dev.enjarai.minitardis.item.ModDataComponents;
@@ -17,7 +18,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.Version;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -60,6 +60,11 @@ public class MiniTardis implements ModInitializer {
 		// Load screenapps and their loot tables in order
 		ScreenAppTypes.load();
 		ModDataStuff.load();
+
+		// If Trickster is loaded, also load the Trickster compatibility module
+		if (FabricLoader.getInstance().isModLoaded("trickster")) {
+			TricksterCompatModule.load();
+		}
 	}
 
 	@Nullable

@@ -45,14 +45,6 @@ If you mess up, you'll at the very least do so in style.
 
 ![Inside a crashed TARDIS](img/crashed.gif)
 
-## Optionally works completely server-side
-
-This mod can optionally make use of the excellent [Polymer](https://modrinth.com/mod/polymer) library to work on 
-any Fabric server without needing to be installed on the client, similar to a plugin!
-Only a resource pack is required, which is automatically provided to clients by Polymer.
-
-![Tardis in flight](img/takeoff.gif)
-
 ## Credits
 
 Bad Apple compressed file format was done by [Benonardo](https://github.com/Benonardo).
@@ -61,3 +53,5 @@ The included Snake game was made by [Louis](https://github.com/Dev0Louis).
 
 This mod wouldn't be possible in the way it is without many of the libraries 
 by [Patbox](https://github.com/Patbox) and [NucleoidMC](https://github.com/NucleoidMC).
+
+![Tardis in flight](img/takeoff.gif)

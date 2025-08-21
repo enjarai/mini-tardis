@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
@@ -22,7 +23,7 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class LookAndFeelApp implements ScreenApp {
-    public static final Codec<LookAndFeelApp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<LookAndFeelApp> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT_STREAM.optionalFieldOf("history", IntStream.empty()).forGetter(app -> IntStream.of(app.history))
     ).apply(instance, LookAndFeelApp::new));
 

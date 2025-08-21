@@ -1,7 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.PartialTardisLocation;
@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class GpsApp implements ScreenApp {
-    public static final Codec<GpsApp> CODEC = Codec.unit(GpsApp::new);
+    public static final MapCodec<GpsApp> CODEC = MapCodec.unit(GpsApp::new);
 
     @Override
     public AppView getView(TardisControl controls) {

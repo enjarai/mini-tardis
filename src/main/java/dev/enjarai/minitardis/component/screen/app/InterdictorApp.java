@@ -1,6 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
@@ -15,7 +16,7 @@ import dev.enjarai.minitardis.component.screen.element.ThreeSelectElement;
 import net.minecraft.util.math.Direction;
 
 public class InterdictorApp implements ScreenApp {
-    public static final Codec<InterdictorApp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<InterdictorApp> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.optionalFieldOf("selected_wave_part", 0).forGetter(app -> app.selectedWavePart),
             FlightWave.CODEC.optionalFieldOf("selected_wave", new FlightWave(0.5, 0.5, 0.5)).forGetter(app -> app.selectedWave)
     ).apply(instance, InterdictorApp::new));

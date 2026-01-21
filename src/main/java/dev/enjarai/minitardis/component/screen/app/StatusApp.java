@@ -1,6 +1,6 @@
 package dev.enjarai.minitardis.component.screen.app;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
@@ -21,7 +21,7 @@ import net.minecraft.util.math.random.Random;
 import java.util.Arrays;
 
 public class StatusApp implements ScreenApp {
-    public static final Codec<StatusApp> CODEC = Codec.unit(StatusApp::new);
+    public static final MapCodec<StatusApp> CODEC = MapCodec.unit(StatusApp::new);
 
     private final Random etaRandom = new LocalRandom(0);
 

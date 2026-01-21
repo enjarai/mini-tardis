@@ -1,6 +1,6 @@
 package dev.enjarai.minitardis.component.screen.app;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
 import dev.enjarai.minitardis.component.TardisControl;
@@ -13,7 +13,7 @@ import dev.enjarai.minitardis.item.FloppyItem;
 import net.minecraft.item.ItemStack;
 
 public class PackageManagerApp implements ScreenApp {
-    public static final Codec<PackageManagerApp> CODEC = Codec.unit(PackageManagerApp::new);
+    public static final MapCodec<PackageManagerApp> CODEC = MapCodec.unit(PackageManagerApp::new);
 
     @Override
     public AppView getView(TardisControl controls) {

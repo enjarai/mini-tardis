@@ -3,6 +3,7 @@ package dev.enjarai.minitardis.component.screen.app;
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class FloppyBirdApp implements ScreenApp {
-    public static final Codec<FloppyBirdApp> CODEC = RecordCodecBuilder.<FloppyBirdApp>create(instance -> instance.group(
+    public static final MapCodec<FloppyBirdApp> CODEC = RecordCodecBuilder.<FloppyBirdApp>mapCodec(instance -> instance.group(
             Codec.unboundedMap(Uuids.STRING_CODEC, Codec.INT).optionalFieldOf("high_scores", Map.of()).<FloppyBirdApp>forGetter(app -> app.highScores)
     ).<FloppyBirdApp>apply(instance, FloppyBirdApp::new));
     public static final int WIN_DURATION = 30;

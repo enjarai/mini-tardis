@@ -1,7 +1,7 @@
 package dev.enjarai.minitardis.component.screen.app;
 
 import com.google.common.collect.Iterables;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class HistoryApp implements ScreenApp {
-    public static final Codec<HistoryApp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<HistoryApp> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             HistoryEntry.CODEC.listOf().optionalFieldOf("history", List.of()).forGetter(app -> app.history)
     ).apply(instance, HistoryApp::new));
     private static final int ENTRIES_PER_PAGE = 3;

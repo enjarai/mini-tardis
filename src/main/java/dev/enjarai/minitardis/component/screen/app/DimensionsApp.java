@@ -1,6 +1,6 @@
 package dev.enjarai.minitardis.component.screen.app;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.enjarai.minitardis.block.console.ScreenBlockEntity;
 import dev.enjarai.minitardis.canvas.TardisCanvasUtils;
@@ -28,7 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class DimensionsApp implements ScreenApp {
-    public static final Codec<DimensionsApp> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<DimensionsApp> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryKey.createCodec(RegistryKeys.WORLD).listOf().optionalFieldOf("accessible_dimensions", List.of()).forGetter(app -> app.accessibleDimensions)
     ).apply(instance, DimensionsApp::new));
 
